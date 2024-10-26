@@ -16,3 +16,6 @@ Pet Owner:
 
 Figma board:
 https://www.figma.com/design/mTTAG9jENSlV94sAxmQ3HQ?node-id=0-1
+
+Documentation:
+https://uptro29158-my.sharepoint.com/:w:/g/personal/larisa_jurj_student_upt_ro/ESry41VKDSBHhCPh4gqllZoBn8waL-R8Vh7YJ17r62_Wxw?e=yX4bNg
