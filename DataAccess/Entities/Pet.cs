@@ -25,6 +25,11 @@ public class Pet
 
 	[Range(0, int.MaxValue)]
 	public int Weight { get; set; }
-	public DateOnly Birthday { get; set; }
+	public DateTime? Birthday { get; set; }
+	public required Guid OwnerId { get; set; }
 	public required User Owner { get; set; }
+
+	public List<PetSitterTags>? Tags { get; set; }
+
+	public List<Image> Images { get; set; } = new();
 }
