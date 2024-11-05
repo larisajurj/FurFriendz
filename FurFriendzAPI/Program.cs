@@ -1,4 +1,5 @@
 using DataAccess;
+using Service;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +17,7 @@ if (string.IsNullOrEmpty(sqlConnectionString))
 	throw new NullReferenceException($@"Connectionstring is null or empty!");
 }
 builder.Services.AddFurFriendzDb(sqlConnectionString);
-
+builder.Services.AddServices();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
