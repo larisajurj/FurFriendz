@@ -1,10 +1,11 @@
 ﻿
 using DataAccess.Entities;
+using DataAccess.Repository.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repository;
 
-public class PetRepository
+public class PetRepository : IPetRepository
 {
 	protected readonly FurFriendzContext _context;
 
@@ -64,7 +65,7 @@ public class PetRepository
 		}
 	}
 
-	public virtual async Task DeleteAsync(Guid id)
+	public virtual async Task DeleteAsync(int id)
 	{
 		try
 		{

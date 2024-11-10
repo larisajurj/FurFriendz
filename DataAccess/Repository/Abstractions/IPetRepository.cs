@@ -6,7 +6,7 @@ public interface IPetRepository
 {
 	Task<IEnumerable<Pet>> GetAllAsync();
 	Task<Pet?> FindByIdAsync(int id);
-	Task<Pet> PostAsync(User entity);
-	Task<Pet> UpdateAsync(User entity);
+	Task<Pet> PostAsync(Pet entity);
+	Task<Pet> UpdateAsync(Pet entity);
 	Task DeleteAsync(int id);
 }
