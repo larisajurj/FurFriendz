@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FurFriendzAPI", "FurFriendzAPI.csproj", "{5DC668E8-3EB2-4494-8BD7-9AF54AA7D428}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "..\DataAccess\DataAccess.csproj", "{4FA55E6D-C244-4D99-9E3C-449C21E198DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "..\Service\Service.csproj", "{0409467A-17DB-4B15-8FD1-F27A17C74482}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5DC668E8-3EB2-4494-8BD7-9AF54AA7D428}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DC668E8-3EB2-4494-8BD7-9AF54AA7D428}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DC668E8-3EB2-4494-8BD7-9AF54AA7D428}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DC668E8-3EB2-4494-8BD7-9AF54AA7D428}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FA55E6D-C244-4D99-9E3C-449C21E198DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FA55E6D-C244-4D99-9E3C-449C21E198DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FA55E6D-C244-4D99-9E3C-449C21E198DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FA55E6D-C244-4D99-9E3C-449C21E198DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0409467A-17DB-4B15-8FD1-F27A17C74482}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0409467A-17DB-4B15-8FD1-F27A17C74482}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0409467A-17DB-4B15-8FD1-F27A17C74482}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0409467A-17DB-4B15-8FD1-F27A17C74482}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {61F78E5E-6461-493D-9C6C-070827D27B58}
+	EndGlobalSection
+EndGlobal
