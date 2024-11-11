@@ -16,15 +16,19 @@ public class Pet
 	public Gender Gender { get; set; }
 
 	[Required]
-	public int SpecieId { get; set; }
+	public AnimalSpecie Specie { get; set; }
 
 	[StringLength(100)]
-	public string? Breed { get; set; }
+	public Breed? Breed { get; set; }
 
 	public byte[]? ProfileImage { get; set; }
 
 	[Range(0, int.MaxValue)]
 	public int Weight { get; set; }
-	public DateOnly Birthday { get; set; }
+	public DateTime? Birthday { get; set; }
 	public required User Owner { get; set; }
+
+	public List<PetSitterTags>? Tags { get; set; }
+
+	public List<Image> Images { get; set; } = new();
 }

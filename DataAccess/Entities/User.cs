@@ -15,6 +15,8 @@ public class User
 	[Required]
 	[StringLength(100)]
 	public required string FirstName { get; set; }
+	[Required]
+	public Gender Gender { get; set; }
 
 	[Required]
 	[StringLength(100)]
@@ -30,9 +32,8 @@ public class User
 
 	[Required]
 	public UserRole Role { get; set; }
-
-	public byte[]? ImageID { get; set; }
-
 	public List<Pet>? Pets { get; set; }
 
+	public byte[]? ProfileImage { get; set; }
+	public List<Image>? Images { get; set; }
 }
