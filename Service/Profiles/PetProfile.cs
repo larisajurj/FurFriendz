@@ -6,7 +6,7 @@ namespace Service.Profiles;
 
 public class PetProfile : Profile
 {
-	protected PetProfile()
+	public PetProfile()
 	{
 		CreateMap<Pet, PetDTO>();
 	}
