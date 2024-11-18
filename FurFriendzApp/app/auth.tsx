@@ -1,31 +1,62 @@
 // app/auth.tsx
-import React from 'react';
+import React, { useState }  from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {auth} from "firebaseConfig"
 
 export default function AuthScreen() {
-  const { userType } = useLocalSearchParams();
+  const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login or Register</Text>
-      {userType && <Text style={styles.userTypeText}>Registering as: {userType}</Text>}
-      <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#ccc" />
-      <TextInput style={styles.input} placeholder="Password" secureTextEntry placeholderTextColor="#ccc" />
+    const handleRegister = () => {
+      //const auth = getAuth();
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          Alert.alert('Success', `User registered: ${user.email}`);
+        })
+        .catch((error) => {
+          const errorMessage = error.message;
+          Alert.alert('Error', errorMessage);
+        });
+    };
 
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Register</Text>
 
-      <Text style={styles.orText}>Or login with</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          placeholderTextColor="#aaa"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          placeholderTextColor="#aaa"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
 
-      <View style={styles.socialContainer}>
-        <Button title="Google" onPress={() => {}} color="#EA4335" />
-        {/* <Button title="Microsoft" onPress={() => {}} color="#0078D4" /> */}
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+          <Text style={styles.buttonText}>Register</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.orText}>Or register with</Text>
+
+        <View style={styles.socialContainer}>
+          <Button title="Google" onPress={() => Alert.alert('Google Sign-In')} color="#EA4335" />
+        </View>
       </View>
-    </View>
-  );
-}
+    );
+  }
+
 
 const styles = StyleSheet.create({
   container: {
