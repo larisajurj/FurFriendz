@@ -1,17 +1,19 @@
 // app/auth.tsx
 import React, { useState }  from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import {auth} from "firebaseConfig"
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import '../config/firebaseConfig';
+import { auth } from '../config/firebaseConfig';
 
 export default function AuthScreen() {
-  const [email, setEmail] = useState('');
+    const auth_google = auth;
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const handleRegister = () => {
-      //const auth = getAuth();
-      createUserWithEmailAndPassword(auth, email, password)
+      
+      createUserWithEmailAndPassword(auth_google, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
           Alert.alert('Success', `User registered: ${user.email}`);
