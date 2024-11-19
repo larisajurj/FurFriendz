@@ -1,8 +1,7 @@
 // app/auth.tsx
 import React, { useState }  from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { signInWithEmailAndPassword } from "firebase/auth";
 import '../config/firebaseConfig';
 import { auth } from '../config/firebaseConfig';
 
@@ -13,10 +12,10 @@ export default function AuthScreen() {
 
     const handleRegister = () => {
       
-      createUserWithEmailAndPassword(auth_google, email, password)
+      signInWithEmailAndPassword(auth_google, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
-          Alert.alert('Success', `User registered: ${user.email}`);
+          Alert.alert('Success', `User logged in: ${user.email}`);
         })
         .catch((error) => {
           const errorMessage = error.message;
@@ -26,12 +25,12 @@ export default function AuthScreen() {
 
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Register</Text>
-
+        <Image source={require('../assets/logo.png')} style={styles.mainLogo} />
+        <Text style={styles.title}>Login</Text>
         <TextInput
           style={styles.input}
           placeholder="Email"
-          placeholderTextColor="#aaa"
+          placeholderTextColor="#FFFFFF"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -40,55 +39,60 @@ export default function AuthScreen() {
         <TextInput
           style={styles.input}
           placeholder="Password"
-          placeholderTextColor="#aaa"
+          placeholderTextColor="#FFFFFF"
           secureTextEntry
           value={password}
           onChangeText={setPassword}
         />
 
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
-          <Text style={styles.buttonText}>Register</Text>
+          <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
 
-        <Text style={styles.orText}>Or register with</Text>
+        {/* <Text style={styles.orText}>Or register with</Text>
 
         <View style={styles.socialContainer}>
           <Button title="Google" onPress={() => Alert.alert('Google Sign-In')} color="#EA4335" />
-        </View>
+        </View> */}
       </View>
     );
   }
 
 
 const styles = StyleSheet.create({
-  container: {
+container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: '#0f4c75',
-    padding: 20,
-  },
+    backgroundColor: '#3a7ca5',
+    paddingHorizontal: 20,
+    },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#FFFFFF',
+    marginBottom: 20,
+  },
+  mainLogo: {
+    width: 250,
+    height: 250,
     marginBottom: 20,
   },
   userTypeText: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 18,
     marginBottom: 15,
   },
   input: {
     width: '100%',
     padding: 15,
-    backgroundColor: '#3282b8',
+    backgroundColor: '#8BAAB2',
     borderRadius: 10,
     marginVertical: 10,
-    color: '#fff',
+    color: '#FFFFFF',
   },
   button: {
-    backgroundColor: '#3282b8',
+    backgroundColor: '#8BAAB2',
     padding: 15,
     borderRadius: 10,
     marginTop: 20,
@@ -96,11 +100,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 18,
   },
   orText: {
-    color: '#bbb',
+    color: '#FFFFFF',
     marginVertical: 15,
   },
   socialContainer: {

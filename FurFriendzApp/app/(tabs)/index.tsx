@@ -12,7 +12,9 @@ export default function HomeScreen() {
       <Image source={require('../../assets/logo.png')} style={styles.mainLogo} />
 
       {/* Login Button */}
-      <Button title="Login" onPress={() => navigation.navigate('auth')} />
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('loginPage')}>
+          <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate('registerType')}>
         <Text style={styles.registerText}>Don’t have an account? Register</Text>
       </TouchableOpacity>
@@ -50,21 +52,13 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 30,
   },
-  buttonLeft: {
-    flexDirection: 'row',
+  button: {
+    backgroundColor: '#8BAAB2',
+    padding: 15,
+    borderRadius: 10,
+    marginTop: 0,
+    width: '40%',
     alignItems: 'center',
-    backgroundColor: '#ffdb58',
-    padding: 10,
-    borderRadius: 8,
-    width: '45%',
-  },
-  buttonRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#ffdb58',
-    padding: 10,
-    borderRadius: 8,
-    width: '45%',
   },
   optionLogo: {
     width: 40,
@@ -74,7 +68,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#25292e',
+    color: '#fff',
   },
   noteText: {
     color: '#ddd',
