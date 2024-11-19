@@ -64,7 +64,8 @@ container: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: '#3a7ca5',
+    backgroundColor: '#006c87',
+    paddingTop: '20%',
     paddingHorizontal: 20,
     },
   title: {

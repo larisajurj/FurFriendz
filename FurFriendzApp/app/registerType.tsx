@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#3a7ca5',
+    backgroundColor: '#006c87',
     paddingHorizontal: 20,
   },
   mainLogoDomn: {

@@ -6,7 +6,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        headerShown: false,
+        headerShown: false, // Hides the top bar for all tabs
         tabBarActiveTintColor: '#ffd33d',
         tabBarStyle: {
           backgroundColor: '#25292e',
@@ -18,13 +18,13 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarStyle: { display: 'none' }, // Hide tab bar on the Home screen
+          tabBarStyle: { display: 'none' }, // Optionally hide the tab bar for the Home screen
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'home-sharp' : 'home-outline'} color={color} size={24} />
           ),
         }}
       />
-      
+
       {/* About Screen */}
       <Tabs.Screen
         name="about"
