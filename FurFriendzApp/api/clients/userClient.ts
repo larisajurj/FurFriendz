@@ -1,38 +1,31 @@
-mport { SpendWiseClient } from "../Base/BaseApiClients";
-import { CategoryModel } from "../Models/CategoryModel"
+import { BaseApiClients } from "../base/baseClient";
+import { UserModel } from "../model/userModel"
 
 export const UserClient = {
-    urlPath:"user",
-    //getCategories
-    //ne va returna o lista de categorii
-    getAllAsync():Promise<userModel[]>{
-       /"fa un get de la urlPath"
-    },
-    getOneAsync(id:number):Promise<CategoryModel>{
-        return SpendWiseClient.get<CategoryModel>(
-            this.urlPath + "/GetCategory" + id).then(
-                (response) => response.data
-            );
-    },
-    createOneAsync(model:CategoryModel):Promise<CategoryModel>{
-        return SpendWiseClient.post<CategoryModel>(
-            this.urlPath + "/CreateCategory", model).then(
-                (response) => response.data
-            );
-    },
-    deleteOneAsync(id:number):Promise<any>{
-        return SpendWiseClient.delete(
-            this.urlPath + "/" + id).then(
-                (response) => response.data
-            );
-    },
-    updateOneAsync(id:number, model: CategoryModel):Promise<CategoryModel>{
-        console.log("The id is: " + id + " and the model is: " + model.name);
-        return SpendWiseClient.put(
-            this.urlPath + "/" + id, model
-        ).then(
-            (response) => response.data
-        )
-    }
+    urlPath:"Users",
 
+    // Get all users
+        async getAllAsync(): Promise<UserModel[]> {
+            return axiosInstance.get<UserModel[]>(`${this.urlPath}`).then(response => response.data);
+        },
+
+        // Get a user by ID
+        async getOneAsync(id: string): Promise<UserModel> {
+            return axiosInstance.get<UserModel>(`${this.urlPath}/${id}`).then(response => response.data);
+        },
+
+        // Create a new user
+        async createAsync(newUser: UserModel): Promise<UserModel> {
+            return axiosInstance.post<UserModel>(`${this.urlPath}`, newUser).then(response => response.data);
+        },
+
+        // Update an existing user
+        async updateAsync(id: string, updatedUser: UserModel): Promise<UserModel> {
+            return axiosInstance.put<UserModel>(`${this.urlPath}/${id}`, updatedUser).then(response => response.data);
+        },
+
+        // Delete a user by ID
+        async deleteAsync(id: string): Promise<void> {
+            return axiosInstance.delete(`${this.urlPath}/${id}`).then(response => {});
+        },
 }
