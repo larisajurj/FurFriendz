@@ -70,14 +70,17 @@ export default function ProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#004f5e',
+    backgroundColor: '#006c87',
     opacity: 1,
     padding: 20,
   },
   userSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    backgroundColor: '#8BAAB2',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
   },
   profilePic: {
     width: 80,
@@ -91,14 +94,14 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#1E1E1E',
   },
   userRating: {
     fontSize: 16,
-    color: '#FFD700', // Gold color
+    color: '#282828',
   },
   myAccountText: {
-    color: '#00aaff',
+    color: '#017C9B',
     marginTop: 5,
     textDecorationLine: 'underline',
   },
@@ -111,7 +114,7 @@ const styles = StyleSheet.create({
   petCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#007a8c',
+    backgroundColor: '#8BAAB2',
     borderRadius: 10,
     padding: 10,
     marginBottom: 10,
@@ -125,11 +128,11 @@ const styles = StyleSheet.create({
   petName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#1E1E1E',
   },
   petBreed: {
     fontSize: 14,
-    color: '#ccc',
+    color: '#282828',
   },
   actionButtons: {
     marginTop: 20,
