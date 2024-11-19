@@ -1,12 +1,12 @@
-// app/_layout.tsx
 import { Stack } from 'expo-router';
 
 export default function RootLayout() {
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="registerType" options={{ title: 'Register Type' }} />
-      <Stack.Screen name="auth" options={{ title: 'Login / Register' }} />
+    <Stack screenOptions={{ headerShown: false }}> {/* Globally hide headers */}
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="registerType" />
+      <Stack.Screen name="registerPage" />
+      <Stack.Screen name="loginPage" />
       <Stack.Screen name="+not-found" />
     </Stack>
   );

@@ -9,11 +9,11 @@ export default function RegisterTypeScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Register as:</Text>
       <Image source={require('../assets/bunica.png')} style={styles.mainLogoBuni} />
-      <TouchableOpacity style={styles.button} onPress={() => router.push({ pathname: '/auth', params: { userType: 'owner' } })}>
+      <TouchableOpacity style={styles.button} onPress={() => router.push({ pathname: '/registerPage', params: { userType: 'owner' } })}>
         <Text style={styles.buttonText}>Pet Owner</Text>
       </TouchableOpacity>
       <Image source={require('../assets/domnu.png')} style={styles.mainLogoDomn} />
-      <TouchableOpacity style={styles.button} onPress={() => router.push({ pathname: '/auth', params: { userType: 'sitter' } })}>
+      <TouchableOpacity style={styles.button} onPress={() => router.push({ pathname: '/registerPage', params: { userType: 'sitter' } })}>
         <Text style={styles.buttonText}>Pet Sitter</Text>
       </TouchableOpacity>
       <Text style={styles.note}>You can always register as another type later</Text>
@@ -26,7 +26,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#0f4c75',
+    backgroundColor: '#006c87',
+    paddingHorizontal: 20,
   },
   mainLogoDomn: {
     width: 150,
@@ -44,10 +45,10 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   button: {
-    backgroundColor: '#3282b8',
+    backgroundColor: '#8BAAB2',
     padding: 15,
     borderRadius: 40,
-    marginBottom: 10, // Reduced margin to bring button closer to image
+    marginBottom: 10,
     width: '40%',
     alignItems: 'center',
   },
