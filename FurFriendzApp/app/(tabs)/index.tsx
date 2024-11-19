@@ -16,12 +16,12 @@ export default function HomeScreen() {
         <Image source={require('../../assets/logo.png')} style={styles.mainLogo} />
 
         {/* Login Button */}
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('loginPage')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('LoginPage')}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
 
         {/* Register Link */}
-        <TouchableOpacity onPress={() => navigation.navigate('registerType')}>
+        <TouchableOpacity onPress={() => navigation.navigate('RegisterType')}>
           <Text style={styles.registerText}>Don’t have an account? Register</Text>
         </TouchableOpacity>
       </View>

@@ -24,28 +24,6 @@ export default function TabLayout() {
           ),
         }}
       />
-
-      {/* About Screen */}
-      <Tabs.Screen
-        name="about"
-        options={{
-          title: 'About',
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'information-circle' : 'information-circle-outline'} color={color} size={24} />
-          ),
-        }}
-      />
-
-      {/* Search Screen */}
-      <Tabs.Screen
-        name="search"
-        options={{
-          title: 'Search',
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'search' : 'search-outline'} color={color} size={24} />
-          ),
-        }}
-      />
     </Tabs>
   );
 }
