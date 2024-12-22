@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Service.Models;
+using Service.Services;
 using Service.Services.Abstractions;
 
 namespace FurFriendzAPI.Controllers;
@@ -9,10 +10,12 @@ namespace FurFriendzAPI.Controllers;
 public class PetsController : ControllerBase
 {
 	private readonly IPetService _petService;
+	private readonly IUserService _userService;
 
-	public PetsController(IPetService petService)
+	public PetsController(IPetService petService, IUserService userService)
 	{
 		_petService = petService;
+		_userService = userService;
 	}
 
 	// GET: api/pets/{id}
@@ -42,6 +45,12 @@ public class PetsController : ControllerBase
 		if (newPetModel == null)
 		{
 			return BadRequest("Pet data cannot be null.");
+		}
+
+		var user = await _userService.GetUserByIdAsync(newPetModel.OwnerId);
+		if (user == null)
+		{
+			return NotFound("Owner is not a registered user");
 		}
 
 		var createdPet = await _petService.CreatePetAsync(newPetModel);

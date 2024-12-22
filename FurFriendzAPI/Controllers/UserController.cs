@@ -33,15 +33,26 @@ public class UsersController : ControllerBase
 		return Ok(user);
 	}
 
-	[HttpPost]
-	public async Task<ActionResult<UserDTO>> CreateUser(UserDTO newUserModel)
+	[HttpPost("CreatePetOwner")]
+	public async Task<ActionResult<UserDTO>> CreatePetOwnerUser(CreateUserDto newUserModel)
 	{
 		if (newUserModel == null)
 		{
 			return BadRequest("User data cannot be null.");
 		}
 
-		var createdUser = await _userService.CreateUserAsync(newUserModel);
+		var createdUser = await _userService.CreatePetOwnerUserAsync(newUserModel);
+		return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
+	}
+	[HttpPost("CreatePetSitter")]
+	public async Task<ActionResult<UserDTO>> CreatePetSitterUser(CreateUserDto newUserModel)
+	{
+		if (newUserModel == null)
+		{
+			return BadRequest("User data cannot be null.");
+		}
+
+		var createdUser = await _userService.CreatePetSitterUserAsync(newUserModel);
 		return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
 	}
 

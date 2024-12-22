@@ -30,8 +30,16 @@ public class UserService : IUserService
 		return user == null ? null : _mapper.Map<UserDTO>(user);
 	}
 
-	public async Task<UserDTO> CreateUserAsync(UserDTO newUserModel)
+	public async Task<UserDTO> CreatePetOwnerUserAsync(CreateUserDto newUserModel)
 	{
+		newUserModel.Role = Types.UserRole.PetOwner;
+		var newUser = _mapper.Map<User>(newUserModel);
+		var createdUser = await _userRepository.PostAsync(newUser);
+		return _mapper.Map<UserDTO>(createdUser);
+	}
+	public async Task<UserDTO> CreatePetSitterUserAsync(CreateUserDto newUserModel)
+	{
+		newUserModel.Role = Types.UserRole.PetSitter;
 		var newUser = _mapper.Map<User>(newUserModel);
 		var createdUser = await _userRepository.PostAsync(newUser);
 		return _mapper.Map<UserDTO>(createdUser);

@@ -1,5 +1,4 @@
-interface UserModel {
-  id: string;
+interface CreateUserModel {
   lastName: string;
   firstName: string;
   username: string;

@@ -4,17 +4,53 @@ import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, Alert } fro
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import '../config/firebaseConfig';
 import { auth } from '../config/firebaseConfig';
+import { UserClient } from '@/api/clients/userClient';
+import '@/api/model/userModel';
+import '@/api/model/userRole';
 
 export default function AuthScreen() {
     const auth_google = auth;
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [uid, setUid] = useState('');
 
+    const registerUserInDatabase = async () => {
+    console.log("trying to register user in db");
+        try{
+        const model: createUserModel = {
+          lastName: lastName,
+          firstName: firstName,
+          username: email,
+          email: email,
+          role: 0
+        }
+        await UserClient.createPetSitterAsync(model);
+        console.log("created user");
+        } catch (error: any) {
+            console.log(error);
+            if (error.response) {
+                    console.error("Response Data:", error.response.data);
+                    console.error("Response Status:", error.response.status);
+                    console.error("Response Headers:", error.response.headers);
+                } else if (error.request) {
+                    console.error("Request Details:", error.request);
+                } else {
+                    console.error("Error Message:", error.message);
+                }
+
+                // Additional debugging information
+                console.error("Error Config:", error.config);
+        }
+    }
     const handleRegister = () => {
       
       createUserWithEmailAndPassword(auth_google, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
+          setUid(user.uid);
+          registerUserInDatabase();
           Alert.alert('Success', `User registered: ${user.email}`);
         })
         .catch((error) => {
@@ -27,6 +63,23 @@ export default function AuthScreen() {
       <View style={styles.container}>
         <Image source={require('../assets/logo.png')} style={styles.mainLogo} />
         <Text style={styles.title}>Register</Text>
+        <TextInput
+                  style={styles.input}
+                  placeholder="First Name"
+                  placeholderTextColor="#FFFFFF"
+                  secureTextEntry
+                  value={firstName}
+                  onChangeText={setFirstName}
+                />
+
+        <TextInput
+                  style={styles.input}
+                  placeholder="Last Name"
+                  placeholderTextColor="#FFFFFF"
+                  secureTextEntry
+                  value={lastName}
+                  onChangeText={setLastName}
+                />
 
         <TextInput
           style={styles.input}
@@ -37,6 +90,7 @@ export default function AuthScreen() {
           keyboardType="email-address"
           autoCapitalize="none"
         />
+
         <TextInput
           style={styles.input}
           placeholder="Password"
