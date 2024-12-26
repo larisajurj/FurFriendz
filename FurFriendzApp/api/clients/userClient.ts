@@ -19,6 +19,9 @@ export const UserClient = {
         async createPetSitterAsync(newUser: createUserModel): Promise<createUserModel> {
             return BaseClient.post<UserModel>(`${this.urlPath}/CreatePetSitter`, newUser).then(response => response.data);
         },
+        async createPetOwnerAsync(newUser: createUserModel): Promise<createUserModel> {
+            return BaseClient.post<UserModel>(`${this.urlPath}/CreatePetOwner`, newUser).then(response => response.data);
+        },
 
         // Update an existing user
         async updateAsync(id: string, updatedUser: UserModel): Promise<UserModel> {

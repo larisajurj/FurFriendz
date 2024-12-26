@@ -1,20 +1,37 @@
 // app/auth.tsx
 import React, { useState }  from 'react';
-import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { Modal,View, Text, TextInput, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import '../config/firebaseConfig';
 import { auth } from '../config/firebaseConfig';
 import { UserClient } from '@/api/clients/userClient';
 import '@/api/model/userModel';
 import '@/api/model/userRole';
+import { useLocalSearchParams  } from 'expo-router'
 
 export default function AuthScreen() {
+    const { userType } = useLocalSearchParams (); // Access parameters
     const auth_google = auth;
+    const [step, setStep] = useState(1); // Tracks the current step
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
+    const [username, setUsername] = useState('');
     const [uid, setUid] = useState('');
+    const [showSuccess, setShowSuccess] = useState(false); // Modal visibility state
+
+    const handleNextStep = () => {
+        if (step < 3) {
+          setStep(step + 1);
+        }
+      };
+
+      const handlePreviousStep = () => {
+        if (step > 1) {
+          setStep(step - 1);
+        }
+      };
 
     const registerUserInDatabase = async () => {
     console.log("trying to register user in db");
@@ -22,12 +39,16 @@ export default function AuthScreen() {
         const model: createUserModel = {
           lastName: lastName,
           firstName: firstName,
-          username: email,
+          username: username,
           email: email,
           role: 0
         }
-        await UserClient.createPetSitterAsync(model);
-        console.log("created user");
+        if(userType == "owner")
+            await UserClient.createPetOwnerAsync(model);
+        else
+            await UserClient.createPetSitterAsync(model);
+        console.log("created " + userType);
+        const isSuccessful = true; // Simulate success response
         } catch (error: any) {
             console.log(error);
             if (error.response) {
@@ -43,9 +64,20 @@ export default function AuthScreen() {
                 // Additional debugging information
                 console.error("Error Config:", error.config);
         }
+        if (isSuccessful) {
+              setShowSuccess(true); // Show success modal
+              setTimeout(() => {
+                router.push({
+                  pathname: '/mapPage',
+                  params: { username }, // Pass username to main page
+                });
+              }, 2000); // Redirect after 3 seconds
+            } else {
+              Alert.alert('Registration Failed', 'Please try again.');
+            }
     }
     const handleRegister = () => {
-      
+
       createUserWithEmailAndPassword(auth_google, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
@@ -60,59 +92,98 @@ export default function AuthScreen() {
     };
 
     return (
-      <View style={styles.container}>
-        <Image source={require('../assets/logo.png')} style={styles.mainLogo} />
-        <Text style={styles.title}>Register</Text>
-        <TextInput
+        <View style={styles.container}>
+          <Image source={require('../assets/logo.png')} style={styles.mainLogo} />
+          {step === 1 && (
+            <>
+              <Text style={styles.title}>Register</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                placeholderTextColor="#FFFFFF"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+              <TextInput
                   style={styles.input}
-                  placeholder="First Name"
+                  placeholder="Username"
                   placeholderTextColor="#FFFFFF"
-                  secureTextEntry
-                  value={firstName}
-                  onChangeText={setFirstName}
+                  value={username}
+                  onChangeText={setUsername}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
                 />
 
-        <TextInput
-                  style={styles.input}
-                  placeholder="Last Name"
-                  placeholderTextColor="#FFFFFF"
-                  secureTextEntry
-                  value={lastName}
-                  onChangeText={setLastName}
-                />
+              <TouchableOpacity style={styles.button} onPress={handleNextStep}>
+                <Text style={styles.buttonText}>Next</Text>
+              </TouchableOpacity>
+            </>
+          )}
 
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          placeholderTextColor="#FFFFFF"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
+          {step === 2 && (
+            <>
+              <Text style={styles.title}>Tell Us About Yourself</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="First Name"
+                placeholderTextColor="#FFFFFF"
+                value={firstName}
+                onChangeText={setFirstName}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Last Name"
+                placeholderTextColor="#FFFFFF"
+                value={lastName}
+                onChangeText={setLastName}
+              />
+              <View style={styles.navigationButtons}>
+                <TouchableOpacity style={styles.buttonSmall} onPress={handlePreviousStep}>
+                  <Text style={styles.buttonText}>Back</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.buttonSmall} onPress={handleNextStep}>
+                  <Text style={styles.buttonText}>Next</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
 
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          placeholderTextColor="#FFFFFF"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-        />
+          {step === 3 && (
+            <>
+              <Text style={styles.title}>One last step..</Text>
+               <Text style={styles.title}>Set a strong password</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Password"
+                    placeholderTextColor="#FFFFFF"
+                    secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
+                  />
 
-        <TouchableOpacity style={styles.button} onPress={handleRegister}>
-          <Text style={styles.buttonText}>Register</Text>
-        </TouchableOpacity>
-
-        {/* <Text style={styles.orText}>Or register with</Text>
-
-        <View style={styles.socialContainer}>
-          <Button title="Google" onPress={() => Alert.alert('Google Sign-In')} color="#EA4335" />
-        </View> */}
-      </View>
-    );
-  }
-
+                  <View style={styles.navigationButtons}>
+                    <TouchableOpacity style={styles.buttonSmall} onPress={handlePreviousStep}>
+                      <Text style={styles.buttonText}>Back</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonSmall} onPress={handleRegister}>
+                      <Text style={styles.buttonText}>Register</Text>
+                    </TouchableOpacity>
+                  </View>
+            </>
+          )}
+          <Modal visible={showSuccess} transparent animationType="slide">
+              <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                  <Text style={styles.modalText}>Registration Successful!</Text>
+                  <Text style={styles.modalText}>Welcome, {username}!</Text>
+                </View>
+              </View>
+          </Modal>
+        </View>
+      );
+    }
 
 const styles = StyleSheet.create({
   container: {
