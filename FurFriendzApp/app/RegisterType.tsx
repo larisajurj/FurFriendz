@@ -9,11 +9,11 @@ export default function RegisterTypeScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Register as:</Text>
       <Image source={require('../assets/bunica.png')} style={styles.mainLogoBuni} />
-      <TouchableOpacity style={styles.button} onPress={() => router.push({ pathname: '/registerPage', params: { userType: 'owner' } })}>
+      <TouchableOpacity style={styles.button} onPress={() => router.push({ pathname: '/RegisterPage', params: { userType: 'owner' } })}>
         <Text style={styles.buttonText}>Pet Owner</Text>
       </TouchableOpacity>
       <Image source={require('../assets/domnu.png')} style={styles.mainLogoDomn} />
-      <TouchableOpacity style={styles.button} onPress={() => router.push({ pathname: '/registerPage', params: { userType: 'sitter' } })}>
+      <TouchableOpacity style={styles.button} onPress={() => router.push({ pathname: '/RegisterPage', params: { userType: 'sitter' } })}>
         <Text style={styles.buttonText}>Pet Sitter</Text>
       </TouchableOpacity>
       <Text style={styles.note}>You can always register as another type later</Text>

@@ -4,8 +4,10 @@ import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, Alert } fro
 import { signInWithEmailAndPassword } from "firebase/auth";
 import '../config/firebaseConfig';
 import { auth } from '../config/firebaseConfig';
+import { useNavigation } from 'expo-router';
 
 export default function AuthScreen() {
+    const navigation = useNavigation();
     const auth_google = auth;
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -16,6 +18,9 @@ export default function AuthScreen() {
         .then((userCredential) => {
           const user = userCredential.user;
           Alert.alert('Success', `User logged in: ${user.email}`);
+          navigation.navigate('MapPage', {
+             userEmail: `${user.email}`, // Replace with your parameter name and value
+          });
         })
         .catch((error) => {
           const errorMessage = error.message;

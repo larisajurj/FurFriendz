@@ -29,6 +29,11 @@ public class UserService : IUserService
 		var user = await _userRepository.FindByIdAsync(id);
 		return user == null ? null : _mapper.Map<UserDTO>(user);
 	}
+	public async Task<UserDTO?> GetUserByEmailAsync(string email)
+	{
+		var user = await _userRepository.FindByEmailAsync(email);
+		return user == null ? null : _mapper.Map<UserDTO>(user);
+	}
 
 	public async Task<UserDTO> CreatePetOwnerUserAsync(CreateUserDto newUserModel)
 	{

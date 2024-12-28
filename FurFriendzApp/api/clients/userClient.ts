@@ -14,6 +14,10 @@ export const UserClient = {
         async getOneAsync(id: string): Promise<UserModel> {
             return BaseClient.get<UserModel>(`${this.urlPath}/${id}`).then(response => response.data);
         },
+        // Get a user by ID
+        async getByEmailAsync(email: string): Promise<UserModel> {
+            return BaseClient.get<UserModel>(`${this.urlPath}/Byemail/${email}`).then(response => response.data);
+        },
 
         // Create a new user
         async createPetSitterAsync(newUser: createUserModel): Promise<createUserModel> {

@@ -8,8 +8,10 @@ import { UserClient } from '@/api/clients/userClient';
 import '@/api/model/userModel';
 import '@/api/model/userRole';
 import { useLocalSearchParams  } from 'expo-router'
+import { useNavigation } from 'expo-router';
 
 export default function AuthScreen() {
+    const navigation = useNavigation();
     const { userType } = useLocalSearchParams (); // Access parameters
     const auth_google = auth;
     const [step, setStep] = useState(1); // Tracks the current step
@@ -67,10 +69,7 @@ export default function AuthScreen() {
         if (isSuccessful) {
               setShowSuccess(true); // Show success modal
               setTimeout(() => {
-                router.push({
-                  pathname: '/mapPage',
-                  params: { username }, // Pass username to main page
-                });
+                navigation.navigate('MapPage');
               }, 2000); // Redirect after 3 seconds
             } else {
               Alert.alert('Registration Failed', 'Please try again.');
@@ -140,10 +139,10 @@ export default function AuthScreen() {
                 onChangeText={setLastName}
               />
               <View style={styles.navigationButtons}>
-                <TouchableOpacity style={styles.buttonSmall} onPress={handlePreviousStep}>
+                <TouchableOpacity style={styles.button} onPress={handlePreviousStep}>
                   <Text style={styles.buttonText}>Back</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonSmall} onPress={handleNextStep}>
+                <TouchableOpacity style={styles.button} onPress={handleNextStep}>
                   <Text style={styles.buttonText}>Next</Text>
                 </TouchableOpacity>
               </View>
@@ -164,10 +163,10 @@ export default function AuthScreen() {
                   />
 
                   <View style={styles.navigationButtons}>
-                    <TouchableOpacity style={styles.buttonSmall} onPress={handlePreviousStep}>
+                    <TouchableOpacity style={styles.button} onPress={handlePreviousStep}>
                       <Text style={styles.buttonText}>Back</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.buttonSmall} onPress={handleRegister}>
+                    <TouchableOpacity style={styles.button} onPress={handleRegister}>
                       <Text style={styles.buttonText}>Register</Text>
                     </TouchableOpacity>
                   </View>

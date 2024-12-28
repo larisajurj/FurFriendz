@@ -6,6 +6,7 @@ public interface IUserService
 {
 	Task<IEnumerable<UserDTO>> GetAllUsersAsync();
 	Task<UserDTO?> GetUserByIdAsync(Guid id);
+	Task<UserDTO?> GetUserByEmailAsync(string email);
 	Task<UserDTO> UpdateUserAsync(UserDTO updatedUserModel);
 	Task<UserDTO> CreatePetOwnerUserAsync(CreateUserDto newUserModel);
 	Task<UserDTO> CreatePetSitterUserAsync(CreateUserDto newUserModel);
