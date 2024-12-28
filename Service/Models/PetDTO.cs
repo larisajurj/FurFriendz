@@ -6,12 +6,13 @@ namespace Service.Models;
 
 public class PetDTO
 {
-	public int Id { get; set; }
+	public int? Id { get; set; }
 	public required string Name { get; set; }
 	public Gender Gender { get; set; }
 	public int SpecieId { get; set; }
-	public string? Breed { get; set; }
+	public int? BreedId { get; set; }
 	public byte[]? ProfileImage { get; set; }
 	public int Weight { get; set; }
-	public DateOnly Birthday { get; set; }
+	public DateTime Birthday { get; set; }
+	public Guid OwnerId { get; set; }
 }

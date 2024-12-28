@@ -26,7 +26,9 @@ public class Pet
 	[Range(0, int.MaxValue)]
 	public int Weight { get; set; }
 	public DateTime? Birthday { get; set; }
-	public required User Owner { get; set; }
+	public required Guid OwnerId { get; set; }
+
+	public User? Owner { get; set; }
 
 	public List<PetSitterTags>? Tags { get; set; }
 

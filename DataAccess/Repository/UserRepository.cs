@@ -36,6 +36,19 @@ public class UserRepository : IUserRepository
 			throw new Exception($"Error when retrieving entity by id {id}, {ex.Message}", ex);
 		}
 	}
+
+	public virtual async Task<User?> FindByEmailAsync(string email)
+	{
+		try
+		{
+			return await _context.Set<User>().Where(u => u.Email == email).FirstOrDefaultAsync();
+		}
+		catch (Exception ex)
+		{
+			throw new Exception($"Error when retrieving entity by email {email}, {ex.Message}", ex);
+		}
+	}
+
 	public virtual async Task<User> PostAsync(User entity)
 	{
 		try

@@ -15,6 +15,6 @@ public static class Installer
 				options.UseSqlServer(sqlConnectionString), ServiceLifetime.Transient);
 		services.AddTransient<IUserRepository, UserRepository>();
 		services.AddTransient<IPetRepository, PetRepository>();
-
+		services.AddTransient<IBreedRepository, BreedRepository>();
 	}
 }

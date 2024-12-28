@@ -1,21 +1,26 @@
 // app/auth.tsx
 import React, { useState }  from 'react';
 import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import '../config/firebaseConfig';
 import { auth } from '../config/firebaseConfig';
+import { useNavigation } from 'expo-router';
 
 export default function AuthScreen() {
+    const navigation = useNavigation();
     const auth_google = auth;
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const handleRegister = () => {
       
-      createUserWithEmailAndPassword(auth_google, email, password)
+      signInWithEmailAndPassword(auth_google, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
-          Alert.alert('Success', `User registered: ${user.email}`);
+          Alert.alert('Success', `User logged in: ${user.email}`);
+          navigation.navigate('MapPage', {
+             userEmail: `${user.email}`, // Replace with your parameter name and value
+          });
         })
         .catch((error) => {
           const errorMessage = error.message;
@@ -26,8 +31,7 @@ export default function AuthScreen() {
     return (
       <View style={styles.container}>
         <Image source={require('../assets/logo.png')} style={styles.mainLogo} />
-        <Text style={styles.title}>Register</Text>
-
+        <Text style={styles.title}>Login</Text>
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -47,7 +51,7 @@ export default function AuthScreen() {
         />
 
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
-          <Text style={styles.buttonText}>Register</Text>
+          <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
 
         {/* <Text style={styles.orText}>Or register with</Text>
@@ -61,18 +65,18 @@ export default function AuthScreen() {
 
 
 const styles = StyleSheet.create({
-  container: {
+container: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: '#006c87',
     paddingTop: '20%',
     paddingHorizontal: 20,
-  },
+    },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#FFFFFF',
     marginBottom: 20,
   },
   mainLogo: {
@@ -81,7 +85,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   userTypeText: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 18,
     marginBottom: 15,
   },
@@ -91,7 +95,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#8BAAB2',
     borderRadius: 10,
     marginVertical: 10,
-    color: '#fff',
+    color: '#FFFFFF',
   },
   button: {
     backgroundColor: '#8BAAB2',
@@ -102,11 +106,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 18,
   },
   orText: {
-    color: '#bbb',
+    color: '#FFFFFF',
     marginVertical: 15,
   },
   socialContainer: {
