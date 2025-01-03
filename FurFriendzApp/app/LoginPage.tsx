@@ -1,26 +1,42 @@
 // app/auth.tsx
-import React, { useState }  from 'react';
+import React, {useState } from 'react';
 import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import '../config/firebaseConfig';
 import { auth } from '../config/firebaseConfig';
 import { useNavigation } from 'expo-router';
+import { UserClient } from '@/api/clients/userClient';
+import '@/api/model/userModel';
+import { UserContext, useUserContext } from '../config/UserContext';
 
 export default function AuthScreen() {
     const navigation = useNavigation();
     const auth_google = auth;
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const { setUser } = useUserContext();
 
-    const handleRegister = () => {
-      
+    const getUserData = async (email: string) => {
+       try {
+           return await UserClient.getByEmailAsync(email);
+       } catch (error) {
+           console.error('Error fetching user data:', error);
+           throw error; // Propagate the error
+       }
+    };
+
+    const handleRegister = async () => {
       signInWithEmailAndPassword(auth_google, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          Alert.alert('Success', `User logged in: ${user.email}`);
-          navigation.navigate('MapPage', {
-             userEmail: `${user.email}`, // Replace with your parameter name and value
-          });
+
+      //Uncomment for testing environment
+      //signInWithEmailAndPassword(auth_google, "lari@gmail.com", "123456789")
+        .then(async (userCredential) => {
+          //Alert.alert('Success', `User logged in: ${user.email}`);
+          Alert.alert('Success', `User logged in`);
+          const userData = await getUserData(userCredential.user.email);
+          setUser(userData)
+          console.log("Current user is " + userData.email)
+          navigation.navigate('MapPage');
         })
         .catch((error) => {
           const errorMessage = error.message;
@@ -49,16 +65,9 @@ export default function AuthScreen() {
           value={password}
           onChangeText={setPassword}
         />
-
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
-
-        {/* <Text style={styles.orText}>Or register with</Text>
-
-        <View style={styles.socialContainer}>
-          <Button title="Google" onPress={() => Alert.alert('Google Sign-In')} color="#EA4335" />
-        </View> */}
       </View>
     );
   }

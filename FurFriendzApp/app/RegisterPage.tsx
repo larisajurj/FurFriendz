@@ -8,11 +8,10 @@ import { UserClient } from '@/api/clients/userClient';
 import '@/api/model/userModel';
 import '@/api/model/userRole';
 import { useLocalSearchParams  } from 'expo-router'
-import { useNavigation } from 'expo-router';
+import { useUserContext } from '../config/UserContext';
 
-export default function AuthScreen() {
-    const navigation = useNavigation();
-    const { userType } = useLocalSearchParams (); // Access parameters
+export default function AuthScreen({route, navigation }) {
+    const { userType } = route.params || {};
     const auth_google = auth;
     const [step, setStep] = useState(1); // Tracks the current step
     const [email, setEmail] = useState('');
@@ -20,8 +19,18 @@ export default function AuthScreen() {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [username, setUsername] = useState('');
-    const [uid, setUid] = useState('');
     const [showSuccess, setShowSuccess] = useState(false); // Modal visibility state
+    const { setUser } = useUserContext();
+    const [userCredential, setUserCredential] = useState(null);
+
+    const getUserData = async (email: string) => {
+           try {
+               return await UserClient.getByEmailAsync(email);
+           } catch (error) {
+               console.error('Error fetching user data:', error);
+               throw error; // Propagate the error
+           }
+        };
 
     const handleNextStep = () => {
         if (step < 3) {
@@ -35,59 +44,54 @@ export default function AuthScreen() {
         }
       };
 
-    const registerUserInDatabase = async () => {
+    const registerUserInDatabase = async (uid: string) => {
     console.log("trying to register user in db");
         try{
-        const model: createUserModel = {
-          lastName: lastName,
-          firstName: firstName,
-          username: username,
-          email: email,
-          role: 0
-        }
-        if(userType == "owner")
-            await UserClient.createPetOwnerAsync(model);
-        else
-            await UserClient.createPetSitterAsync(model);
-        console.log("created " + userType);
-        const isSuccessful = true; // Simulate success response
+            const model: createUserModel = {
+              lastName: lastName,
+              firstName: firstName,
+              username: username,
+              email: email,
+              role: 0
+            }
+            if(userType == "owner")
+                await UserClient.createPetOwnerAsync(model);
+            else
+                await UserClient.createPetSitterAsync(model);
+            console.log("created " + userType);
+            Alert.alert('Success', `User registered: ${email}`);
+            navigation.navigate('LoginPage');
         } catch (error: any) {
-            console.log(error);
             if (error.response) {
-                    console.error("Response Data:", error.response.data);
-                    console.error("Response Status:", error.response.status);
-                    console.error("Response Headers:", error.response.headers);
+                  console.error("Server responded with an error:");
+                  console.error(`Status: ${error.response.status}`);
+                  console.error(`Headers:`, error.response.headers);
+                  console.error(`Data:`, error.response.data);
                 } else if (error.request) {
-                    console.error("Request Details:", error.request);
+                  console.error("No response received:");
+                  console.error(`Request:`, error.request);
                 } else {
-                    console.error("Error Message:", error.message);
+                  console.error("Error setting up the request:");
+                  console.error(`Message: ${error.message}`);
                 }
 
-                // Additional debugging information
-                console.error("Error Config:", error.config);
+                console.error("Error config:", error.config);
+            throw error;
         }
-        if (isSuccessful) {
-              setShowSuccess(true); // Show success modal
-              setTimeout(() => {
-                navigation.navigate('MapPage');
-              }, 2000); // Redirect after 3 seconds
-            } else {
-              Alert.alert('Registration Failed', 'Please try again.');
-            }
-    }
-    const handleRegister = () => {
 
-      createUserWithEmailAndPassword(auth_google, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          setUid(user.uid);
-          registerUserInDatabase();
-          Alert.alert('Success', `User registered: ${user.email}`);
-        })
-        .catch((error) => {
-          const errorMessage = error.message;
-          Alert.alert('Error', errorMessage);
-        });
+    }
+    const handleRegister = async () => {
+    console.log(userType);
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth_google, email, password);
+            await registerUserInDatabase(userCredential.user.uid); //with uid
+            Alert.alert('Successful', `Registered user : ${email}`);
+            navigation.navigate("LoginPage");
+        }catch (error: any) {
+            console.log(error);
+            userCredential.delete();
+            Alert.alert('Error', `Could not register user : ${email}`);
+        }
     };
 
     return (

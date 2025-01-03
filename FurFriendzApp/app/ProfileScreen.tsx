@@ -1,16 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { useUserContext } from '../config/UserContext';
 
 export default function ProfileScreen({ route, navigation }) {
-  const {userEmail} = route.params;
-  const user = {
-    name: userEmail,
-    rating: 4,
-    pets: [
-      { id: 1, name: 'Alex', breed: 'Bulldog', image: require('../assets/dog.png') },
-      { id: 2, name: 'Andrei', breed: 'Bulldog', image: require('../assets/dog.png') },
-    ],
-  };
+    const { user } = useUserContext()
 
   return (
     <View style={styles.container}>
@@ -21,10 +14,11 @@ export default function ProfileScreen({ route, navigation }) {
           style={styles.profilePic}
         />
         <View style={styles.userInfo}>
-          <Text style={styles.userName}>{user.name}</Text>
-          <Text style={styles.userRating}>
+          <Text style={styles.userName}>{user.username}</Text>
+         {/* <Text style={styles.userRating}>
             {'★'.repeat(user.rating)}{'☆'.repeat(5 - user.rating)}
           </Text>
+          */}
           <TouchableOpacity>
             <Text style={styles.myAccountText}>My account</Text>
           </TouchableOpacity>
@@ -33,7 +27,7 @@ export default function ProfileScreen({ route, navigation }) {
 
       {/* Pet Section */}
       <Text style={styles.sectionTitle}>Your pets</Text>
-      <ScrollView>
+      {/*<ScrollView>
         {user.pets.map((pet) => (
           <TouchableOpacity
             key={pet.id}
@@ -48,18 +42,13 @@ export default function ProfileScreen({ route, navigation }) {
           </TouchableOpacity>
         ))}
       </ScrollView>
+      */}
 
       {/* Manage and Logout Buttons */}
       <View style={styles.actionButtons}>
         <TouchableOpacity
-          style={styles.buttonPrimary}
-          onPress={() => alert('Go as pet sitter')}
-        >
-          <Text style={styles.buttonText}>Go as pet sitter</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
           style={styles.buttonSecondary}
-          onPress={() => navigation.navigate('Login')}
+          onPress={() => navigation.navigate('LoginPage')}
         >
           <Text style={styles.buttonText}>Log Out</Text>
         </TouchableOpacity>
