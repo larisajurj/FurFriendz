@@ -3,11 +3,13 @@ import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import MapView, { Circle } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
+import { useUserContext } from '../config/UserContext';
 
 export default function MapPage({route, navigation }) {
   const { userEmail } = route.params || {};
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const { user } = useUserContext()
 
   useEffect(() => {
     (async () => {
@@ -46,10 +48,7 @@ export default function MapPage({route, navigation }) {
       {/* Hamburger Menu */}
       <TouchableOpacity
         style={styles.hamburger}
-        onPress={() =>  navigation.navigate('ProfileScreen', {
-            userEmail: userEmail // Replace with your parameter name and value
-         })
-        }
+        onPress={() =>  navigation.navigate('ProfileScreen')}
       >
         <Ionicons name="menu" size={28} color="#fff" />
       </TouchableOpacity>
