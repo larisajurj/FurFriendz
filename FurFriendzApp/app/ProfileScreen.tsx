@@ -14,6 +14,7 @@ export default function ProfileScreen({ route, navigation }) {
       try {
         const fetchedPets = await PetClient.getByUserIdAsync(user.id);
         setPets(fetchedPets); // Update the state with fetched pets
+        console.log(fetchedPets);
       } catch (error) {
         console.error('Error fetching user pets:', error);
       } finally {

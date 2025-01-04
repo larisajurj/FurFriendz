@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker'; // Import Picker
 import DateTimePicker from '@react-native-community/datetimepicker'; // Import DateTimePicker
+import { PetClient } from '@/api/clients/petClient';
+import { useUserContext } from '../config/UserContext';
 
 export default function AddPetScreen({ navigation }) {
+    const { user } = useUserContext();
     const [petImage, setPetImage] = useState(null);
     const [petName, setPetName] = useState('');
     const [petBreed, setPetBreed] = useState('');
@@ -25,57 +29,77 @@ export default function AddPetScreen({ navigation }) {
         }
       
         const result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaType.IMAGE, // Use the new MediaType.IMAGE instead of MediaTypeOptions.Images
+          mediaTypes: ImagePicker.MediaTypeOptions.Images, // Updated to use MediaType
           allowsEditing: true,
-          aspect: [1, 1],
-          quality: 1,
+          aspect: [1, 1], // Square aspect ratio
+          quality: 0.2,
         });
       
         if (!result.canceled) {
-          setPetImage(result.assets[0].uri); // Update pet image state
+          try {
+            // Read the selected image as base64
+            const base64Image = await FileSystem.readAsStringAsync(result.assets[0].uri, {
+              encoding: FileSystem.EncodingType.Base64,
+            });
+      
+            // Convert base64 string to byte array
+            const byteArray = Uint8Array.from(atob(base64Image), (char) => char.charCodeAt(0));
+      
+            // Update the state with the byte array
+            setPetImage(byteArray);
+            console.log('Pet image set as byte array:', byteArray);
+          } catch (error) {
+            console.error('Error reading the image file:', error);
+            Alert.alert('Error', 'Unable to process the image. Please try again.');
+          }
         }
       };
   
     // Function to submit pet details
     const handleAddPet = async () => {
-      if (!petName || !petBreed || !petSpecies || !petGender || !petWeight || !petBirthdate || !petImage) {
-        Alert.alert('Missing Information', 'Please fill in all fields and upload a picture.');
-        return;
-      }
-  
-      try {
-        const formData = new FormData();
-        formData.append('file', {
-          uri: petImage,
-          name: 'pet.jpg',
-          type: 'image/jpeg',
-        });
-        formData.append('name', petName);
-        formData.append('breed', petBreed);
-        formData.append('species', petSpecies); // Add species to the form data
-        formData.append('gender', petGender);
-        formData.append('weight', petWeight);
-        formData.append('birthdate', petBirthdate.toISOString().split('T')[0]); // Convert date to string in YYYY-MM-DD format
-  
-        const response = await fetch('https://your-api-endpoint.com/api/pets', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-          body: formData,
-        });
-  
-        if (!response.ok) {
-          throw new Error('Failed to add pet');
+        if (!petName || !petBreed || !petSpecies || !petGender || !petWeight || !petBirthdate || !petImage) {
+          Alert.alert('Missing Information', 'Please fill in all fields and upload a picture.');
+          return;
         }
-  
-        Alert.alert('Success', 'Pet added successfully!');
-        navigation.goBack(); // Navigate back to the previous screen
-      } catch (error) {
-        console.error(error);
-        Alert.alert('Error', 'Failed to add pet. Please try again.');
-      }
-    };
+      
+        try {
+          console.log("Attempting to add pet to the database...");
+      
+          // Construct the new pet model
+          const newPet = {
+            name: petName,
+            type: petSpecies === "1" ? "Dog" : "Cat", // Convert species value to readable type
+            breed: null,
+            age: new Date().getFullYear() - petBirthdate.getFullYear(), // Approximate age calculation
+            ownerId: user.id, // Replace with actual user ID
+            imageID: petImage, // Assuming you'll store image URI or convert to a server-compatible format
+          };
+          console.log(newPet);
+      
+          // Use PetClient to create the pet
+          const createdPet = await PetClient.createAsync(newPet);
+      
+          console.log("Pet added successfully:", createdPet);
+          Alert.alert('Success', 'Pet added successfully!');
+          navigation.goBack(); // Navigate back to the previous screen
+        } catch (error: any) {
+          if (error.response) {
+            console.error("Server responded with an error:");
+            console.error(`Status: ${error.response.status}`);
+            console.error(`Headers:`, error.response.headers);
+            console.error(`Data:`, error.response.data);
+          } else if (error.request) {
+            console.error("No response received:");
+            console.error(`Request:`, error.request);
+          } else {
+            console.error("Error setting up the request:");
+            console.error(`Message: ${error.message}`);
+          }
+      
+          console.error("Error config:", error.config);
+          Alert.alert('Error', 'Failed to add pet. Please try again.');
+        }
+      };
   
     // Function to show the date picker
     const showDatePickerHandler = () => {
@@ -95,10 +119,14 @@ export default function AddPetScreen({ navigation }) {
   
         {/* Pet Image */}
         <View style={styles.imageSection}>
-          <Image
-            source={petImage ? { uri: petImage } : require('../assets/dog.png')} // Use a placeholder image if none is selected
-            style={styles.petImage}
-          />
+        <Image
+        source={
+            petImage
+            ? { uri: `data:image/jpeg;base64,${petImage}` } // Base64 as a data URL
+            : require('../assets/dog.png') // Fallback image
+        }
+        style={styles.petImage}
+        />
           <TouchableOpacity style={styles.imageButton} onPress={pickPetImage}>
             <Text style={styles.imageButtonText}>Upload Picture</Text>
           </TouchableOpacity>
@@ -135,8 +163,8 @@ export default function AddPetScreen({ navigation }) {
             onValueChange={(itemValue) => setPetSpecies(itemValue)}
           >
             <Picker.Item label="Select Species" value="" />
-            <Picker.Item label="Dog" value="Dog" />
-            <Picker.Item label="Cat" value="Cat" />
+            <Picker.Item label="Dog" value="1" />
+            <Picker.Item label="Cat" value="0" />
           </Picker>
         </View>
 
