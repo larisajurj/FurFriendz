@@ -28,9 +28,16 @@ public class BreedRepository : IBreedRepository
 
 	public async Task<IEnumerable<Breed>> GetByAnimalSpeciesAsync(AnimalSpecie specie)
 	{
-		return await _context.Breeds
-		  .Where(b => b.Specie == specie)
+		var allBreeds = await _context.Breeds
 		  .ToListAsync();
+		var breedsWithSpecie = new List<Breed>();
+		foreach (var breed in allBreeds)
+		{
+			if (breed.Specie.Equals(specie))
+				breedsWithSpecie.Add(breed);
+		}
+
+		return breedsWithSpecie;
 	}
 
 }
