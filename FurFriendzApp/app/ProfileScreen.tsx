@@ -4,13 +4,11 @@ import { useUserContext } from '../config/UserContext';
 import { PetClient } from '@/api/clients/petClient';
 import { Ionicons } from '@expo/vector-icons';
 
-
-
 export default function ProfileScreen({ route, navigation }) {
   const { user } = useUserContext();
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     const fetchUserPets = async () => {
       try {
@@ -71,7 +69,7 @@ export default function ProfileScreen({ route, navigation }) {
       ) : pets.length > 0 ? (
         <ScrollView>
           {pets.map((pet) => (
-            <TouchableOpacity 
+            <TouchableOpacity
               key={pet.id}
               style={styles.petCard}
               onPress={() => alert(`Viewing ${pet.name}`)}
@@ -86,7 +84,7 @@ export default function ProfileScreen({ route, navigation }) {
               </View>
               <Ionicons name="chevron-forward" size={20} color="#1E1E1E" />
             </TouchableOpacity>
-            
+
           ))}
           <TouchableOpacity style={styles.buttonAddPet} onPress={handleAddPet}>
             <Text style={styles.buttonText}>Add a Pet</Text>
@@ -111,9 +109,9 @@ export default function ProfileScreen({ route, navigation }) {
               <Text style={styles.buttonText}>Log Out</Text>
             </TouchableOpacity>
       </View>
-      
 
-      
+
+
     </View>
   );
 }

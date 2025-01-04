@@ -12,4 +12,5 @@ public class UserDTO
 	public string? Email { get; set; }
 	public UserRole Role { get; set; }
 	public byte[]? ImageID { get; set; }
+	public AddressDTO? HomeAddress { get; set; }
 }

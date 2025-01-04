@@ -1,4 +1,5 @@
-﻿using DataAccess.Types;
+﻿using DataAccess.Models;
+using DataAccess.Types;
 using System.ComponentModel.DataAnnotations;
 
 namespace DataAccess.Entities;
@@ -35,5 +36,7 @@ public class User
 	public List<Pet>? Pets { get; set; }
 
 	public byte[]? ProfileImage { get; set; }
+
 	public List<Image>? Images { get; set; }
+	public Address? HomeAddress { get; set; }
 }

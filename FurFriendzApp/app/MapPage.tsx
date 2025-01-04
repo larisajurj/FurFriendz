@@ -22,8 +22,8 @@ export default function MapPage({route, navigation }) {
       // Get initial location
       let currentLocation = await Location.getCurrentPositionAsync({});
       setLocation({
-        latitude: currentLocation.coords.latitude,
-        longitude: currentLocation.coords.longitude,
+        latitude: -34.397, //currentLocation.coords.latitude,
+        longitude: 150.644, //currentLocation.coords.longitude,
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
       });
