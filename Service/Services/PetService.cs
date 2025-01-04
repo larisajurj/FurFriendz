@@ -39,8 +39,8 @@ public class PetService : IPetService
 	public async Task<IEnumerable<PetDTO>> GetPetsByUserId(Guid userId)
 	{
 		var pets = await _petRepository.GetAllAsync();
-		var userPets = pets.Where(p => p.Owner.Id == userId);
-		return _mapper.Map<IEnumerable<PetDTO>>(pets);
+		var userPets = pets.Where(p => p.OwnerId == userId);
+		return _mapper.Map<IEnumerable<PetDTO>>(userPets);
 	}
 
 	public async Task<PetDTO> UpdatePetAsync(PetDTO updatedPetModel)

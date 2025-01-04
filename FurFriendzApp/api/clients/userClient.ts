@@ -1,6 +1,7 @@
 import { BaseClient } from "../base/baseClient";
 import { CreateUserModel } from "../model/createUserModel"
 import { UserModel } from "../model/userModel"
+import { UserRole } from "../model/userRole"
 
 export const UserClient = {
     urlPath:"Users",
@@ -14,9 +15,20 @@ export const UserClient = {
         async getOneAsync(id: string): Promise<UserModel> {
             return BaseClient.get<UserModel>(`${this.urlPath}/${id}`).then(response => response.data);
         },
-        // Get a user by ID
+        // Get a user by email
         async getByEmailAsync(email: string): Promise<UserModel> {
-            return BaseClient.get<UserModel>(`${this.urlPath}/Byemail/${email}`).then(response => response.data);
+            const user =  await BaseClient.get<UserModel>(`${this.urlPath}/Byemail/${email}`).then(response => response.data);
+            console.log(user);
+            if(user.role == 0){
+                user.roleEnum = UserRole.Admin;
+            }
+            else if (user.role == 1){
+                user.roleEnum = UserRole.PetSitter;
+            }
+            else{
+                user.roleEnum = UserRole.PetOwner;
+            }
+            return user;
         },
 
         // Create a new user
