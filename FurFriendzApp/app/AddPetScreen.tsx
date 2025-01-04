@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function AddPetScreen({ navigation }) {
     const [petImage, setPetImage] = useState(null);
@@ -87,24 +88,35 @@ export default function AddPetScreen({ navigation }) {
         </View>
   
         {/* Pet Details */}
+      <View style={styles.inputGroup}>
+        <Ionicons name="paw" size={24} color="#555" style={styles.icon} />
         <TextInput
           placeholder="Name"
           style={styles.input}
           value={petName}
           onChangeText={setPetName}
         />
+      </View>
+      <View style={styles.inputGroup}>
+        <Ionicons name="paw-outline" size={24} color="#555" style={styles.icon} />
         <TextInput
           placeholder="Breed"
           style={styles.input}
           value={petBreed}
           onChangeText={setPetBreed}
         />
+      </View>
+      <View style={styles.inputGroup}>
+        <Ionicons name="male-female" size={24} color="#555" style={styles.icon} />
         <TextInput
           placeholder="Gender (e.g., Male/Female)"
           style={styles.input}
           value={petGender}
           onChangeText={setPetGender}
         />
+      </View>
+      <View style={styles.inputGroup}>
+        <Ionicons name="scale" size={24} color="#555" style={styles.icon} />
         <TextInput
           placeholder="Weight (kg)"
           style={styles.input}
@@ -112,18 +124,22 @@ export default function AddPetScreen({ navigation }) {
           value={petWeight}
           onChangeText={setPetWeight}
         />
+      </View>
+      <View style={styles.inputGroup}>
+        <Ionicons name="calendar" size={24} color="#555" style={styles.icon} />
         <TextInput
           placeholder="Birthdate (YYYY-MM-DD)"
           style={styles.input}
           value={petBirthdate}
           onChangeText={setPetBirthdate}
         />
-  
-        {/* Submit Button */}
-        <TouchableOpacity style={styles.addButton} onPress={handleAddPet}>
-          <Text style={styles.addButtonText}>Add Pet</Text>
-        </TouchableOpacity>
       </View>
+
+      {/* Submit Button */}
+      <TouchableOpacity style={styles.addButton} onPress={handleAddPet}>
+        <Text style={styles.addButtonText}>Add Pet</Text>
+      </TouchableOpacity>
+    </View>
     );
   }
 
@@ -136,7 +152,7 @@ export default function AddPetScreen({ navigation }) {
     title: {
       fontSize: 24,
       fontWeight: 'bold',
-      color: '#333',
+      color: '#fff',
       marginBottom: 20,
       textAlign: 'center',
     },
@@ -160,13 +176,21 @@ export default function AddPetScreen({ navigation }) {
       color: '#fff',
       fontWeight: 'bold',
     },
-    input: {
+    inputGroup: {
+      flexDirection: 'row',
+      alignItems: 'center',
       borderWidth: 1,
       borderColor: '#ccc',
       backgroundColor: '#fff',
       borderRadius: 5,
       padding: 10,
       marginBottom: 15,
+    },
+    icon: {
+      marginRight: 10,
+    },
+    input: {
+      flex: 1,
       fontSize: 16,
     },
     addButton: {
