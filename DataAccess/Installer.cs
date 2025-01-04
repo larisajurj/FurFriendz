@@ -16,5 +16,6 @@ public static class Installer
 		services.AddTransient<IUserRepository, UserRepository>();
 		services.AddTransient<IPetRepository, PetRepository>();
 		services.AddTransient<IBreedRepository, BreedRepository>();
+		services.AddScoped<IPetSittingListingRepository, PetSittingListingRepository>();
 	}
 }

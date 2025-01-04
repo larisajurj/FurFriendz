@@ -13,7 +13,7 @@ public class FurFriendzContext : DbContext
 	public DbSet<Breed> Breeds { get; set; }
 	public DbSet<PetTag> PetTags { get; set; }
 	public DbSet<PetSitterTags> PetSitterTags { get; set; }
-
+	public DbSet<PetSittingListings> PetSittingListings { get; set; }
 
 	public FurFriendzContext(DbContextOptions<FurFriendzContext> options)
 		: base(options)
@@ -57,6 +57,36 @@ public class FurFriendzContext : DbContext
 			   a.Property(h => h.Latitude).HasColumnName("Latitude");
 			   a.Property(h => h.Longitude).HasColumnName("Longitude");
 		   });
+		modelBuilder
+			.Entity<PetSittingListings>()
+			.Property(u => u.Status)
+			.HasConversion(new EnumToStringConverter<RequestStatus>());
+		modelBuilder.Entity<PetSittingListingPet>()
+	   .HasKey(pslp => new { pslp.PetSittingListingId, pslp.PetId });
+
+		modelBuilder.Entity<PetSittingListingPet>()
+			.HasOne(pslp => pslp.PetSittingListings)
+			.WithMany(psl => psl.ListingPets)
+			.HasForeignKey(pslp => pslp.PetSittingListingId);
+
+		modelBuilder.Entity<PetSittingListingPet>()
+			.HasOne(pslp => pslp.Pet)
+			.WithMany(p => p.ListingPets)
+			.HasForeignKey(pslp => pslp.PetId);
+
+		// Configure the one-to-many relationship for RequestingUser
+		modelBuilder.Entity<PetSittingListings>()
+			.HasOne(psl => psl.RequestingUser)
+			.WithMany(u => u.RequestingListings)
+			.HasForeignKey(psl => psl.RequestingUserId)
+			.OnDelete(DeleteBehavior.Restrict);
+
+		// Configure the one-to-many relationship for PetSitter
+		modelBuilder.Entity<PetSittingListings>()
+			.HasOne(psl => psl.PetSitter)
+			.WithMany(u => u.SitterListings)
+			.HasForeignKey(psl => psl.PetSitterId)
+			.OnDelete(DeleteBehavior.Restrict);
 		base.OnModelCreating(modelBuilder);
 	}
 }

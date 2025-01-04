@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
-import MapView, { Circle } from 'react-native-maps';
+import MapView, { Circle, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
 import { useUserContext } from '../config/UserContext';
@@ -13,6 +13,7 @@ export default function MapPage({route, navigation }) {
 
   useEffect(() => {
     (async () => {
+    console.log(user);
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         setErrorMsg('Permission to access location was denied');
@@ -20,16 +21,16 @@ export default function MapPage({route, navigation }) {
       }
 
       // Get initial location
-      let currentLocation = await Location.getCurrentPositionAsync({});
+      //let currentLocation = await Location.getCurrentPositionAsync({});
       setLocation({
-        latitude: -34.397, //currentLocation.coords.latitude,
-        longitude: 150.644, //currentLocation.coords.longitude,
+        latitude: user.homeAddress.latitude, //currentLocation.coords.latitude,
+        longitude: user.homeAddress.longitude, //currentLocation.coords.longitude,
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
       });
 
       // Watch location for updates
-      Location.watchPositionAsync(
+      /*Location.watchPositionAsync(
         { accuracy: Location.Accuracy.High, distanceInterval: 10 }, // Update every 10 meters
         (newLocation) => {
           setLocation({
@@ -39,7 +40,7 @@ export default function MapPage({route, navigation }) {
             longitudeDelta: 0.01,
           });
         }
-      );
+      );*/
     })();
   }, []);
 
@@ -59,7 +60,20 @@ export default function MapPage({route, navigation }) {
           style={styles.map}
           region={location}
           showsUserLocation={true}
-        ></MapView>
+        >
+        <Marker coordinate={{
+           latitude: user.homeAddress.latitude, //currentLocation.coords.latitude,
+           longitude: user.homeAddress.longitude, //currentLocation.coords.longitude,
+           latitudeDelta: 0.01,
+           longitudeDelta: 0.01
+         }}
+         title="Home Address"
+         description="Your pet's safe space"
+         image={require('../assets/images/petsitter-pin.png')} // Custom marker icon
+         />
+
+        </MapView>
+
       ) : (
         <Text style={styles.errorText}>{errorMsg || 'Loading map...'}</Text>
       )}

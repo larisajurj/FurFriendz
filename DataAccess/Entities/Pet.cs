@@ -33,4 +33,6 @@ public class Pet
 	public List<PetSitterTags>? Tags { get; set; }
 
 	public List<Image> Images { get; set; } = new();
+	public List<PetSittingListingPet> ListingPets { get; set; } = new List<PetSittingListingPet>();
+
 }

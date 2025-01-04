@@ -61,4 +61,11 @@ public class UserService : IUserService
 	{
 		await _userRepository.DeleteAsync(id);
 	}
+
+	public async Task<IEnumerable<UserDTO>> GetAllPetSittersAsync()
+	{
+		var users = await _userRepository.GetAllAsync();
+		var petsitters = users.Where(u => u.Role == DataAccess.Types.UserRole.PetSitter);
+		return _mapper.Map<IEnumerable<UserDTO>>(petsitters);
+	}
 }

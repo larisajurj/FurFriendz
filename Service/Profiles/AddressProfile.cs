@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using DataAccess.Entities;
-using DataAccess.Models;
+using DataAccess.Types;
 using Service.Models;
 
 namespace Service.Profiles;
