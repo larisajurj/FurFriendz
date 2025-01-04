@@ -15,6 +15,6 @@ public static class Installer
 
 		services.AddAutoMapper(typeof(UserProfile).Assembly);
 		services.AddAutoMapper(typeof(PetProfile).Assembly);
-
+		services.AddAutoMapper(typeof(AddressProfile).Assembly);
 	}
 }

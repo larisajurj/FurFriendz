@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { useUserContext } from '../config/UserContext';
-
+import {UserRole} from '../api/model/userRole'
 export default function ProfileScreen({ route, navigation }) {
     const { user } = useUserContext()
 
@@ -14,7 +14,7 @@ export default function ProfileScreen({ route, navigation }) {
           style={styles.profilePic}
         />
         <View style={styles.userInfo}>
-          <Text style={styles.userName}>{user.username}</Text>
+          <Text style={styles.userName}>{user.roleEnum}</Text>
          {/* <Text style={styles.userRating}>
             {'★'.repeat(user.rating)}{'☆'.repeat(5 - user.rating)}
           </Text>

@@ -47,7 +47,16 @@ public class FurFriendzContext : DbContext
 			.Entity<Breed>()
 			.Property(u => u.Specie)
 			.HasConversion(new EnumToStringConverter<AnimalSpecie>());
-
+		modelBuilder.Entity<User>()
+		   .OwnsOne(u => u.HomeAddress, a =>
+		   {
+			   a.Property(h => h.StreetName).HasMaxLength(200).HasColumnName("StreetName");
+			   a.Property(h => h.BuildingNumber).HasMaxLength(50).HasColumnName("BuildingNumber");
+			   a.Property(h => h.ApartmentNumber).HasMaxLength(50).HasColumnName("ApartmentNumber");
+			   a.Property(h => h.City).HasMaxLength(100).HasColumnName("City");
+			   a.Property(h => h.Latitude).HasColumnName("Latitude");
+			   a.Property(h => h.Longitude).HasColumnName("Longitude");
+		   });
 		base.OnModelCreating(modelBuilder);
 	}
 }
