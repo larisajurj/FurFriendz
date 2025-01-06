@@ -48,4 +48,9 @@ export const UserClient = {
         async deleteAsync(id: string): Promise<void> {
             return BaseClient.delete(`${this.urlPath}/${id}`).then(response => {});
         },
+
+        //Get All PetSitters
+        async getPetSitters(): Promise<UserModel[]> {
+            return BaseClient.get(`${this.urlPath}/petSiters`).then(response => {});
+        },
 }
