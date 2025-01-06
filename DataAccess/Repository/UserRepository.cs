@@ -29,7 +29,13 @@ public class UserRepository : IUserRepository
 	{
 		try
 		{
-			return await _context.Set<User>().FindAsync(id);
+			var res = await _context.Set<User>()
+				.Include(u => u.RequestingListings)
+				.ThenInclude(l => l.Service)
+				.FirstOrDefaultAsync(u => u.Id == id);
+			if (res != null)
+				_context.Attach(res);
+			return res;
 		}
 		catch (Exception ex)
 		{

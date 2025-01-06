@@ -6,8 +6,7 @@ namespace DataAccess.Entities;
 public class PetSittingListings
 {
 	[Key]
-	public int Id { get; set; }
-	public Guid RequestingUserId { get; set; }
+	public int? Id { get; set; }
 	public User? RequestingUser { get; set; }
 	public List<Pet> ListingPets { get; set; } = new List<Pet>();
 	public DateOnly StartDate { get; set; }
@@ -16,6 +15,5 @@ public class PetSittingListings
 	public String? Details { get; set; }
 	public RequestStatus Status { get; set; }
 	public int Price { get; set; }
-	public int ServiceId { get; set; }
 	public PetSitterServices Service { get; set; }
 }

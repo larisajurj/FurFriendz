@@ -5,6 +5,7 @@ namespace Service.Services;
 
 using AutoMapper;
 using DataAccess.Entities;
+using DataAccess.Types;
 using Service.Services.Abstractions;
 using Service.Types;
 
@@ -63,8 +64,11 @@ public class UserService : IUserService
 		await _userRepository.DeleteAsync(id);
 	}
 
-	public Task<IEnumerable<UserDTO>> GetAllPetSittersAsync()
+	public async Task<IEnumerable<UserDTO>> GetAllPetSittersAsync()
 	{
-		throw new NotImplementedException();
+		var users = await _userRepository.GetAllAsync();
+		var petSitters = users.Where(u => u.Role == UserRole.PetSitter).ToList();
+		return _mapper.Map<List<UserDTO>>(petSitters);
+
 	}
 }

@@ -27,14 +27,29 @@ public class PetSittingListingRepository : IPetSittingListingRepository
 		return await _context.PetSittingListings
 			.Include(l => l.RequestingUser)
 			.Include(l => l.ListingPets)
+			.Include(l => l.Service)
 			.ToListAsync();
 	}
 
 	public async Task<int> CreateAsync(PetSittingListings listing)
 	{
-		await _context.PetSittingListings.AddAsync(listing);
+		_context.Attach(listing.RequestingUser);
+		var existingService = _context.ChangeTracker.Entries<PetSitterServices>()
+	.FirstOrDefault(e => e.Entity.Id == listing.Service.Id)?.Entity;
+
+		if (existingService == null)
+		{
+			_context.Attach(listing.Service);
+		}
+		else
+		{
+			listing.Service = existingService; // Use the already tracked instance
+		}
+		foreach (var pet in listing.ListingPets)
+			_context.Attach(pet);
+		await _context.Set<PetSittingListings>().AddAsync(listing);
 		await _context.SaveChangesAsync();
-		return listing.Id; // Assuming Id is the primary key and auto-generated
+		return listing.Id ?? 0; // Assuming Id is the primary key and auto-generated
 	}
 
 	public async Task DeleteAsync(int id)

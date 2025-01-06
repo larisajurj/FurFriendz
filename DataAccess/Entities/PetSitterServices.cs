@@ -13,5 +13,5 @@ public class PetSitterServices
 	public int? MaxNumberOfPets { get; set; }
 	public string? PersonalDescription { get; set; }
 	public AnimalSpecie TypeOfPet { get; set; }
-
+	public List<PetSittingListings> Listings { get; set; } = new();
 }

@@ -22,6 +22,13 @@ public class UsersController : ControllerBase
 		return Ok(users);
 	}
 
+	[HttpGet("petSitters")]
+	public async Task<ActionResult<IEnumerable<UserDTO>>> GetAllPetSitters()
+	{
+		var users = await _userService.GetAllPetSittersAsync();
+		return Ok(users);
+	}
+
 	[HttpGet("{id}")]
 	public async Task<ActionResult<UserDTO>> GetUserById(Guid id)
 	{

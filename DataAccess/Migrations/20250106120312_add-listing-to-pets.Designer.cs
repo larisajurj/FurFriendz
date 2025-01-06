@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(FurFriendzContext))]
-    partial class FurFriendzContextModelSnapshot : ModelSnapshot
+    [Migration("20250106120312_add-listing-to-pets")]
+    partial class addlistingtopets
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -349,7 +352,7 @@ namespace DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("DataAccess.Entities.PetSitterServices", "Service")
-                        .WithMany("Listings")
+                        .WithMany()
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -428,11 +431,6 @@ namespace DataAccess.Migrations
                     b.Navigation("Images");
 
                     b.Navigation("Tags");
-                });
-
-            modelBuilder.Entity("DataAccess.Entities.PetSitterServices", b =>
-                {
-                    b.Navigation("Listings");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.User", b =>

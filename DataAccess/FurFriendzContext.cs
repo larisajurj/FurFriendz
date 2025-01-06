@@ -63,13 +63,15 @@ public class FurFriendzContext : DbContext
 			.Property(u => u.Status)
 			.HasConversion(new EnumToStringConverter<RequestStatus>());
 
-		// Configure the one-to-many relationship for RequestingUser
 		modelBuilder.Entity<PetSittingListings>()
 			.HasOne(psl => psl.RequestingUser)
 			.WithMany(u => u.RequestingListings)
-			.HasForeignKey(psl => psl.RequestingUserId)
 			.OnDelete(DeleteBehavior.Restrict);
 
+		modelBuilder.Entity<PetSittingListings>()
+			.HasOne(psl => psl.Service)
+			.WithMany(u => u.Listings)
+			.OnDelete(DeleteBehavior.Cascade);
 
 		modelBuilder
 			.Entity<PetSitterServices>()

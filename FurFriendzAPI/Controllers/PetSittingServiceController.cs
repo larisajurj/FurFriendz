@@ -22,6 +22,7 @@ public class PetSittingServiceController : ControllerBase
 	}
 
 	// GET: api/PetSitterServices/{id}
+	[SwaggerOperation(Summary = "Get service by serviceId")]
 	[HttpGet("{id}")]
 	public async Task<IActionResult> GetServiceById(int id)
 	{
@@ -34,6 +35,7 @@ public class PetSittingServiceController : ControllerBase
 	}
 
 	// POST: api/PetSitterServices
+	[SwaggerOperation(Summary = "Add a new service")]
 	[HttpPost]
 	public async Task<IActionResult> AddService([FromBody] CreateServiceDTO service)
 	{
@@ -47,6 +49,8 @@ public class PetSittingServiceController : ControllerBase
 	}
 
 	// PUT: api/PetSitterServices/{id}
+	[SwaggerOperation(Summary = "Not yet implemented")]
+
 	[HttpPut("{id}")]
 	public async Task<IActionResult> UpdateService(int id, [FromBody] PetSitterServices service)
 	{
@@ -71,6 +75,7 @@ public class PetSittingServiceController : ControllerBase
 	}
 
 	// DELETE: api/PetSitterServices/{id}
+	[SwaggerOperation(Summary = "Test")]
 	[HttpDelete("{id}")]
 	public async Task<IActionResult> DeleteService(int id)
 	{
@@ -85,6 +90,7 @@ public class PetSittingServiceController : ControllerBase
 	}
 
 	// GET: api/PetSitterServices/user/{userId}
+	[SwaggerOperation(Summary = "Get all services of a user")]
 	[HttpGet("user/{userId}")]
 	public async Task<IActionResult> GetServicesByUserId(Guid userId)
 	{
@@ -93,7 +99,7 @@ public class PetSittingServiceController : ControllerBase
 	}
 
 
-	[SwaggerOperation(Summary = "Create a new reques for petSitting")]
+	[SwaggerOperation(Summary = "Create a new request for petSitting")]
 	[HttpPost("request")]
 	public async Task<IActionResult> CreateRequest([FromBody] CreatePetListingDTO listing)
 	{
@@ -102,13 +108,14 @@ public class PetSittingServiceController : ControllerBase
 			return BadRequest(ModelState);
 		}
 
-		await _service.CreateRequestAsync(listing);
-		return Created("Request created successfully", null);
+		var res = await _service.CreateRequestAsync(listing);
+		return Created("Request created successfully", res);
 	}
 
 	// PATCH: api/PetSittingRequests/{id}/status
-	[HttpPatch("request/{id}/status")]
-	public async Task<IActionResult> ChangeRequestStatus(int id, [FromBody] RequestStatus newStatus)
+	[SwaggerOperation(Summary = "Change Status of a listing")]
+	[HttpPatch("request/{id}/status/{newStatus}")]
+	public async Task<IActionResult> ChangeRequestStatus(int id, RequestStatus newStatus)
 	{
 		if (!ModelState.IsValid)
 		{
@@ -119,7 +126,35 @@ public class PetSittingServiceController : ControllerBase
 		return NoContent();
 	}
 
+	[SwaggerOperation(Summary = "Get all listings of a requesting user")]
+	[HttpGet("request/user/{id}")]
+	public async Task<IActionResult> GetRequestsFromUser(Guid id)
+	{
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+
+		var listings = await _service.GetListingsForUser(id);
+		return Ok(listings);
+	}
+
+	[SwaggerOperation(Summary = "Get all listings of a petSitter user")]
+	[HttpGet("request/petSitter/{id}")]
+	public async Task<IActionResult> GetRequestsForPetSitter(Guid id)
+	{
+		if (!ModelState.IsValid)
+		{
+			return BadRequest(ModelState);
+		}
+
+		var listings = await _service.GetListingsFromPetSitter(id);
+		return Ok(listings);
+	}
+
+
 	// DELETE: api/PetSittingRequests/{id}
+	[SwaggerOperation(Summary = "Delete a listing")]
 	[HttpDelete("request/{id}")]
 	public async Task<IActionResult> DeleteRequest(int id)
 	{
