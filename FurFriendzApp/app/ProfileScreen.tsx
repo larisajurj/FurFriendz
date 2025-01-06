@@ -3,18 +3,20 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'rea
 import { useUserContext } from '../config/UserContext';
 import { PetClient } from '@/api/clients/petClient';
 import { Ionicons } from '@expo/vector-icons';
+import { AddressMode } from '@/api/model/addressModel';
 
 export default function ProfileScreen({ route, navigation }) {
   const { user } = useUserContext();
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [base64Image, setBase64Image] = useState<string>(null)
 
   useEffect(() => {
     const fetchUserPets = async () => {
       try {
         const fetchedPets = await PetClient.getByUserIdAsync(user.id);
         setPets(fetchedPets); // Update the state with fetched pets
-        console.log(fetchedPets);
+        //console.log(fetchedPets);
       } catch (error) {
         console.error('Error fetching user pets:', error);
       } finally {
@@ -35,6 +37,22 @@ export default function ProfileScreen({ route, navigation }) {
     navigation.navigate('AddPetScreen'); // Navigate to the Add Pet screen
   };
 
+  const handleMyAccountButton = () => {
+    navigation.navigate('MyAccountPage');
+  };
+
+  const handleHomeAddressText = () => {
+    const homeAddress : AddressMode = {
+      streetName: user.homeAddress.streetName,
+      buildingNumber: user.homeAddress.builduingNumber,
+      apartmentNumber: user.homeAddress.apartmentNumber,
+      city: user.homeAddress.city,
+      latitude: user.homeAddress.latitude,
+      longitude: user.homeAddress.longitude,
+    }
+    return homeAddress.streetName + ' ' + homeAddress.buildingNumber + ',' + homeAddress.city;
+  };
+
   return (
     <View style={styles.container}>
       {/* User Section */}
@@ -45,7 +63,7 @@ export default function ProfileScreen({ route, navigation }) {
         />
         <View style={styles.userInfo}>
           <Text style={styles.userName}>{user.username}</Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleMyAccountButton}>
             <Text style={styles.myAccountText}>My account</Text>
           </TouchableOpacity>
         </View>
@@ -54,8 +72,8 @@ export default function ProfileScreen({ route, navigation }) {
       {/* Home Location Section */}
       <Text style={styles.sectionTitle}>My home location</Text>
       <View style={styles.homeLocationContainer}>
-        {user.homeLocation ? (
-          <Text style={styles.homeLocationText}>{user.homeLocation}</Text>
+        {user.homeLocation==null ? (
+          <Text style={styles.homeLocationText}>{handleHomeAddressText()}</Text>
         ) : (
           <Text style={styles.setHomeLocationText}>
             Set your home location by going to My account
@@ -73,10 +91,14 @@ export default function ProfileScreen({ route, navigation }) {
             <TouchableOpacity
               key={pet.id}
               style={styles.petCard}
-              onPress={() => alert(`Viewing ${pet.name}`)}
-            >
+              onPress={() => {
+                alert(`Viewing ${pet.name}`);
+                setBase64Image(pet.image);
+                console.log(pet.image); }}
+              >
               <Image
-                source={pet.image ? { uri: pet.image } : require(`../assets/dog.png`)}
+                // source={pet.image ? { uri: pet.image } : require(`../assets/dog.png`)}
+                source={{ uri: `data:image/jpeg;base64,${pet.image}`}}
                 style={styles.petImage}
               />
               <View>
@@ -87,15 +109,15 @@ export default function ProfileScreen({ route, navigation }) {
             </TouchableOpacity>
 
           ))}
-          <TouchableOpacity style={styles.buttonAddPet} onPress={handleAddPet}>
-            <Text style={styles.buttonText}>Add a Pet</Text>
-          </TouchableOpacity>
         </ScrollView>
       ) : (
         <View style={styles.noPetsSection}>
           <Text style={styles.noPetsText}>You have no pets yet.</Text>
         </View>
       )}
+      <TouchableOpacity style={styles.buttonAddPet} onPress={handleAddPet}>
+            <Text style={styles.buttonText}>Add a Pet</Text>
+      </TouchableOpacity>
 
       <View style={{ flexDirection:"row", gap: 20}}>
           {/* Go as Pet Sitter Button */}
@@ -184,6 +206,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     marginRight: 10,
+    resizeMode: 'contain'
   },
   petName: {
     fontSize: 16,

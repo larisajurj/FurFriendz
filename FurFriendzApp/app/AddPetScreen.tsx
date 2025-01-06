@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
@@ -7,166 +7,179 @@ import { Picker } from '@react-native-picker/picker'; // Import Picker
 import DateTimePicker from '@react-native-community/datetimepicker'; // Import DateTimePicker
 import { PetClient } from '@/api/clients/petClient';
 import { useUserContext } from '../config/UserContext';
+import { BreedClient } from '@/api/clients/breedClient';
+import CreatePetModel from '@/api/model/createPetModel';
 
 export default function AddPetScreen({ navigation }) {
-    const { user } = useUserContext();
-    const [petImage, setPetImage] = useState(null);
-    const [petName, setPetName] = useState('');
-    const [petBreed, setPetBreed] = useState('');
-    const [petSpecies, setPetSpecies] = useState(''); // State for species
-    const [petGender, setPetGender] = useState('');
-    const [petWeight, setPetWeight] = useState('');
-    const [petBirthdate, setPetBirthdate] = useState(new Date());
-    const [showDatePicker, setShowDatePicker] = useState(false);
+  const { user } = useUserContext();
+  const [petImage, setPetImage] = useState('');
+  const [petName, setPetName] = useState('');
+  const [petBreed, setPetBreed] = useState('');
+  const [petSpecies, setPetSpecies] = useState('');
+  const [breedList, setBreedList] = useState([]); // Dynamic breed list
+  const [petGender, setPetGender] = useState('');
+  const [petWeight, setPetWeight] = useState('');
+  const [petBirthdate, setPetBirthdate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  // Function to fetch breeds based on the selected species
+  const fetchBreeds = async (species) => {
+    try {
+      // Simulate an API call to get breeds based on species
+      const response = await BreedClient.getBySpeciesAsync(species); // Assuming this function exists
+      setBreedList(response); // Update the breed list
+    } catch (error) {
+      console.error('Failed to fetch breeds:', error);
+      Alert.alert('Error', 'Failed to fetch breeds. Please try again.');
+    }
+  };
+
+  // Update the breed list when the species changes
+  useEffect(() => {
+    if (petSpecies) {
+      fetchBreeds(petSpecies);
+    } else {
+      setBreedList([]); // Reset the breed list if no species is selected
+    }
+  }, [petSpecies]);
+
+  function convertToBase64(byteArray: number[]): string {
+    // Convert the number array to a Uint8Array
+    const uint8Array = new Uint8Array(byteArray);
   
-    // Function to pick a pet image
-    const pickPetImage = async () => {
-        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      
-        if (!permissionResult.granted) {
-          Alert.alert('Permission required', 'You need to grant media library permissions to pick a picture.');
-          return;
-        }
-      
-        const result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images, // Updated to use MediaType
-          allowsEditing: true,
-          aspect: [1, 1], // Square aspect ratio
-          quality: 0.2,
+    // Convert the Uint8Array to a string
+    const binaryString = String.fromCharCode(...uint8Array);
+  
+    // Encode the binary string to Base64
+    const base64String = btoa(binaryString);
+  
+    return base64String;
+  }
+
+  // Function to pick a pet image
+  const pickPetImage = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permissionResult.granted) {
+      Alert.alert('Permission required', 'You need to grant media library permissions to pick a picture.');
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.2,
+    });
+    if (!result.canceled) {
+      try {
+        const base64Image = await FileSystem.readAsStringAsync(result.assets[0].uri, {
+          encoding: FileSystem.EncodingType.Base64,
         });
-      
-        if (!result.canceled) {
-          try {
-            // Read the selected image as base64
-            const base64Image = await FileSystem.readAsStringAsync(result.assets[0].uri, {
-              encoding: FileSystem.EncodingType.Base64,
-            });
-      
-            // Convert base64 string to byte array
-            const byteArray = Uint8Array.from(atob(base64Image), (char) => char.charCodeAt(0));
-      
-            // Update the state with the byte array
-            setPetImage(byteArray);
-            console.log('Pet image set as byte array:', byteArray);
-          } catch (error) {
-            console.error('Error reading the image file:', error);
-            Alert.alert('Error', 'Unable to process the image. Please try again.');
-          }
-        }
+        setPetImage(base64Image);
+      } catch (error) {
+        console.error('Error reading the image file:', error);
+        Alert.alert('Error', 'Unable to process the image. Please try again.');
+      }
+    }
+  };
+
+  // Function to handle the submission of the form
+  const handleAddPet = async () => {
+    if (!petName || !petBreed || !petSpecies || !petGender || !petWeight || !petBirthdate || !petImage) {
+      Alert.alert('Missing Information', 'Please fill in all fields and upload a picture.');
+      return;
+    }
+  
+    try {
+      const newPet: CreatePetModel = {
+        name: petName,
+        gender: petGender === 'Male' ? 0 : 1,
+        specieId: petSpecies, // Convert species ID to a number
+        breedId: parseInt(petBreed, 10), // Convert breed ID to a number
+        profileImage: petImage, // Include the Base64 string with MIME type
+        weight: parseFloat(petWeight), // Convert weight to a number
+        birthday: petBirthdate.toISOString(), // Convert to ISO 8601 format
+        ownerId: user.id, // Owner's UUID
       };
   
-    // Function to submit pet details
-    const handleAddPet = async () => {
-        if (!petName || !petBreed || !petSpecies || !petGender || !petWeight || !petBirthdate || !petImage) {
-          Alert.alert('Missing Information', 'Please fill in all fields and upload a picture.');
-          return;
-        }
-      
-        try {
-          console.log("Attempting to add pet to the database...");
-      
-          // Construct the new pet model
-          const newPet = {
-            name: petName,
-            type: petSpecies === "1" ? "Dog" : "Cat", // Convert species value to readable type
-            breed: null,
-            age: new Date().getFullYear() - petBirthdate.getFullYear(), // Approximate age calculation
-            ownerId: user.id, // Replace with actual user ID
-            imageID: petImage, // Assuming you'll store image URI or convert to a server-compatible format
-          };
-          console.log(newPet);
-      
-          // Use PetClient to create the pet
-          const createdPet = await PetClient.createAsync(newPet);
-      
-          console.log("Pet added successfully:", createdPet);
-          Alert.alert('Success', 'Pet added successfully!');
-          navigation.goBack(); // Navigate back to the previous screen
-        } catch (error: any) {
-          if (error.response) {
-            console.error("Server responded with an error:");
-            console.error(`Status: ${error.response.status}`);
-            console.error(`Headers:`, error.response.headers);
-            console.error(`Data:`, error.response.data);
-          } else if (error.request) {
-            console.error("No response received:");
-            console.error(`Request:`, error.request);
-          } else {
-            console.error("Error setting up the request:");
-            console.error(`Message: ${error.message}`);
-          }
-      
-          console.error("Error config:", error.config);
-          Alert.alert('Error', 'Failed to add pet. Please try again.');
-        }
-      };
+      console.log('Submitting pet data:', newPet);
   
-    // Function to show the date picker
-    const showDatePickerHandler = () => {
-      setShowDatePicker(true);
-    };
-  
-    // Function to handle date change
-    const handleDateChange = (event, selectedDate) => {
-      const currentDate = selectedDate || petBirthdate;
-      setShowDatePicker(false);
-      setPetBirthdate(currentDate);
-    };
+      const createdPet = await PetClient.createAsync(newPet);
+      Alert.alert('Success', 'Pet added successfully!');
+      // console.log('Created Pet:', createdPet);
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error adding pet:', error);
+      Alert.alert('Error', 'Failed to add pet. Please try again.');
+    }
+  };
+
+  const handleDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || petBirthdate;
+    setShowDatePicker(false);
+    setPetBirthdate(currentDate);
+  };
+
+  const showDatePickerHandler = () => {
+    setShowDatePicker(true);
+  };
+
   
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Add a Pet</Text>
-  
-        {/* Pet Image */}
-        <View style={styles.imageSection}>
+      <View style={styles.imageSection}>
         <Image
-        source={
+          source={
             petImage
-            ? { uri: `data:image/jpeg;base64,${petImage}` } // Base64 as a data URL
-            : require('../assets/dog.png') // Fallback image
-        }
-        style={styles.petImage}
+              ? { uri: `data:image/jpeg;base64,${petImage}` }
+              : require('../assets/dog.png')
+          }
+          style={styles.petImage}
         />
-          <TouchableOpacity style={styles.imageButton} onPress={pickPetImage}>
-            <Text style={styles.imageButtonText}>Upload Picture</Text>
-          </TouchableOpacity>
-        </View>
-  
-        {/* Pet Details */}
-        <View style={styles.inputGroup}>
-          <Ionicons name="paw" size={24} color="#fff" style={styles.icon} />
-          <TextInput
-            placeholder="Name"
-            placeholderTextColor="#fff"
-            style={styles.input}
-            value={petName}
-            onChangeText={setPetName}
-          />
-        </View>
-        <View style={styles.inputGroup}>
-          <Ionicons name="paw-outline" size={24} color="#fff" style={styles.icon} />
-          <TextInput
-            placeholder="Breed"
-            placeholderTextColor="#fff"
-            style={styles.input}
-            value={petBreed}
-            onChangeText={setPetBreed}
-          />
-        </View>
+        <TouchableOpacity style={styles.imageButton} onPress={pickPetImage}>
+          <Text style={styles.imageButtonText}>Upload Picture</Text>
+        </TouchableOpacity>
+      </View>
 
-        {/* Species Select Box */}
-        <View style={styles.inputGroup}>
-          <Ionicons name="paw" size={24} color="#fff" style={styles.icon} />
-          <Picker
-            selectedValue={petSpecies}
-            style={styles.picker}
-            onValueChange={(itemValue) => setPetSpecies(itemValue)}
-          >
-            <Picker.Item label="Select Species" value="" />
-            <Picker.Item label="Dog" value="1" />
-            <Picker.Item label="Cat" value="0" />
-          </Picker>
-        </View>
+      <View style={styles.inputGroup}>
+        <Ionicons name="paw" size={24} color="#fff" style={styles.icon} />
+        <TextInput
+          placeholder="Name"
+          placeholderTextColor="#fff"
+          style={styles.input}
+          value={petName}
+          onChangeText={setPetName}
+        />
+      </View>
+
+      {/* Species Dropdown */}
+      <View style={styles.inputGroup}>
+        <Ionicons name="paw" size={24} color="#fff" style={styles.icon} />
+        <Picker
+          selectedValue={petSpecies}
+          style={styles.picker}
+          onValueChange={(itemValue) => setPetSpecies(itemValue)}
+        >
+          <Picker.Item label="Select Species" value="" />
+          <Picker.Item label="Dog" value="Dog" />
+          <Picker.Item label="Cat" value="Cat" />
+        </Picker>
+      </View>
+
+      {/* Breed Dropdown */}
+      <View style={styles.inputGroup}>
+        <Ionicons name="paw-outline" size={24} color="#fff" style={styles.icon} />
+        <Picker
+          selectedValue={petBreed}
+          style={styles.picker}
+          onValueChange={(itemValue) => setPetBreed(itemValue)}
+        >
+          <Picker.Item label="Select Breed" value="" />
+          {breedList.map((breed) => (
+            <Picker.Item key={breed.id} label={breed.name} value={breed.id.toString()} />
+          ))}
+        </Picker>
+      </View>
 
         {/* Gender Select Box */}
         <View style={styles.inputGroup}>

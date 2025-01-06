@@ -10,6 +10,7 @@ import NotFound from './+not-found'; // Assuming a "not found" screen component
 import Index from './(tabs)/index';
 import { UserContext } from '../config/UserContext';
 import AddPetScreen from './AddPetScreen';
+import MyAccountPage from './MyAccountPage';
 
 const Stack = createStackNavigator();
 
@@ -67,7 +68,12 @@ export default function RootLayout() {
               component={AddPetScreen}
               options={{ headerShown: false}}
             />
-            
+            {/* My Account Page */}
+            <Stack.Screen
+              name='MyAccountPage'
+              component={MyAccountPage}
+              options={{ headerShown: false}}
+            />
             {/* Not Found Page */}
             <Stack.Screen
               name="NotFound"

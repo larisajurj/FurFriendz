@@ -34,8 +34,9 @@ export default function AuthScreen() {
           //Alert.alert('Success', `User logged in: ${user.email}`);
           Alert.alert('Success', `User logged in`);
           const userData = await getUserData(userCredential.user.email);
-          setUser(userData)
-          console.log("Current user is " + userData.email)
+          setUser(userData);
+          console.log("Current user is " + userData.email);
+          console.log("User home location"+ userData.homeAddress);
           navigation.navigate('MapPage');
         })
         .catch((error) => {
