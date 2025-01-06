@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(FurFriendzContext))]
-    partial class FurFriendzContextModelSnapshot : ModelSnapshot
+    [Migration("20250105135127_addServiceToListing")]
+    partial class addServiceToListing
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,9 +100,6 @@ namespace DataAccess.Migrations
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("PetSittingListingsId")
-                        .HasColumnType("int");
-
                     b.Property<byte[]>("ProfileImage")
                         .HasColumnType("varbinary(max)");
 
@@ -115,8 +115,6 @@ namespace DataAccess.Migrations
                     b.HasIndex("BreedId");
 
                     b.HasIndex("OwnerId");
-
-                    b.HasIndex("PetSittingListingsId");
 
                     b.ToTable("Pets");
                 });
@@ -178,6 +176,21 @@ namespace DataAccess.Migrations
                     b.ToTable("PetSitterTags");
                 });
 
+            modelBuilder.Entity("DataAccess.Entities.PetSittingListingPet", b =>
+                {
+                    b.Property<int>("PetSittingListingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PetId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PetSittingListingId", "PetId");
+
+                    b.HasIndex("PetId");
+
+                    b.ToTable("PetSittingListingPet");
+                });
+
             modelBuilder.Entity("DataAccess.Entities.PetSittingListings", b =>
                 {
                     b.Property<int>("Id")
@@ -191,6 +204,9 @@ namespace DataAccess.Migrations
 
                     b.Property<DateOnly>("EndDate")
                         .HasColumnType("date");
+
+                    b.Property<Guid>("PetSitterId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Price")
                         .HasColumnType("int");
@@ -212,6 +228,8 @@ namespace DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PetSitterId");
 
                     b.HasIndex("RequestingUserId");
 
@@ -308,10 +326,6 @@ namespace DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccess.Entities.PetSittingListings", null)
-                        .WithMany("ListingPets")
-                        .HasForeignKey("PetSittingListingsId");
-
                     b.Navigation("Breed");
 
                     b.Navigation("Owner");
@@ -335,8 +349,33 @@ namespace DataAccess.Migrations
                         .HasForeignKey("PetId");
                 });
 
+            modelBuilder.Entity("DataAccess.Entities.PetSittingListingPet", b =>
+                {
+                    b.HasOne("DataAccess.Entities.Pet", "Pet")
+                        .WithMany("ListingPets")
+                        .HasForeignKey("PetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccess.Entities.PetSittingListings", "PetSittingListings")
+                        .WithMany("ListingPets")
+                        .HasForeignKey("PetSittingListingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pet");
+
+                    b.Navigation("PetSittingListings");
+                });
+
             modelBuilder.Entity("DataAccess.Entities.PetSittingListings", b =>
                 {
+                    b.HasOne("DataAccess.Entities.User", "PetSitter")
+                        .WithMany("SitterListings")
+                        .HasForeignKey("PetSitterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("DataAccess.Entities.User", "RequestingUser")
                         .WithMany("RequestingListings")
                         .HasForeignKey("RequestingUserId")
@@ -348,6 +387,8 @@ namespace DataAccess.Migrations
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("PetSitter");
 
                     b.Navigation("RequestingUser");
 
@@ -407,6 +448,8 @@ namespace DataAccess.Migrations
                 {
                     b.Navigation("Images");
 
+                    b.Navigation("ListingPets");
+
                     b.Navigation("Tags");
                 });
 
@@ -422,6 +465,8 @@ namespace DataAccess.Migrations
                     b.Navigation("Pets");
 
                     b.Navigation("RequestingListings");
+
+                    b.Navigation("SitterListings");
                 });
 #pragma warning restore 612, 618
         }

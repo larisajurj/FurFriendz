@@ -6,6 +6,7 @@ namespace Service.Services;
 using AutoMapper;
 using DataAccess.Entities;
 using Service.Services.Abstractions;
+using Service.Types;
 
 public class UserService : IUserService
 {
@@ -37,14 +38,14 @@ public class UserService : IUserService
 
 	public async Task<UserDTO> CreatePetOwnerUserAsync(CreateUserDto newUserModel)
 	{
-		newUserModel.Role = Types.UserRole.PetOwner;
+		newUserModel.Role = Types.UserRoleDTO.PetOwner;
 		var newUser = _mapper.Map<User>(newUserModel);
 		var createdUser = await _userRepository.PostAsync(newUser);
 		return _mapper.Map<UserDTO>(createdUser);
 	}
 	public async Task<UserDTO> CreatePetSitterUserAsync(CreateUserDto newUserModel)
 	{
-		newUserModel.Role = Types.UserRole.PetSitter;
+		newUserModel.Role = Types.UserRoleDTO.PetSitter;
 		var newUser = _mapper.Map<User>(newUserModel);
 		var createdUser = await _userRepository.PostAsync(newUser);
 		return _mapper.Map<UserDTO>(createdUser);
@@ -62,10 +63,8 @@ public class UserService : IUserService
 		await _userRepository.DeleteAsync(id);
 	}
 
-	public async Task<IEnumerable<UserDTO>> GetAllPetSittersAsync()
+	public Task<IEnumerable<UserDTO>> GetAllPetSittersAsync()
 	{
-		var users = await _userRepository.GetAllAsync();
-		var petsitters = users.Where(u => u.Role == DataAccess.Types.UserRole.PetSitter);
-		return _mapper.Map<IEnumerable<UserDTO>>(petsitters);
+		throw new NotImplementedException();
 	}
 }

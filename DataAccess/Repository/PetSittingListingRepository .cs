@@ -18,9 +18,7 @@ public class PetSittingListingRepository : IPetSittingListingRepository
 	{
 		return await _context.PetSittingListings
 			.Include(l => l.RequestingUser)
-			.Include(l => l.PetSitter)
 			.Include(l => l.ListingPets)
-		.ThenInclude(lp => lp.Pet)
 			.FirstOrDefaultAsync(l => l.Id == id);
 	}
 
@@ -28,16 +26,15 @@ public class PetSittingListingRepository : IPetSittingListingRepository
 	{
 		return await _context.PetSittingListings
 			.Include(l => l.RequestingUser)
-			.Include(l => l.PetSitter)
-		.Include(l => l.ListingPets)
-				.ThenInclude(lp => lp.Pet)
+			.Include(l => l.ListingPets)
 			.ToListAsync();
 	}
 
-	public async Task CreateAsync(PetSittingListings listing)
+	public async Task<int> CreateAsync(PetSittingListings listing)
 	{
-		_context.PetSittingListings.Add(listing);
+		await _context.PetSittingListings.AddAsync(listing);
 		await _context.SaveChangesAsync();
+		return listing.Id; // Assuming Id is the primary key and auto-generated
 	}
 
 	public async Task DeleteAsync(int id)

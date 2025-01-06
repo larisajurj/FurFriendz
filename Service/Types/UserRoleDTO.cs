@@ -1,6 +1,6 @@
 ﻿namespace Service.Types;
 
-public enum UserRole
+public enum UserRoleDTO
 {
 	Admin,
 	PetSitter,

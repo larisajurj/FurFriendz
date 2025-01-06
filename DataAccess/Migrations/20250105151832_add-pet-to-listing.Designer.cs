@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(FurFriendzContext))]
-    partial class FurFriendzContextModelSnapshot : ModelSnapshot
+    [Migration("20250105151832_add-pet-to-listing")]
+    partial class addpettolisting
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -192,6 +195,9 @@ namespace DataAccess.Migrations
                     b.Property<DateOnly>("EndDate")
                         .HasColumnType("date");
 
+                    b.Property<Guid>("PetSitterId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
@@ -212,6 +218,8 @@ namespace DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PetSitterId");
 
                     b.HasIndex("RequestingUserId");
 
@@ -337,6 +345,12 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Entities.PetSittingListings", b =>
                 {
+                    b.HasOne("DataAccess.Entities.User", "PetSitter")
+                        .WithMany("SitterListings")
+                        .HasForeignKey("PetSitterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("DataAccess.Entities.User", "RequestingUser")
                         .WithMany("RequestingListings")
                         .HasForeignKey("RequestingUserId")
@@ -348,6 +362,8 @@ namespace DataAccess.Migrations
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("PetSitter");
 
                     b.Navigation("RequestingUser");
 
@@ -422,6 +438,8 @@ namespace DataAccess.Migrations
                     b.Navigation("Pets");
 
                     b.Navigation("RequestingListings");
+
+                    b.Navigation("SitterListings");
                 });
 #pragma warning restore 612, 618
         }

@@ -12,9 +12,13 @@ public static class Installer
 		services.AddTransient<IUserService, UserService>();
 		services.AddTransient<IPetService, PetService>();
 		services.AddTransient<IBreedService, BreedService>();
+		services.AddTransient<IPetSittingService, PetSittingService>();
+		services.AddTransient<IPetSittingServiceManager, PetSitterServiceManager>();
+
 
 		services.AddAutoMapper(typeof(UserProfile).Assembly);
 		services.AddAutoMapper(typeof(PetProfile).Assembly);
 		services.AddAutoMapper(typeof(AddressProfile).Assembly);
+		services.AddAutoMapper(typeof(PetSittingListingProfile).Assembly);
 	}
 }

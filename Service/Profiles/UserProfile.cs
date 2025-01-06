@@ -8,9 +8,11 @@ public class UserProfile : Profile
 {
 	public UserProfile()
 	{
-		CreateMap<User, UserDTO>();
+		CreateMap<User, UserDTO>()
+			.ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role)); 
 		CreateMap<UserDTO, User>()
-			.ForMember(dest => dest.Pets, opt => opt.Ignore()); // Ignore navigation properties if not needed
+			.ForMember(dest => dest.Pets, opt => opt.Ignore()) // Ignore navigation properties if not needed
+			.ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role));
 		CreateMap<CreateUserDto, User>()
 			.ForMember(dest => dest.Pets, opt => opt.Ignore())
 			.ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid()));
