@@ -64,11 +64,42 @@ public class UserService : IUserService
 		await _userRepository.DeleteAsync(id);
 	}
 
-	public async Task<IEnumerable<UserDTO>> GetAllPetSittersAsync()
+	public async Task<List<PetSitterDTO>> GetAllPetSittersAsync()
 	{
 		var users = await _userRepository.GetAllAsync();
-		var petSitters = users.Where(u => u.Role == UserRole.PetSitter).ToList();
-		return _mapper.Map<List<UserDTO>>(petSitters);
+		var petSitters = users
+			.Where(u => u.Role == UserRole.PetSitter)
+			.Select(u => new PetSitterDTO()
+			{
+				Id = u.Id,
+				Username = u.Username,
+				FirstName = u.FirstName,
+				LastName = u.LastName,
+				Telephone = u.Telephone,
+				Email = u.Email,
+				ImageID = u.ProfileImage,
+				HomeAddress = new AddressDTO()
+				{
+					StreetName = u.HomeAddress.StreetName,
+					BuildingNumber = u.HomeAddress.BuildingNumber,
+					ApartmentNumber	= u.HomeAddress.ApartmentNumber,
+					City = u.HomeAddress.City,
+					Latitude = u.HomeAddress.Latitude,
+					Longitude = u.HomeAddress.Longitude
+				},
+				Services = u.Services.Select(s => new ServiceDTO()
+				{
+					Id = s.Id,
+					Name = s.Name,
+					UserId = s.UserId,
+					Price = s.Price,
+					MaxNumberOfPets = s.MaxNumberOfPets,
+					PersonalDescription = s.PersonalDescription,
+					TypeOfPet = s.TypeOfPet
+				}).ToList()
+			})
+			.ToList();
+		return petSitters;
 
 	}
 }

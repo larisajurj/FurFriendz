@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DataAccess.Entities;
 using DataAccess.Repository.Abstractions;
+using DataAccess.Types;
 using Service.Models;
 using Service.Services.Abstractions;
 
@@ -43,4 +44,5 @@ public class PetSitterServiceManager : IPetSittingServiceManager
 	{
 		return await _repository.GetByUserIdAsync(userId);
 	}
+
 }

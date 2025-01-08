@@ -21,6 +21,7 @@ public class PetService : IPetService
 	public async Task<PetDTO> CreatePetAsync(PetDTO newPetModel)
 	{
 		var newPet = _mapper.Map<Pet>(newPetModel);
+
 		var createdPet = await _petRepository.PostAsync(newPet);
 		return _mapper.Map<PetDTO>(createdPet);
 	}

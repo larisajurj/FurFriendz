@@ -1,4 +1,5 @@
 ﻿using DataAccess.Entities;
+using DataAccess.Types;
 using Service.Models;
 
 namespace Service.Services.Abstractions;
@@ -10,4 +11,5 @@ public interface IPetSittingServiceManager
 	Task UpdateServiceAsync(PetSitterServices service);
 	Task DeleteServiceAsync(int id);
 	Task<IEnumerable<PetSitterServices>> GetServicesByUserIdAsync(Guid userId);
+
 }

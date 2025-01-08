@@ -17,7 +17,9 @@ public class UserRepository : IUserRepository
 	{
 		try
 		{
-			return await _context.Set<User>().ToListAsync();
+			return await _context.Set<User>()
+				.Include(u => u.Services)
+				.ToListAsync();
 		}
 		catch (Exception ex)
 		{

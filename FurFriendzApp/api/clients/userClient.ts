@@ -2,6 +2,7 @@ import { BaseClient } from "../base/baseClient";
 import { CreateUserModel } from "../model/createUserModel"
 import { UserModel } from "../model/userModel"
 import { UserRole } from "../model/userRole"
+import { PetSitterDTO } from "../model/userRole"
 
 export const UserClient = {
     urlPath:"Users",
@@ -50,7 +51,7 @@ export const UserClient = {
         },
 
         //Get All PetSitters
-        async getPetSitters(): Promise<UserModel[]> {
-            return BaseClient.get(`${this.urlPath}/petSiters`).then(response => {});
+        async getPetSitters(): Promise<PetSitterDTO[]> {
+           return BaseClient.get(`${this.urlPath}/petSitters`).then(response => response.data);
         },
 }

@@ -11,4 +11,5 @@ public interface IPetSittingService
 	Task<List<ListingDTO>> GetListingsFromPetSitter(Guid petSitterId);
 	Task ChangeRequestStatusAsync(int id, RequestStatus newStatus);
 	Task DeleteRequestAsync(int id);
+
 }

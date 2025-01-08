@@ -39,4 +39,6 @@ public class User
 	public List<Image>? Images { get; set; }
 	public Address? HomeAddress { get; set; }
 	public List<PetSittingListings> RequestingListings { get; set; } = new();
+	public List<PetSitterServices> Services { get; set; } = new();
+
 }

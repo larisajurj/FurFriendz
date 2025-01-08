@@ -52,5 +52,5 @@ export const ServiceClient = {
   // Delete a request by ID
   async deleteRequestAsync(requestId: number): Promise<void> {
     return BaseClient.delete<void>(`${this.urlPath}/request/${requestId}`).then(response => response.data);
-  },
+  }
 };
