@@ -9,7 +9,7 @@ public class PetDTO
 	public int? Id { get; set; }
 	public required string Name { get; set; }
 	public Gender Gender { get; set; }
-	public int SpecieId { get; set; }
+	public AnimalSpecie SpecieId { get; set; }
 	public int? BreedId { get; set; }
 	public byte[]? ProfileImage { get; set; }
 	public int Weight { get; set; }

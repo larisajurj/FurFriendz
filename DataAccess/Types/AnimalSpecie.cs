@@ -2,5 +2,6 @@
 public enum AnimalSpecie
 {
 	Cat,
-	Dog
+	Dog,
+	Any
 }

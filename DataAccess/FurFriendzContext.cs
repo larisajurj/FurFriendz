@@ -13,7 +13,8 @@ public class FurFriendzContext : DbContext
 	public DbSet<Breed> Breeds { get; set; }
 	public DbSet<PetTag> PetTags { get; set; }
 	public DbSet<PetSitterTags> PetSitterTags { get; set; }
-
+	public DbSet<PetSittingListings> PetSittingListings { get; set; }
+	public DbSet<PetSitterServices> PetSitterServices { get; set; }
 
 	public FurFriendzContext(DbContextOptions<FurFriendzContext> options)
 		: base(options)
@@ -57,6 +58,31 @@ public class FurFriendzContext : DbContext
 			   a.Property(h => h.Latitude).HasColumnName("Latitude");
 			   a.Property(h => h.Longitude).HasColumnName("Longitude");
 		   });
+		modelBuilder
+			.Entity<PetSittingListings>()
+			.Property(u => u.Status)
+			.HasConversion(new EnumToStringConverter<RequestStatus>());
+
+		modelBuilder.Entity<PetSittingListings>()
+			.HasOne(psl => psl.RequestingUser)
+			.WithMany(u => u.RequestingListings)
+			.OnDelete(DeleteBehavior.Restrict);
+
+		modelBuilder.Entity<PetSittingListings>()
+			.HasOne(psl => psl.Service)
+			.WithMany(u => u.Listings)
+			.OnDelete(DeleteBehavior.Cascade);
+
+		modelBuilder
+			.Entity<PetSitterServices>()
+			.Property(u => u.Name)
+			.HasConversion(new EnumToStringConverter<PetSittingServicesEnum>());
+
+		modelBuilder
+			.Entity<PetSitterServices>()
+			.Property(u => u.TypeOfPet)
+			.HasConversion(new EnumToStringConverter<AnimalSpecie>());
+
 		base.OnModelCreating(modelBuilder);
 	}
 }

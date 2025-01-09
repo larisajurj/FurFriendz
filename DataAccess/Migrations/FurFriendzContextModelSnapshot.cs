@@ -116,6 +116,41 @@ namespace DataAccess.Migrations
                     b.ToTable("Pets");
                 });
 
+            modelBuilder.Entity("DataAccess.Entities.PetSitterServices", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("MaxNumberOfPets")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PersonalDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TypeOfPet")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PetSitterServices");
+                });
+
             modelBuilder.Entity("DataAccess.Entities.PetSitterTags", b =>
                 {
                     b.Property<int>("Id")
@@ -136,6 +171,48 @@ namespace DataAccess.Migrations
                     b.HasIndex("PetId");
 
                     b.ToTable("PetSitterTags");
+                });
+
+            modelBuilder.Entity("DataAccess.Entities.PetSittingListings", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
+
+                    b.Property<string>("Details")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly>("RequestDate")
+                        .HasColumnType("date");
+
+                    b.Property<Guid?>("RequestingUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ServiceId")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RequestingUserId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("PetSittingListings");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.PetTag", b =>
@@ -199,6 +276,21 @@ namespace DataAccess.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("PetPetSittingListings", b =>
+                {
+                    b.Property<int>("ListingPetsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ListingsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ListingPetsId", "ListingsId");
+
+                    b.HasIndex("ListingsId");
+
+                    b.ToTable("PetPetSittingListings");
+                });
+
             modelBuilder.Entity("DataAccess.Entities.Image", b =>
                 {
                     b.HasOne("DataAccess.Entities.Pet", "Pet")
@@ -231,6 +323,17 @@ namespace DataAccess.Migrations
                     b.Navigation("Owner");
                 });
 
+            modelBuilder.Entity("DataAccess.Entities.PetSitterServices", b =>
+                {
+                    b.HasOne("DataAccess.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DataAccess.Entities.PetSitterTags", b =>
                 {
                     b.HasOne("DataAccess.Entities.Pet", null)
@@ -238,9 +341,27 @@ namespace DataAccess.Migrations
                         .HasForeignKey("PetId");
                 });
 
+            modelBuilder.Entity("DataAccess.Entities.PetSittingListings", b =>
+                {
+                    b.HasOne("DataAccess.Entities.User", "RequestingUser")
+                        .WithMany("RequestingListings")
+                        .HasForeignKey("RequestingUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("DataAccess.Entities.PetSitterServices", "Service")
+                        .WithMany("Listings")
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RequestingUser");
+
+                    b.Navigation("Service");
+                });
+
             modelBuilder.Entity("DataAccess.Entities.User", b =>
                 {
-                    b.OwnsOne("DataAccess.Models.Address", "HomeAddress", b1 =>
+                    b.OwnsOne("DataAccess.Types.Address", "HomeAddress", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uniqueidentifier");
@@ -287,6 +408,21 @@ namespace DataAccess.Migrations
                     b.Navigation("HomeAddress");
                 });
 
+            modelBuilder.Entity("PetPetSittingListings", b =>
+                {
+                    b.HasOne("DataAccess.Entities.Pet", null)
+                        .WithMany()
+                        .HasForeignKey("ListingPetsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccess.Entities.PetSittingListings", null)
+                        .WithMany()
+                        .HasForeignKey("ListingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("DataAccess.Entities.Pet", b =>
                 {
                     b.Navigation("Images");
@@ -294,11 +430,18 @@ namespace DataAccess.Migrations
                     b.Navigation("Tags");
                 });
 
+            modelBuilder.Entity("DataAccess.Entities.PetSitterServices", b =>
+                {
+                    b.Navigation("Listings");
+                });
+
             modelBuilder.Entity("DataAccess.Entities.User", b =>
                 {
                     b.Navigation("Images");
 
                     b.Navigation("Pets");
+
+                    b.Navigation("RequestingListings");
                 });
 #pragma warning restore 612, 618
         }

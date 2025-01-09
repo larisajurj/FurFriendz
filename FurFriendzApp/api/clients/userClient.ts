@@ -2,6 +2,7 @@ import { BaseClient } from "../base/baseClient";
 import { CreateUserModel } from "../model/createUserModel"
 import { UserModel } from "../model/userModel"
 import { UserRole } from "../model/userRole"
+import { PetSitterDTO } from "../model/userRole"
 
 export const UserClient = {
     urlPath:"Users",
@@ -47,5 +48,10 @@ export const UserClient = {
         // Delete a user by ID
         async deleteAsync(id: string): Promise<void> {
             return BaseClient.delete(`${this.urlPath}/${id}`).then(response => {});
+        },
+
+        //Get All PetSitters
+        async getPetSitters(): Promise<PetSitterDTO[]> {
+           return BaseClient.get(`${this.urlPath}/petSitters`).then(response => response.data);
         },
 }

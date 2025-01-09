@@ -5,6 +5,7 @@ namespace Service.Services.Abstractions;
 public interface IUserService
 {
 	Task<IEnumerable<UserDTO>> GetAllUsersAsync();
+	Task<List<PetSitterDTO>> GetAllPetSittersAsync();
 	Task<UserDTO?> GetUserByIdAsync(Guid id);
 	Task<UserDTO?> GetUserByEmailAsync(string email);
 	Task<UserDTO> UpdateUserAsync(UserDTO updatedUserModel);

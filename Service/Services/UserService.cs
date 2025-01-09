@@ -5,7 +5,9 @@ namespace Service.Services;
 
 using AutoMapper;
 using DataAccess.Entities;
+using DataAccess.Types;
 using Service.Services.Abstractions;
+using Service.Types;
 
 public class UserService : IUserService
 {
@@ -37,14 +39,14 @@ public class UserService : IUserService
 
 	public async Task<UserDTO> CreatePetOwnerUserAsync(CreateUserDto newUserModel)
 	{
-		newUserModel.Role = Types.UserRole.PetOwner;
+		newUserModel.Role = Types.UserRoleDTO.PetOwner;
 		var newUser = _mapper.Map<User>(newUserModel);
 		var createdUser = await _userRepository.PostAsync(newUser);
 		return _mapper.Map<UserDTO>(createdUser);
 	}
 	public async Task<UserDTO> CreatePetSitterUserAsync(CreateUserDto newUserModel)
 	{
-		newUserModel.Role = Types.UserRole.PetSitter;
+		newUserModel.Role = Types.UserRoleDTO.PetSitter;
 		var newUser = _mapper.Map<User>(newUserModel);
 		var createdUser = await _userRepository.PostAsync(newUser);
 		return _mapper.Map<UserDTO>(createdUser);
@@ -60,5 +62,44 @@ public class UserService : IUserService
 	public async Task DeleteUserAsync(Guid id)
 	{
 		await _userRepository.DeleteAsync(id);
+	}
+
+	public async Task<List<PetSitterDTO>> GetAllPetSittersAsync()
+	{
+		var users = await _userRepository.GetAllAsync();
+		var petSitters = users
+			.Where(u => u.Role == UserRole.PetSitter)
+			.Select(u => new PetSitterDTO()
+			{
+				Id = u.Id,
+				Username = u.Username,
+				FirstName = u.FirstName,
+				LastName = u.LastName,
+				Telephone = u.Telephone,
+				Email = u.Email,
+				ImageID = u.ProfileImage,
+				HomeAddress = new AddressDTO()
+				{
+					StreetName = u.HomeAddress.StreetName,
+					BuildingNumber = u.HomeAddress.BuildingNumber,
+					ApartmentNumber	= u.HomeAddress.ApartmentNumber,
+					City = u.HomeAddress.City,
+					Latitude = u.HomeAddress.Latitude,
+					Longitude = u.HomeAddress.Longitude
+				},
+				Services = u.Services.Select(s => new ServiceDTO()
+				{
+					Id = s.Id,
+					Name = s.Name,
+					UserId = s.UserId,
+					Price = s.Price,
+					MaxNumberOfPets = s.MaxNumberOfPets,
+					PersonalDescription = s.PersonalDescription,
+					TypeOfPet = s.TypeOfPet
+				}).ToList()
+			})
+			.ToList();
+		return petSitters;
+
 	}
 }

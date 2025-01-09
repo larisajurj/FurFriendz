@@ -2,6 +2,7 @@
 using DataAccess.Entities;
 using DataAccess.Repository.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace DataAccess.Repository;
 
@@ -41,6 +42,17 @@ public class PetRepository : IPetRepository
 	{
 		try
 		{
+			var existingBreed = _context.ChangeTracker.Entries<Breed>()
+			.FirstOrDefault(e => e.Entity.Id == entity.Breed.Id)?.Entity;
+
+					if (existingBreed == null)
+					{
+						_context.Attach(entity.Breed);
+					}
+					else
+					{
+						entity.Breed = existingBreed; // Use the already tracked instance
+					}
 			await _context.Set<Pet>().AddAsync(entity);
 			await _context.SaveChangesAsync();
 			return entity;
