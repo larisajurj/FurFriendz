@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, StyleSheet, Button, TouchableOpacity,TouchableHighlight, Text } from 'react-native';
+import { View, StyleSheet, Button, TouchableOpacity,TouchableHighlight, Text, ScrollView} from 'react-native';
 import MapView, { Circle, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,7 +11,7 @@ import { UserClient } from '@/api/clients/userClient';
 import '@/api/model/userModel';
 import {DoublePressMarker} from "./components/DoublePressMarker"
 const { height } = Dimensions.get("window");
-
+import PetSitterCard from "./components/PetSitterCard"
 export default function MapPage({route, navigation }) {
   const { userEmail } = route.params || {};
   const [location, setLocation] = useState(null);
@@ -42,9 +42,14 @@ export default function MapPage({route, navigation }) {
 
     const textTranslateY = draggedValue.interpolate({
       inputRange: [bottom, top],
-      outputRange: [0, 60],
+      outputRange: [0, 80],
       extrapolate: "clamp",
     });
+    const buttonsTranslateY = draggedValue.interpolate({
+          inputRange: [bottom, top],
+          outputRange: [0, 100],
+          extrapolate: "clamp",
+        });
 
     const textTranslateX = draggedValue.interpolate({
       inputRange: [bottom, top],
@@ -79,20 +84,12 @@ export default function MapPage({route, navigation }) {
         } else {
           // Otherwise, select the pressed service
           setSelectedService(service);
-          console.log("Selected service:" + PetSittingServicesEnum[service]);
-          allPetSitters.forEach((petSitter) => {
-            console.log(`${petSitter.firstName} ${petSitter.lastName}'s services:`);
-            petSitter.services.forEach((service) => {
-              console.log(`- ${PetSittingServicesEnum[service.name]}`);
-              console.log(`- ${service}`);
-              console.log((PetSittingServicesEnum[service.name] == service));
-            });
+          const filteredPetSitters = allPetSitters.filter(petSitter => {
+              return petSitter.services.some(s => {
+                  return PetSittingServicesEnum[service] == s.name;
+              });
           });
-          const filteredPetSitters = allPetSitters
-           .filter(petSitter => {
-            petSitter.services.some(service => PetSittingServicesEnum[service.name] ===  PetSittingServicesEnum[service])
-           });
-             setPetSitters(filteredPetSitters);
+          setPetSitters(filteredPetSitters);
         }
       };
     const getPetSitters = async () => {
@@ -182,6 +179,14 @@ export default function MapPage({route, navigation }) {
                   }}
                 >
                   <Text style={styles.textHeader}>Request a service</Text>
+                </Animated.View>
+                <Animated.View
+                  style={{
+                    transform: [
+                      { translateY: buttonsTranslateY },
+                    ],
+                  }}
+                >
                   <View style={styles.buttonRow}>
                     <TouchableOpacity style={[styles.serviceButton, selectedService == PetSittingServicesEnum.DogWalking && styles.selectedButton]} title="Service 1" onPress={() => handlePress(PetSittingServicesEnum.DogWalking)} >
                         <Text style={[styles.buttonText, selectedService == PetSittingServicesEnum.DogWalking && styles.selectedButtonText]}>Dog Walking</Text>
@@ -196,7 +201,13 @@ export default function MapPage({route, navigation }) {
                 </Animated.View>
               </View>
               <View style={styles.pullUpContainer}>
-                <Text>Here is the content inside panel</Text>
+                <ScrollView style={styles.scrollView}>
+                    {petSitters.map((petSitter, index) => (
+                         <PetSitterCard
+                            user={petSitter}
+                            navigation={navigation}/>
+                         ))}
+                </ScrollView>
               </View>
             </View>
         </SlidingUpPanel>
@@ -265,7 +276,7 @@ const styles = StyleSheet.create({
     pullUpContainer: {
       flex: 1,
       backgroundColor: '#006c87',
-      paddingTop: "12%"
+      paddingTop: "25%"
     },
     buttonText: {
       color: '#fff',
