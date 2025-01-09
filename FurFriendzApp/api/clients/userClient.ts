@@ -19,7 +19,7 @@ export const UserClient = {
         // Get a user by email
         async getByEmailAsync(email: string): Promise<UserModel> {
             const user =  await BaseClient.get<UserModel>(`${this.urlPath}/Byemail/${email}`).then(response => response.data);
-            console.log(user);
+            //console.log(user);
             if(user.role == 0){
                 user.roleEnum = UserRole.Admin;
             }
