@@ -52,10 +52,38 @@ public class UserService : IUserService
 		return _mapper.Map<UserDTO>(createdUser);
 	}
 
-	public async Task<UserDTO> UpdateUserAsync(UserDTO updatedUserModel)
+	public async Task<UserDTO> UpdateUserAsync(User user, UpdateUserDTO updateUserDTO)
 	{
-		var updatedUser = _mapper.Map<User>(updatedUserModel);
-		var result = await _userRepository.UpdateAsync(updatedUser);
+		if (updateUserDTO.LastName != null)
+		{
+			user.LastName = updateUserDTO.LastName;
+		}
+
+		if (updateUserDTO.FirstName != null)
+		{
+			user.FirstName = updateUserDTO.FirstName;
+		}
+
+		if (updateUserDTO.Gender != null)
+		{
+			user.Gender = updateUserDTO.Gender ?? DataAccess.Types.Gender.Unspecified;
+		}
+
+		if (updateUserDTO.Telephone != null)
+		{
+			user.Telephone = updateUserDTO.Telephone;
+		}
+
+		if (updateUserDTO.ProfileImage != null)
+		{
+			user.ProfileImage = updateUserDTO.ProfileImage;
+		}
+
+		if (updateUserDTO.HomeAddress != null)
+		{
+			user.HomeAddress = updateUserDTO.HomeAddress;
+		}
+		var result = await _userRepository.UpdateAsync(user);
 		return _mapper.Map<UserDTO>(result);
 	}
 
