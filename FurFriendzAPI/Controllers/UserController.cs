@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DataAccess.Repository.Abstractions;
+using Microsoft.AspNetCore.Mvc;
 using Service.Models;
 using Service.Services.Abstractions;
 
@@ -9,10 +10,12 @@ namespace FurFriendzAPI.Controllers;
 public class UsersController : ControllerBase
 {
 	private readonly IUserService _userService;
+	private readonly IUserRepository _userRepository;
 
-	public UsersController(IUserService userService)
+	public UsersController(IUserService userService, IUserRepository userRepositor)
 	{
 		_userService = userService;
+		_userRepository = userRepositor;
 	}
 
 	[HttpGet]
@@ -75,20 +78,15 @@ public class UsersController : ControllerBase
 	}
 
 	[HttpPut("{id}")]
-	public async Task<ActionResult<UserDTO>> UpdateUser(Guid id, UserDTO updatedUserModel)
+	public async Task<ActionResult<UserDTO>> UpdateUser(Guid id, UpdateUserDTO updatedUserModel)
 	{
-		if (updatedUserModel == null || id != updatedUserModel.Id)
-		{
-			return BadRequest("User ID mismatch.");
-		}
-
-		var existingUser = await _userService.GetUserByIdAsync(id);
-		if (existingUser == null)
+		var user = await _userRepository.FindByIdAsync(id);
+		if (user == null)
 		{
 			return NotFound();
 		}
 
-		var updatedUser = await _userService.UpdateUserAsync(updatedUserModel);
+		var updatedUser = await _userService.UpdateUserAsync(user, updatedUserModel);
 		return Ok(updatedUser);
 	}
 
