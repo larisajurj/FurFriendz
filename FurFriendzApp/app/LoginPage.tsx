@@ -26,10 +26,11 @@ export default function AuthScreen() {
     };
 
     const handleRegister = async () => {
-      //signInWithEmailAndPassword(auth_google, email, password)
+      // signInWithEmailAndPassword(auth_google, email, password)
 
       //Uncomment for testing environment
-      signInWithEmailAndPassword(auth_google, "lari@gmail.com", "123456789")
+      // signInWithEmailAndPassword(auth_google, "lari@gmail.com", "123456789")
+      signInWithEmailAndPassword(auth_google, "ericflaviu.florea@gmail.com", "24iunie")
         .then(async (userCredential) => {
           //Alert.alert('Success', `User logged in: ${user.email}`);
           Alert.alert('Success', `User logged in`);
@@ -37,6 +38,8 @@ export default function AuthScreen() {
           setUser(userData);
           console.log("Current user is " + userData.email);
           console.log("User home location"+ userData.homeAddress);
+          const hasProfileImage = (userData.profileImage ? "yes": "no");
+          console.log("User Profile Image: " + hasProfileImage);
           navigation.navigate('MapPage');
         })
         .catch((error) => {

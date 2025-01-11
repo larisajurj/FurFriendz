@@ -1,9 +1,10 @@
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState, useCallback} from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { useUserContext } from '../config/UserContext';
 import { PetClient } from '@/api/clients/petClient';
 import { Ionicons } from '@expo/vector-icons';
 import { AddressMode } from '@/api/model/addressModel';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function ProfileScreen({ route, navigation }) {
   const { user } = useUserContext();
@@ -11,30 +12,32 @@ export default function ProfileScreen({ route, navigation }) {
   const [loading, setLoading] = useState(true);
   const [base64Image, setBase64Image] = useState<string>(null)
 
-  useEffect(() => {
-    const fetchUserPets = async () => {
-      try {
-        const fetchedPets = await PetClient.getByUserIdAsync(user.id);
-        setPets(fetchedPets); // Update the state with fetched pets
-        //console.log(fetchedPets);
-      } catch (error) {
-        console.error('Error fetching user pets:', error);
-      } finally {
-        setLoading(false); // Ensure loading is set to false
-      }
-    };
-
-    fetchUserPets();
-  }, [user.id]); // Re-run effect if user.id changes
+  const fetchUserPets = async () => {
+    try {
+      const fetchedPets = await PetClient.getByUserIdAsync(user.id);
+      setPets(fetchedPets);
+      // console.log(fetchedPets);
+    } catch (error) {
+      console.error('Error fetching user pets:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   fetch
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserPets();
+    }, [])
+  );
 
   const handleGoAsPetSitter = () => {
     alert("Navigating to Pet Sitter functionality!");
   };
 
   const handleAddPet = () => {
-    navigation.navigate('AddPetScreen'); // Navigate to the Add Pet screen
+    navigation.navigate('PetFormScreen'); // Navigate to the Add Pet screen
   };
 
   const handleMyAccountButton = () => {
@@ -44,7 +47,7 @@ export default function ProfileScreen({ route, navigation }) {
   const handleHomeAddressText = () => {
     const homeAddress : AddressMode = {
       streetName: user.homeAddress.streetName,
-      buildingNumber: user.homeAddress.builduingNumber,
+      buildingNumber: user.homeAddress.buildingNumber,
       apartmentNumber: user.homeAddress.apartmentNumber,
       city: user.homeAddress.city,
       latitude: user.homeAddress.latitude,
@@ -58,7 +61,7 @@ export default function ProfileScreen({ route, navigation }) {
       {/* User Section */}
       <View style={styles.userSection}>
         <Image
-          source={{ uri: 'https://via.placeholder.com/80' }} // Placeholder for profile pic
+          source={{ uri: `data:image/jpeg;base64,${user.imageID}` }}
           style={styles.profilePic}
         />
         <View style={styles.userInfo}>
@@ -92,13 +95,11 @@ export default function ProfileScreen({ route, navigation }) {
               key={pet.id}
               style={styles.petCard}
               onPress={() => {
-                alert(`Viewing ${pet.name}`);
-                setBase64Image(pet.image);
-                console.log(pet.image); }}
+                navigation.navigate('PetFormScreen', { petId: pet.id })}}
               >
               <Image
                 // source={pet.image ? { uri: pet.image } : require(`../assets/dog.png`)}
-                source={{ uri: `data:image/jpeg;base64,${pet.image}`}}
+                source={{ uri: `data:image/jpeg;base64,${pet.profileImage}`}}
                 style={styles.petImage}
               />
               <View>

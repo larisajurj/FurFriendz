@@ -9,4 +9,6 @@ interface PetModel {
   birthday: string; // ISO 8601 date string
   ownerId: string; // UUID of the owner
 }
+
+export default PetModel;
   
