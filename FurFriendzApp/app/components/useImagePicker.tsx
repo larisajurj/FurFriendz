@@ -31,3 +31,5 @@ export const useImagePicker = () => {
 
   return { pickImage };
 };
+
+export default useImagePicker;

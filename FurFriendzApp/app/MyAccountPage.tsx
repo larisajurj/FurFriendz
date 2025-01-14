@@ -83,21 +83,14 @@ export default function MyAccountPage({ navigation }) {
           latitude,
           longitude,
         },
-        imageID: profileImage,
+        profileImage: profileImage,
       };
   
       console.log('Updated user payload:', updatedUser);
   
-      const response = await UserClient.updateAsync(user.id, updatedUser);
-      console.log('Response status:', response.status);
-      console.log('Response data:', response.data);
-  
-      if (response.status === 200) {
-        Alert.alert('Success', 'Information updated successfully!');
-        setIsEditing(false);
-      } else {
-        Alert.alert('Error', `Failed to update. Status code: ${response.status}`);
-      }
+      await UserClient.updateAsync(user.id, updatedUser);
+      Alert.alert('Success', 'Information updated successfully!');
+      setIsEditing(false);
     } catch (error) {
       Alert.alert('Error', 'Failed to update user information. Please try again.');
       console.error('Error updating user:', error);
@@ -111,7 +104,7 @@ export default function MyAccountPage({ navigation }) {
       <Text style={styles.title}>My Account</Text>
       <View style={styles.profileSection}>
         <Image
-          source={{ uri: `data:image/jpeg;base64,${user.imageID}` }}
+          source={{ uri: `data:image/jpeg;base64,${profileImage || user.imageID}` }}
           style={styles.profilePic}
         />
         {isEditing && (
@@ -214,7 +207,7 @@ export default function MyAccountPage({ navigation }) {
       {isEditing && (
         <TouchableOpacity
           style={styles.cancelButton}
-          onPress={() => setIsEditing(false)} // Cancel editing mode
+          onPress={() => {setIsEditing(false); setProfileImage(user.imageID);}} // Cancel editing mode
         >
           <Text style={styles.cancelButtonText}>Cancel</Text>
         </TouchableOpacity>
@@ -387,8 +380,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   actionButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     marginBottom: 10,
   },
   cancelButton: {
@@ -396,7 +387,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     alignSelf: 'center',
-    marginHorizontal: 10,
+    marginTop: 10,
     minHeight: 1
   },
   cancelButtonText: {

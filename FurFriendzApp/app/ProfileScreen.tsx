@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useCallback} from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { useUserContext } from '../config/UserContext';
+import { signOut } from 'firebase/auth';
+import { auth } from '@/config/firebaseConfig';
 import { PetClient } from '@/api/clients/petClient';
 import { Ionicons } from '@expo/vector-icons';
 import { AddressMode } from '@/api/model/addressModel';
@@ -45,15 +47,29 @@ export default function ProfileScreen({ route, navigation }) {
   };
 
   const handleHomeAddressText = () => {
-    const homeAddress : AddressMode = {
-      streetName: user.homeAddress.streetName,
-      buildingNumber: user.homeAddress.buildingNumber,
-      apartmentNumber: user.homeAddress.apartmentNumber,
-      city: user.homeAddress.city,
-      latitude: user.homeAddress.latitude,
-      longitude: user.homeAddress.longitude,
+    try {
+      const homeAddress : AddressMode = {
+        streetName: user.homeAddress.streetName,
+        buildingNumber: user.homeAddress.buildingNumber,
+        apartmentNumber: user.homeAddress.apartmentNumber,
+        city: user.homeAddress.city,
+        latitude: user.homeAddress.latitude,
+        longitude: user.homeAddress.longitude,
+      }
+      return homeAddress.streetName + ' ' + homeAddress.buildingNumber + ',' + homeAddress.city;  
+    } catch {
+      return "Set your home location by going to My account";
     }
-    return homeAddress.streetName + ' ' + homeAddress.buildingNumber + ',' + homeAddress.city;
+  };
+
+  const handleLogOut = () => {
+    try {
+      auth.signOut().then(function() {navigation.navigate('LoginPage')})
+      alert("Logging out!");
+      return "Logged Out";
+    } catch {
+      return "Error logging out";
+    }
   };
 
   return (
@@ -128,7 +144,7 @@ export default function ProfileScreen({ route, navigation }) {
           {/* Manage and Logout Buttons */}
             <TouchableOpacity
               style={styles.buttonSecondary}
-              onPress={() => navigation.navigate('LoginPage')}
+              onPress={handleLogOut}
             >
               <Text style={styles.buttonText}>Log Out</Text>
             </TouchableOpacity>

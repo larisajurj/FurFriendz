@@ -12,11 +12,17 @@ import '@/api/model/userModel';
 import {DoublePressMarker} from "./components/DoublePressMarker"
 const { height } = Dimensions.get("window");
 import PetSitterCard from "./components/PetSitterCard"
+
+
 export default function MapPage({route, navigation }) {
-  const { userEmail } = route.params || {};
-  const [location, setLocation] = useState(null);
+  const { user } = useUserContext();
+  const [location, setLocation] = useState({
+      latitude: user.homeAddress.latitude || 0,
+      longitude: user.homeAddress.longitude || 0,
+      latitudeDelta: 0.0043,
+      longitudeDelta: 0.0034,
+    });
   const [errorMsg, setErrorMsg] = useState(null);
-  const { user } = useUserContext()
   const panelRef = useRef(null); // Reference for SlidingUpPanel
   const [isPanelExpanded, setPanelExpanded] = useState(false);
   const draggedValue = useRef(new Animated.Value(100)).current; // Animated value
@@ -204,6 +210,7 @@ export default function MapPage({route, navigation }) {
                 <ScrollView style={styles.scrollView}>
                     {petSitters.map((petSitter, index) => (
                          <PetSitterCard
+                            key={petSitter.id}
                             user={petSitter}
                             navigation={navigation}/>
                          ))}
