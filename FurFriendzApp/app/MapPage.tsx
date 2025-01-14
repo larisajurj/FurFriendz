@@ -133,7 +133,7 @@ export default function MapPage({route, navigation }) {
                    image={require('../assets/images/petsitter-pin.png')} // Custom marker icon
                    onDoublePress = {() =>
                       navigation.navigate('PetSitterServiceScreen', {
-                        petSitter: user
+                        petSitter: petSitter
                    })}
                  />
             ))}

@@ -11,7 +11,7 @@ type Props = {
   tabs: string[];
 };
 
-const TabMenu = ({tabs}: Props) => {
+export const TabMenu = ({tabs}: Props) => {
   const [layoutCount, setLayoutCount] = useState(0);
   const underlineAnimation = new Animated.Value(0);
   const tabWidths = React.useRef(tabs.map(() => 0));
@@ -96,5 +96,3 @@ const styles = StyleSheet.create({
     width: 100,
   },
 });
-
-export default TabMenu;
