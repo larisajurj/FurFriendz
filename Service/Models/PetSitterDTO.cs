@@ -11,6 +11,8 @@ public class PetSitterDTO
 	public string? Telephone { get; set; }
 	public string? Email { get; set; }
 	public byte[]? ImageID { get; set; }
+	public string? Description { get; set; }
+	public bool? isVerified { get; set; }
 	public AddressDTO? HomeAddress { get; set; }
 	public List<ServiceDTO> Services { get; set; }
 }

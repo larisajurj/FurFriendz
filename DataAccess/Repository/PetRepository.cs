@@ -19,7 +19,9 @@ public class PetRepository : IPetRepository
 	{
 		try
 		{
-			return await _context.Set<Pet>().ToListAsync();
+			return await _context.Pets
+							 .Include(p => p.Breed)
+							 .ToListAsync();
 		}
 		catch (Exception ex)
 		{
@@ -31,7 +33,9 @@ public class PetRepository : IPetRepository
 	{
 		try
 		{
-			return await _context.Set<Pet>().FindAsync(id);
+			return await _context.Pets
+							 .Include(p => p.Breed)
+							 .FirstOrDefaultAsync(p => p.Id == id);
 		}
 		catch (Exception ex)
 		{
@@ -68,6 +72,10 @@ public class PetRepository : IPetRepository
 		try
 		{
 			_context.Set<Pet>().Entry(entity).State = EntityState.Modified;
+
+			if(entity.Breed != null)
+				_context.Entry(entity.Breed).State = EntityState.Modified;
+
 			await _context.SaveChangesAsync();
 			return entity;
 		}

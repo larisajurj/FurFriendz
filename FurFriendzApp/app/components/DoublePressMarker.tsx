@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import MapView, { Circle, Marker } from 'react-native-maps';
 
-export const DoublePressMarker = ({ key, coordinate, onSinglePress, onDoublePress, title, description, image }) => {
+export const DoublePressMarker = ({ coordinate, onSinglePress, onDoublePress, title, description, image }) => {
   const lastPress = useRef(null);
   const doublePressDelay = 3000; // Double press threshold in milliseconds
 
@@ -23,7 +23,6 @@ export const DoublePressMarker = ({ key, coordinate, onSinglePress, onDoublePres
 
   return (
     <Marker
-      key= {key}
       coordinate={coordinate}
       title={title}
       description={description}

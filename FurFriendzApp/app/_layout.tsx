@@ -6,6 +6,7 @@ import ProfileScreen from './ProfileScreen';
 import LoginPage from './LoginPage';
 import RegisterType from './RegisterType';
 import RegisterPage from './RegisterPage';
+import PetSitterServiceScreen from './PetSitterServiceScreen'
 import NotFound from './+not-found'; // Assuming a "not found" screen component
 import Index from './(tabs)/index';
 import { UserContext } from '../config/UserContext';
@@ -78,6 +79,12 @@ export default function RootLayout() {
             <Stack.Screen
               name="NotFound"
               component={NotFound}
+              options={{ headerShown: false }}
+            />
+            {/* Pet Sitter Screen */}
+            <Stack.Screen
+              name="PetSitterServiceScreen"
+              component={PetSitterServiceScreen}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

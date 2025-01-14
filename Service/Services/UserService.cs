@@ -79,6 +79,16 @@ public class UserService : IUserService
 			user.ProfileImage = updateUserDTO.ProfileImage;
 		}
 
+		if (updateUserDTO.Description != null)
+		{
+			user.Description = updateUserDTO.Description;
+		}
+
+		if (updateUserDTO.IsVerified != null)
+		{
+			user.IsVerified = updateUserDTO.IsVerified;
+		}
+
 		if (updateUserDTO.HomeAddress != null)
 		{
 			user.HomeAddress = updateUserDTO.HomeAddress;
@@ -106,7 +116,7 @@ public class UserService : IUserService
 				Telephone = u.Telephone,
 				Email = u.Email,
 				ImageID = u.ProfileImage,
-				HomeAddress = new AddressDTO()
+				HomeAddress = u.HomeAddress != null ? new AddressDTO()
 				{
 					StreetName = u.HomeAddress.StreetName,
 					BuildingNumber = u.HomeAddress.BuildingNumber,
@@ -114,7 +124,7 @@ public class UserService : IUserService
 					City = u.HomeAddress.City,
 					Latitude = u.HomeAddress.Latitude,
 					Longitude = u.HomeAddress.Longitude
-				},
+				} : null,
 				Services = u.Services.Select(s => new ServiceDTO()
 				{
 					Id = s.Id,

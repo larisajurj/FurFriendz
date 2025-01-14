@@ -59,12 +59,8 @@ public class PetsController : ControllerBase
 
 	// PUT: api/pets/{id}
 	[HttpPut("{id}")]
-	public async Task<ActionResult<PetDTO>> UpdatePet(int id, PetDTO updatedPetModel)
+	public async Task<ActionResult<PetDTO>> UpdatePet(int id, UpdatePetDTO updatedPetModel)
 	{
-		if (updatedPetModel == null || id != updatedPetModel.Id)
-		{
-			return BadRequest("Pet ID mismatch.");
-		}
 
 		var existingPet = await _petService.GetPetByIdAsync(id);
 		if (existingPet == null)
@@ -72,7 +68,7 @@ public class PetsController : ControllerBase
 			return NotFound();
 		}
 
-		var updatedPet = await _petService.UpdatePetAsync(updatedPetModel);
+		var updatedPet = await _petService.UpdatePetAsync(id, updatedPetModel);
 		return Ok(updatedPet);
 	}
 

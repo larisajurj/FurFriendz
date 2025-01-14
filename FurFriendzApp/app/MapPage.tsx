@@ -131,7 +131,10 @@ export default function MapPage({route, navigation }) {
                    title= {`${petSitter.firstName} ${petSitter.lastName}`}
                    description={`@${petSitter.username}`}
                    image={require('../assets/images/petsitter-pin.png')} // Custom marker icon
-                   onDoublePress = {() => navigation.navigate('ProfileScreen')}
+                   onDoublePress = {() =>
+                      navigation.navigate('PetSitterServiceScreen', {
+                        petSitter: petSitter
+                   })}
                  />
             ))}
 

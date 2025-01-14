@@ -11,5 +11,7 @@ public class UpdateUserDTO
 	public Gender? Gender { get; set; }
 	public string? Telephone { get; set; }
 	public byte[]? ProfileImage { get; set; }
+	public string? Description { get; set; }
+	public bool? IsVerified { get; set; }
 	public Address? HomeAddress { get; set; }
 }

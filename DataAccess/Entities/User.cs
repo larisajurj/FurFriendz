@@ -38,6 +38,8 @@ public class User
 
 	public List<Image>? Images { get; set; }
 	public Address? HomeAddress { get; set; }
+	public bool? IsVerified {  get; set; } = false;
+	public string? Description { get; set; }
 	public List<PetSittingListings> RequestingListings { get; set; } = new();
 	public List<PetSitterServices> Services { get; set; } = new();
 

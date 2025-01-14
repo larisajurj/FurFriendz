@@ -75,7 +75,12 @@ public class UserRepository : IUserRepository
 	{
 		try
 		{
+			_context.Attach(entity); // Ensure the entity is tracked
 			_context.Set<User>().Entry(entity).State = EntityState.Modified;
+			if (entity.HomeAddress != null)
+			{
+				_context.Entry(entity.HomeAddress).State = EntityState.Modified;
+			}
 			await _context.SaveChangesAsync();
 			return entity;
 		}
