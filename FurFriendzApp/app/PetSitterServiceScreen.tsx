@@ -4,19 +4,44 @@ import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons"; // Import Vector Icons
 import UserModel from "../api/models/userModel";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
-// Example service data
-const services = [
-  { key: 'first', title: 'Service 1', description: 'Details about Service 1' },
-  { key: 'second', title: 'Service 2', description: 'Details about Service 2' },
-  { key: 'third', title: 'Service 3', description: 'Details about Service 3' },
-];
 
-const ServiceCard = ({ title, description }) => (
-  <View style={styles.card}>
-    <Text style={styles.cardTitle}>{title}</Text>
-    <Text style={styles.cardDescription}>{description}</Text>
-  </View>
-);
+
+const ServiceCard = ({id, title, personalDescription, price, maxPets, typeOfPet }) => {
+  const petIcon =
+      typeOfPet === 'Dog'
+        ? require('../assets/images/cat-icon.png')
+        : typeOfPet === 'Cat' ? require('../assets/images/dog-icon.png') // Replace with the correct path to your cat icon
+        : require('../assets/images/cat-n-dog-icon.png'); // Replace with the correct path to your dog icon
+
+    return (
+    <View>
+      <View style={styles.serviceCard}>
+        {/* Description container */}
+        <View style={styles.descriptionContainer}>
+          <Text style={styles.cardDescription}>{personalDescription}</Text>
+        </View>
+
+        {/* Pet type icon */}
+        <View style={styles.petTypeContainer}>
+          <Image source={petIcon} style={styles.petIcon} />
+          <Text style={styles.petTypeText}>
+            {typeOfPet === 'Cat' ? 'Cats only' : typeOfPet === 'Dog' ? 'Dogs only' : 'Any pet'}
+          </Text>
+        </View>
+
+        {/* Price and max pets */}
+        <View style={styles.infoContainer}>
+          <Text style={styles.priceText}>Price: {price} Ron</Text>
+          <Text style={styles.maxPetsText}>Max Pets: {maxPets ?? "No max"}</Text>
+        </View>
+      </View>
+        <TouchableOpacity style={styles.requestButton}>
+            <Text style={styles.buttonText}>Request this service</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
 const renderTabBar = props => {
     return (
       <TabBar
@@ -41,15 +66,18 @@ export default function PetSitterServiceScreen({route }) {
     const layout = useWindowDimensions();
     const [index, setIndex] = React.useState(0);
     const [routes] = useState(
-      petSitter.services.map(service => ({ key: service.id, title: service.name, price: service.price, maxPets: service.maxNumberOfPets, personalDescription: service.personalDescription, typeOfPet: service.typeOfPet }))
+      petSitter.services.map(service => ({ key: service.id, id: service.id, title: service.name, price: service.price, maxPets: service.maxNumberOfPets, personalDescription: service.personalDescription, typeOfPet: service.typeOfPet }))
     );
     const renderScene = ({ route }) => {
-        const service = services.find(s => s.key === route.key);
+        const service = petSitter.services.find(s => s.id === route.key);
         if (service) {
           return (
             <ServiceCard
               title={service.title}
-              description={service.description}
+              price={service.price}
+              maxPets={service.maxPets}
+              personalDescription={service.personalDescription}
+              typeOfPet={service.typeOfPet}
             />
           );
         }
@@ -173,4 +201,71 @@ const styles = StyleSheet.create({
       backgroundColor: '#008bad',
       alignSelf: 'center',
     },
+     serviceCard: {
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        borderRadius: 10,
+        padding: 10,
+        margin: 16,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 4,
+        elevation: 5,
+      },
+      descriptionContainer: {
+        marginBottom: 5,
+        padding: 14,
+        backgroundColor: '#f0f0f0',
+        borderRadius: 16,
+        position: 'relative',
+      },
+      cardDescription: {
+        fontSize: 16,
+        color: '#555',
+      },
+      petTypeContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 8,
+      },
+      petIcon: {
+        width: 70,
+        height: 60,
+        marginRight: 8,
+      },
+      petTypeText: {
+        fontSize: 16,
+        color: '#333',
+      },
+      infoContainer: {
+        marginTop: 12,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+      },
+      priceText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#222',
+      },
+      maxPetsText: {
+        fontSize: 16,
+        color: '#555',
+      },
+      requestButton: {
+          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+          paddingVertical: 15,
+          paddingHorizontal: 100,
+          borderRadius: 10,
+          alignSelf: 'center',
+          marginTop: '60%',
+          borderWidth: 5,
+          borderColor: "#008bad",
+        },
+        buttonText: {
+           fontSize: 15,
+           fontWeight: 500,
+           color: "#333",
+           textAlign: 'center',
+           fontSize: 16,
+        },
 });
