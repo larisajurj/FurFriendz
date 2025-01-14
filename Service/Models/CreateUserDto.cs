@@ -11,4 +11,6 @@ public class CreateUserDto
 	public string? Email { get; set; }
 	public UserRoleDTO Role { get; set; }
 	public byte[]? ImageID { get; set; }
+	public bool? IsVerified { get; set; }
+	public string? Description { get; set; }
 }

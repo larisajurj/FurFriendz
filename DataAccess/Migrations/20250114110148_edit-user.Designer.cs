@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(FurFriendzContext))]
-    partial class FurFriendzContextModelSnapshot : ModelSnapshot
+    [Migration("20250114110148_edit-user")]
+    partial class edituser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,7 +44,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Breeds", (string)null);
+                    b.ToTable("Breeds");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Image", b =>
@@ -68,7 +71,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Images", (string)null);
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Pet", b =>
@@ -113,7 +116,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Pets", (string)null);
+                    b.ToTable("Pets");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.PetSitterServices", b =>
@@ -148,7 +151,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PetSitterServices", (string)null);
+                    b.ToTable("PetSitterServices");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.PetSitterTags", b =>
@@ -170,7 +173,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("PetId");
 
-                    b.ToTable("PetSitterTags", (string)null);
+                    b.ToTable("PetSitterTags");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.PetSittingListings", b =>
@@ -212,7 +215,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("PetSittingListings", (string)null);
+                    b.ToTable("PetSittingListings");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.PetTag", b =>
@@ -229,7 +232,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PetTags", (string)null);
+                    b.ToTable("PetTags");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.User", b =>
@@ -279,7 +282,7 @@ namespace DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("PetPetSittingListings", b =>
@@ -294,7 +297,7 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("ListingsId");
 
-                    b.ToTable("PetPetSittingListings", (string)null);
+                    b.ToTable("PetPetSittingListings");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Image", b =>
@@ -367,7 +370,7 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.Entities.User", b =>
                 {
-                    b.OwnsOne("DataAccess.Entities.User.HomeAddress#DataAccess.Types.Address", "HomeAddress", b1 =>
+                    b.OwnsOne("DataAccess.Types.Address", "HomeAddress", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uniqueidentifier");
@@ -405,7 +408,7 @@ namespace DataAccess.Migrations
 
                             b1.HasKey("UserId");
 
-                            b1.ToTable("Users", (string)null);
+                            b1.ToTable("Users");
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");

@@ -79,6 +79,16 @@ public class UserService : IUserService
 			user.ProfileImage = updateUserDTO.ProfileImage;
 		}
 
+		if (updateUserDTO.Description != null)
+		{
+			user.Description = updateUserDTO.Description;
+		}
+
+		if (updateUserDTO.IsVerified != null)
+		{
+			user.IsVerified = updateUserDTO.IsVerified;
+		}
+
 		if (updateUserDTO.HomeAddress != null)
 		{
 			user.HomeAddress = updateUserDTO.HomeAddress;
