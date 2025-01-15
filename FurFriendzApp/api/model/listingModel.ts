@@ -1,3 +1,4 @@
+import {RequestStatus} from './requestStatus'
 export interface ListingModel {
   id: number;
   requestingUserId: string;
@@ -6,4 +7,5 @@ export interface ListingModel {
   endDate: string;
   details?: string;
   serviceId: number;
+  status: string;
 }

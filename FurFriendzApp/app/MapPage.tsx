@@ -17,8 +17,8 @@ import PetSitterCard from "./components/PetSitterCard"
 export default function MapPage({route, navigation }) {
   const { user } = useUserContext();
   const [location, setLocation] = useState({
-      latitude: user.homeAddress.latitude || 0,
-      longitude: user.homeAddress.longitude || 0,
+      latitude: user.homeAddress.latitude,
+      longitude: user.homeAddress.longitude,
       latitudeDelta: 0.0043,
       longitudeDelta: 0.0034,
     });
@@ -112,11 +112,10 @@ export default function MapPage({route, navigation }) {
   return (
     <View style={styles.container}>
           {/* Map View */}
-          {location ? (
+          {user ? (
             <MapView
               style={styles.map}
               region={location}
-              showsUserLocation={false}
             >
             <Marker coordinate={{
                latitude: user.homeAddress.latitude, //currentLocation.coords.latitude,

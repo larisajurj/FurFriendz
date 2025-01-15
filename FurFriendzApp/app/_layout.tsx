@@ -15,7 +15,7 @@ import MyAccountPage from './MyAccountPage';
 import PetFormScreen from './PetFormScreen';
 import CreateListingForm from './CreateListingForm';
 import CreateServiceForm from './CreateServiceForm';
-
+import RequestsPage from './RequestsPage';
 const Stack = createStackNavigator();
 
 export default function RootLayout() {
@@ -94,11 +94,18 @@ export default function RootLayout() {
             <Stack.Screen
               name="CreateServiceForm"
               component={CreateServiceForm}
-              
+              options={{ headerShown: false }}
+            />
             {/* Request Service Screen */}
             <Stack.Screen
               name="CreateListingForm"
               component={CreateListingForm}
+              options={{ headerShown: false }}
+            />
+            {/* Requests Screen */}
+            <Stack.Screen
+              name="RequestsPage"
+              component={RequestsPage}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

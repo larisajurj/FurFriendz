@@ -40,7 +40,8 @@ const ServiceCard = ({petSitter, id, title, personalDescription, price, maxPets,
               navigation.navigate('CreateListingForm', {
                 serviceId: id,
                 price: price,
-                petSitter: petSitter
+                petSitter: petSitter,
+                typeOfPet: typeOfPet
             })}>>
             <Text style={styles.buttonText}>Request this service</Text>
         </TouchableOpacity>
@@ -111,7 +112,12 @@ export default function PetSitterServiceScreen({route }) {
 return (
     <View style={styles.container}>
         <View style={styles.card}>
-          <Image style={styles.userImage} source={{uri: base64Icon}}/>
+          <Image style={styles.userImage}
+            source={
+              petSitter.imageID
+                ? { uri: `data:image/jpeg;base64,${petSitter.imageID}` }
+                : require('../assets/dog.png')
+            }/>
           <View style={styles.userDetails}>
             <Text style={styles.userName}>{petSitter.firstName} {petSitter.lastName}</Text>
             <Text style={styles.userUsername}>@{petSitter.username}</Text>

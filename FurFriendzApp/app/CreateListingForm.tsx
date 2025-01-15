@@ -14,6 +14,7 @@ export default function CreateListingForm({route }) {
     const { serviceId } = route.params;
     const { price } = route.params;
     const { petSitter } = route.params;
+    const { typeOfPet } = route.params;
     const [pets, setPets] = useState([]);
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showDatePickerEnd, setShowDatePickerEnd] = useState(false);
@@ -28,7 +29,13 @@ export default function CreateListingForm({route }) {
         const fetchUserPets = async () => {
           try {
             const fetchedPets = await PetClient.getByUserIdAsync(user.id);
-            setPets(fetchedPets); // Update the state with fetched pets
+            const typePets = fetchedPets
+                .filter(pet => typeOfPet == 'Any' ? true : pet.specieId == typeOfPet) // Filter pets by Specie
+                .map(pet => {
+                    // Perform any transformation if needed
+                    return pet; // Adjust this if you need a specific structure
+                });
+            setPets(typePets); // Update the state with fetched pets
             //console.log(fetchedPets);
           } catch (error) {
             console.error('Error fetching user pets:', error);
@@ -41,7 +48,7 @@ export default function CreateListingForm({route }) {
       }, [user.id]);
 
     const handleSubmit = async () => {
-        if (!startDate || !endDate) {
+        if (!startDate || !endDate || pets.length == 0) {
           Alert.alert('Validation Error', 'Please fill in all required fields.');
           return;
         }
@@ -221,7 +228,8 @@ const styles = StyleSheet.create({
   },
   inputGroup:{
     marginBottom:20
-  }
+  },
+
 
 });
 

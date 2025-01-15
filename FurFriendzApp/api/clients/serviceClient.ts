@@ -4,13 +4,14 @@ import { ListingModel } from '../model/ListingModel';
 import { ServiceModel } from '../model/ServiceModel';
 import { RequestStatus } from '../model/RequestStatus';
 import { CreateServiceModel } from '../model/CreateServiceModel';
+import { ServiceDTO } from '../model/serviceDTO';
 
 export const ServiceClient = {
   urlPath: "PetSittingService",
 
   // Get service by serviceId
-  async getServiceByIdAsync(id: number): Promise<ServiceModel> {
-    return BaseClient.get<ServiceModel>(`${this.urlPath}/${id}`).then(response => response.data);
+  async getServiceByIdAsync(id: number): Promise<ServiceDTO> {
+    return BaseClient.get<ServiceDTO>(`${this.urlPath}/${id}`).then(response => response.data);
   },
 
   // Add a new service
