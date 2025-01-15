@@ -1,8 +1,12 @@
-import { BaseClient } from './BaseClient';
-import { CreateServiceModel, ServiceModel, CreateListingModel, RequestStatus, ListingModel } from './models';
+import { BaseClient } from "../base/baseClient";
+import { CreateListingModel } from '../model/CreateListingModel';
+import { ListingModel } from '../model/ListingModel';
+import { ServiceModel } from '../model/ServiceModel';
+import { RequestStatus } from '../model/RequestStatus';
+import { CreateServiceModel } from '../model/CreateServiceModel';
 
 export const ServiceClient = {
-  urlPath: "PetSitterServices",
+  urlPath: "PetSittingService",
 
   // Get service by serviceId
   async getServiceByIdAsync(id: number): Promise<ServiceModel> {
@@ -30,8 +34,8 @@ export const ServiceClient = {
   },
 
   // Create a new pet sitting request
-  async createRequestAsync(listing: CreateListingModel): Promise<ListingModel> {
-    return BaseClient.post<CreateListingModel, ListingModel>(`${this.urlPath}/request`, listing).then(response => response.data);
+  async createRequestAsync(listing: CreateListingModel): Promise<number> {
+    return await BaseClient.post<number>(`${this.urlPath}/request`, listing).then(response => {});
   },
 
   // Change status of a request

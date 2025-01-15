@@ -6,13 +6,13 @@ import UserModel from "../api/models/userModel";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
 
-const ServiceCard = ({id, title, personalDescription, price, maxPets, typeOfPet }) => {
+const ServiceCard = ({petSitter, id, title, personalDescription, price, maxPets, typeOfPet, handlePress}) => {
   const petIcon =
       typeOfPet === 'Dog'
         ? require('../assets/images/cat-icon.png')
         : typeOfPet === 'Cat' ? require('../assets/images/dog-icon.png') // Replace with the correct path to your cat icon
         : require('../assets/images/cat-n-dog-icon.png'); // Replace with the correct path to your dog icon
-
+  const navigation = useNavigation();
     return (
     <View>
       <View style={styles.serviceCard}>
@@ -35,7 +35,13 @@ const ServiceCard = ({id, title, personalDescription, price, maxPets, typeOfPet 
           <Text style={styles.maxPetsText}>Max Pets: {maxPets ?? "No max"}</Text>
         </View>
       </View>
-        <TouchableOpacity style={styles.requestButton}>
+        <TouchableOpacity style={styles.requestButton}
+            onPress={() =>
+              navigation.navigate('CreateListingForm', {
+                serviceId: id,
+                price: price,
+                petSitter: petSitter
+            })}>>
             <Text style={styles.buttonText}>Request this service</Text>
         </TouchableOpacity>
       </View>
@@ -55,7 +61,7 @@ const renderTabBar = props => {
         }}
         indicatorStyle={styles.indicatorStyle}
         style={styles.tabBar}
-          style={{backgroundColor: '#008bad', color: 'black'}}
+       style={{backgroundColor: '#008bad', color: 'black'}}
 
       />
     );
@@ -66,7 +72,7 @@ export default function PetSitterServiceScreen({route }) {
     const layout = useWindowDimensions();
     const [index, setIndex] = React.useState(0);
     const [routes] = useState(
-      petSitter.services.map(service => ({ key: service.id, id: service.id, title: service.name, price: service.price, maxPets: service.maxNumberOfPets, personalDescription: service.personalDescription, typeOfPet: service.typeOfPet }))
+      petSitter.services.map(service => ({ key: service.id, petSitter:petSitter, id: service.id, title: service.name, price: service.price, maxPets: service.maxNumberOfPets, personalDescription: service.personalDescription, typeOfPet: service.typeOfPet }))
     );
     const renderScene = ({ route }) => {
         const service = petSitter.services.find(s => s.id === route.key);
@@ -78,6 +84,8 @@ export default function PetSitterServiceScreen({route }) {
               maxPets={service.maxPets}
               personalDescription={service.personalDescription}
               typeOfPet={service.typeOfPet}
+              petSitter={petSitter}
+              id={service.id}
             />
           );
         }

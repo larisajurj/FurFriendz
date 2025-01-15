@@ -29,5 +29,13 @@ export const PetClient = {
     async deleteAsync(id: number): Promise<void> {
         return BaseClient.delete(`${this.urlPath}/${id}`).then(response => {});
     },
+    async createRequestAsync(listing: CreateListingModel): Promise<number> {
+        console.log(listing);
+        console.log("Request URL:", `${this.urlPath}/request`);
+        var result = await BaseClient.post<number>(`${this.urlPath}/request`, listing).then(response => response.data);
+        console.log("Response Status:", result.status);
+        console.log("Response Data:", result.data);
+        return result;
+      },
 
 }

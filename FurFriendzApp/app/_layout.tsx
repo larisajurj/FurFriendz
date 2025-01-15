@@ -12,6 +12,7 @@ import Index from './(tabs)/index';
 import { UserContext } from '../config/UserContext';
 import AddPetScreen from './AddPetScreen';
 import MyAccountPage from './MyAccountPage';
+import CreateListingForm from './CreateListingForm';
 
 const Stack = createStackNavigator();
 
@@ -85,6 +86,12 @@ export default function RootLayout() {
             <Stack.Screen
               name="PetSitterServiceScreen"
               component={PetSitterServiceScreen}
+              options={{ headerShown: false }}
+            />
+            {/* Request Service Screen */}
+            <Stack.Screen
+              name="CreateListingForm"
+              component={CreateListingForm}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

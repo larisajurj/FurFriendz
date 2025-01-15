@@ -108,8 +108,8 @@ public class PetSittingServiceController : ControllerBase
 			return BadRequest(ModelState);
 		}
 
-		var res = await _service.CreateRequestAsync(listing);
-		return Created("Request created successfully", res);
+		int res = await _service.CreateRequestAsync(listing);
+		return Ok(res);
 	}
 
 	// PATCH: api/PetSittingRequests/{id}/status
