@@ -49,15 +49,11 @@ public class PetSittingServiceController : ControllerBase
 	}
 
 	// PUT: api/PetSitterServices/{id}
-	[SwaggerOperation(Summary = "Not yet implemented")]
+	[SwaggerOperation(Summary = "Update service")]
 
 	[HttpPut("{id}")]
-	public async Task<IActionResult> UpdateService(int id, [FromBody] PetSitterServices service)
+	public async Task<IActionResult> UpdateService(int id, [FromBody] UpdateServiceDTO service)
 	{
-		if (id != service.Id)
-		{
-			return BadRequest("ID in the route and request body do not match.");
-		}
 
 		if (!ModelState.IsValid)
 		{
@@ -70,7 +66,7 @@ public class PetSittingServiceController : ControllerBase
 			return NotFound();
 		}
 
-		await _serviceManager.UpdateServiceAsync(service);
+		await _serviceManager.UpdateServiceAsync(service, id);
 		return NoContent();
 	}
 
