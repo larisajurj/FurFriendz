@@ -70,6 +70,7 @@ export default function MapPage({route, navigation }) {
         });
 
     useEffect(() => {
+      if (user.role === "PetOwner") {
         (async () => {
           const petSittersList = await getPetSitters();
           setAllPetSitters(petSittersList);
@@ -81,7 +82,9 @@ export default function MapPage({route, navigation }) {
             longitudeDelta: 0.01,
           });
         })();
-        }, []);
+      }    
+    }, []);
+
     const handlePress =  (service) => {
         // If the same service is selected, deselect it
         if (selectedService === service) {

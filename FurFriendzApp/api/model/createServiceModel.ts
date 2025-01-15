@@ -1,3 +1,5 @@
+import { PetSittingServicesEnum } from "./petSittingServicesEnum";
+import { AnimalSpecie } from "./animalSpecie";
 export interface CreateServiceModel {
   userId: string; // Guid
   name: PetSittingServicesEnum;

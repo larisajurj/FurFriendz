@@ -45,6 +45,7 @@ export const ServiceClient = {
 
   // Get all listings of a requesting user
   async getRequestsFromUserAsync(userId: string): Promise<ListingModel[]> {
+    console.log(userId);
     return BaseClient.get<ListingModel[]>(`${this.urlPath}/request/user/${userId}`).then(response => response.data);
   },
 

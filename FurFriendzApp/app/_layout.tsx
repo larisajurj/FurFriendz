@@ -14,6 +14,7 @@ import AddPetScreen from './AddPetScreen';
 import MyAccountPage from './MyAccountPage';
 import PetFormScreen from './PetFormScreen';
 import CreateListingForm from './CreateListingForm';
+import CreateServiceForm from './CreateServiceForm';
 
 const Stack = createStackNavigator();
 
@@ -89,6 +90,11 @@ export default function RootLayout() {
               component={PetSitterServiceScreen}
               options={{ headerShown: false }}
             />
+            {/* Create Service Forme */}
+            <Stack.Screen
+              name="CreateServiceForm"
+              component={CreateServiceForm}
+              
             {/* Request Service Screen */}
             <Stack.Screen
               name="CreateListingForm"
