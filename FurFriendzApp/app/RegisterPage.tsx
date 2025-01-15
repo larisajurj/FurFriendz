@@ -239,7 +239,6 @@ export default function AuthScreen({route, navigation }) {
                 placeholderTextColor="#FFFFFF"
                 value={buildingNumber}
                 onChangeText={setBuildingNumber}
-                keyboardType='numeric'
               />
               <TextInput
                 style={styles.input}
@@ -287,13 +286,22 @@ export default function AuthScreen({route, navigation }) {
           <ScrollView contentContainerStyle={styles.inputContainer}>
           <Text style={styles.title}>One last step..</Text>
             <Text style={styles.title}>Set a strong password</Text>
-            <TextInput
+            <Text style={styles.title}>And your phone number!</Text>
+              <TextInput
                 style={styles.input}
                 placeholder="Password"
                 placeholderTextColor="#FFFFFF"
                 secureTextEntry
                 value={password}
                 onChangeText={setPassword}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="07xxxxxxxx"
+                keyboardType='phone-pad'
+                placeholderTextColor="#FFFFFF"
+                value={telephone}
+                onChangeText={setTelephone}
               />
 
               <TouchableOpacity style={styles.button} onPress={handlePreviousStep}>

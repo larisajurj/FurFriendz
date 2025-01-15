@@ -8,10 +8,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { AddressMode } from '@/api/model/addressModel';
 import { useFocusEffect } from '@react-navigation/native';
 import { UserClient } from '@/api/clients/userClient';
+import { ServiceClient } from '@/api/clients/serviceClient';
 
 export default function ProfileScreen({ navigation }) {
   const { user, setUser } = useUserContext();
   const [pets, setPets] = useState([]);
+  const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchUserPets = async () => {
@@ -29,19 +31,35 @@ export default function ProfileScreen({ navigation }) {
     try {
       const updatedUser = await UserClient.getByEmailAsync(user.email);
       setUser(updatedUser);
+      console.log("I am here");
     } catch (error) {
       console.error('Error fetching user info:', error);
     }
   }, [user.email, setUser]);
 
+  const fetchServices = useCallback(async () => {
+    try {
+      const fetchedServices = await ServiceClient.getRequestsFromUserAsync(user.id);
+      setServices(fetchedServices);
+    } catch (error) {
+      console.error('Error fetching services of sitter:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [user.id]);
+  
   useFocusEffect(
     useCallback(() => {
       fetchUserInfo();
       if (user.role === 'PetOwner') {
         fetchUserPets();
       }
-    }, [fetchUserInfo, user.role])
+      if (user.role === 'PetSitter') {
+        fetchServices();
+      }
+    }, [fetchUserInfo, fetchServices, user.role])
   );
+  
 
   const handleGoAsRole = () => {
     if (user.role === 'PetOwner') {
@@ -54,6 +72,7 @@ export default function ProfileScreen({ navigation }) {
   const handleAddPet = () => {
     navigation.navigate('PetFormScreen');
   };
+
 
   const handleLogOut = () => {
     try {
@@ -129,16 +148,26 @@ export default function ProfileScreen({ navigation }) {
 
       {user.role === "PetSitter" && (
         <>
-          <Text style={styles.sectionTitle}>Available Services</Text>
-          <TouchableOpacity
-            style={styles.petCard}
-            onPress={() => alert("Pressing Buton")}
-          >
-          <View>
-            <Text style={styles.petName}>Pet Walking</Text>
-            {/* <Text style={styles.petBreed}>{pet.breed || 'Unknown'}</Text> */}
-          </View>
-          <Ionicons name="chevron-forward" size={20} color="#1E1E1E" />
+          <Text style={styles.sectionTitle}>Your Services</Text>
+          <TouchableOpacity style={styles.petCard} onPress={() => navigation.navigate('CreateServiceForm', {serviceId: services.id})}>
+            <Ionicons name="walk-outline" size={24} color="#1E1E1E" style={{paddingRight: 10}}/>
+            <Text style={styles.petName}>Dog Walking</Text>
+            <View style={{flex:1}}/>
+            <Ionicons name="chevron-forward" size={20} color="#1E1E1E"/>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.petCard} onPress={() => navigation.navigate('CreateServiceForm', {serviceType: "CustomerHouseSitting"})}>
+            <Ionicons name="home" size={24} color="#1E1E1E" style={{paddingRight: 10}}/>
+            <Text style={styles.petName}>House Sitting</Text>
+            <View style={{flex:1}}/>
+            <Ionicons name="chevron-forward" size={20} color="#1E1E1E"/>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.petCard} onPress={() => navigation.navigate('CreateServiceForm', {serviceType: "PersonalHouseSitting"})}>
+            <Ionicons name="home-outline" size={24} color="#1E1E1E" style={{paddingRight: 10}}/>
+            <Text style={styles.petName}>House Visiting</Text>
+            <View style={{flex:1}}/>
+            <Ionicons name="chevron-forward" size={20} color="#1E1E1E"/>
           </TouchableOpacity>
         </>
       )}
@@ -289,4 +318,7 @@ const styles = StyleSheet.create({
     left: 20,
     right: 20,
   },
+  iconSitter: {
+    paddingRight:10,
+  }
 });
