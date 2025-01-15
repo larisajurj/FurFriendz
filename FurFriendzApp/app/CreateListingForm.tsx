@@ -83,12 +83,10 @@ export default function CreateListingForm({route }) {
 
       {/* Start Date */}
       <View style={styles.inputGroup}>
-        <Ionicons name="calendar" size={24} color="#fff" style={styles.icon} />
         <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.dateTouchable}>
           <Text style={styles.input}>
-            {startDate ? startDate.toISOString().split('T')[0] : 'Select Birthdate'}
+            {startDate ? startDate.toISOString().split('T')[0] : 'Select Start Date'}
           </Text>
-          <Ionicons name="arrow-down-circle" size={24} color="#fff" />
         </TouchableOpacity>
       </View>
 
@@ -104,12 +102,10 @@ export default function CreateListingForm({route }) {
 
       {/* Start Date */}
     <View style={styles.inputGroup}>
-      <Ionicons name="calendar" size={24} color="#fff" style={styles.icon} />
       <TouchableOpacity onPress={() => setShowDatePickerEnd(true)} style={styles.dateTouchable}>
         <Text style={styles.input}>
-          {endDate ? endDate.toISOString().split('T')[0] : 'Select Birthdate'}
+          {endDate ? endDate.toISOString().split('T')[0] : 'Select End Date'}
         </Text>
-        <Ionicons name="arrow-down-circle" size={24} color="#fff" />
       </TouchableOpacity>
     </View>
 
@@ -130,7 +126,7 @@ export default function CreateListingForm({route }) {
         onChangeText={(text) => setDescription(text)}
         multiline
       />
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1,}}>
                       <MultiSelect
                           hideTags
                           items={pets} // Ensure 'pets' is the correct array you're passing to the MultiSelect
@@ -142,14 +138,14 @@ export default function CreateListingForm({route }) {
                           searchInputPlaceholderText="Search Items..."
                           altFontFamily="ProximaNova-Light"
                           tagRemoveIconColor="#CCC"
-                          tagBorderColor="#CCC"
+                          tagBorderColor="#008bad"
                           tagTextColor="#CCC"
-                          selectedItemTextColor="#CCC"
+                          selectedItemTextColor="#008bad"
                           selectedItemIconColor="#CCC"
                           itemTextColor="#000"
                           displayKey="name"
                           searchInputStyle={{ color: '#CCC' }}
-                          submitButtonColor="#CCC"
+                          submitButtonColor="#008bad"
                           submitButtonText="Submit"
                       />
                       <View>
@@ -173,47 +169,60 @@ export default function CreateListingForm({route }) {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#006c87',
     flexGrow: 1,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 50,
+    color:"#fff",
     textAlign: 'center',
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
+    borderWidth: 3,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    borderColor: '#008bad',
     borderRadius: 8,
     padding: 10,
     fontSize: 16,
-    marginBottom: 15,
   },
   textArea: {
-    borderWidth: 1,
-    borderColor: '#ccc',
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    borderColor: '#008bad',
+    borderWidth: 3,
     borderRadius: 8,
     padding: 10,
     fontSize: 16,
     height: 100,
     marginBottom: 15,
+    marginTop: 15,
     textAlignVertical: 'top',
   },
   button: {
-    backgroundColor: '#007BFF',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    paddingVertical: 15,
+    paddingHorizontal: 100,
+    borderRadius: 10,
+    alignSelf: 'center',
+    marginTop: '60%',
+    borderWidth: 5,
+    borderColor: "#008bad",
   },
   buttonDisabled: {
     backgroundColor: '#a0c4ff',
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 15,
+    fontWeight: 500,
+    color: "#333",
+    textAlign: 'center',
+    fontSize: 16,
   },
+  inputGroup:{
+    marginBottom:20
+  }
+
 });
 
 export default CreateListingForm;
