@@ -10,8 +10,8 @@ import PetSitterServiceScreen from './PetSitterServiceScreen'
 import NotFound from './+not-found'; // Assuming a "not found" screen component
 import Index from './(tabs)/index';
 import { UserContext } from '../config/UserContext';
-import AddPetScreen from './AddPetScreen';
 import MyAccountPage from './MyAccountPage';
+import PetFormScreen from './PetFormScreen';
 
 const Stack = createStackNavigator();
 
@@ -63,16 +63,16 @@ export default function RootLayout() {
               component={RegisterPage}
               options={{ headerShown: false }}
             />
-            {/* Add Pet Screen */}
-            <Stack.Screen
-              name='AddPetScreen'
-              component={AddPetScreen}
-              options={{ headerShown: false}}
-            />
             {/* My Account Page */}
             <Stack.Screen
               name='MyAccountPage'
               component={MyAccountPage}
+              options={{ headerShown: false}}
+            />
+            {/* Pet Form Page */}
+            <Stack.Screen
+              name='PetFormScreen'
+              component={PetFormScreen}
               options={{ headerShown: false}}
             />
             {/* Not Found Page */}

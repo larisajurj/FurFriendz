@@ -1,56 +1,67 @@
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { useUserContext } from '../config/UserContext';
+import { signOut } from 'firebase/auth';
+import { auth } from '@/config/firebaseConfig';
 import { PetClient } from '@/api/clients/petClient';
 import { Ionicons } from '@expo/vector-icons';
 import { AddressMode } from '@/api/model/addressModel';
+import { useFocusEffect } from '@react-navigation/native';
+import { UserClient } from '@/api/clients/userClient';
 
-export default function ProfileScreen({ route, navigation }) {
-  const { user } = useUserContext();
+export default function ProfileScreen({ navigation }) {
+  const { user, setUser } = useUserContext();
   const [pets, setPets] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [base64Image, setBase64Image] = useState<string>(null)
 
-  useEffect(() => {
-    const fetchUserPets = async () => {
-      try {
-        const fetchedPets = await PetClient.getByUserIdAsync(user.id);
-        setPets(fetchedPets); // Update the state with fetched pets
-        //console.log(fetchedPets);
-      } catch (error) {
-        console.error('Error fetching user pets:', error);
-      } finally {
-        setLoading(false); // Ensure loading is set to false
+  const fetchUserPets = async () => {
+    try {
+      const fetchedPets = await PetClient.getByUserIdAsync(user.id);
+      setPets(fetchedPets);
+    } catch (error) {
+      console.error('Error fetching user pets:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchUserInfo = useCallback(async () => {
+    try {
+      const updatedUser = await UserClient.getByEmailAsync(user.email);
+      setUser(updatedUser);
+    } catch (error) {
+      console.error('Error fetching user info:', error);
+    }
+  }, [user.email, setUser]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserInfo();
+      if (user.role === 'PetOwner') {
+        fetchUserPets();
       }
-    };
+    }, [fetchUserInfo, user.role])
+  );
 
-    fetchUserPets();
-  }, [user.id]); // Re-run effect if user.id changes
-
-  fetch
-
-  const handleGoAsPetSitter = () => {
-    alert("Navigating to Pet Sitter functionality!");
+  const handleGoAsRole = () => {
+    if (user.role === 'PetOwner') {
+      alert('Navigating to Pet Owner functionality!');
+    } else {
+      alert('Navigating to Pet Sitter functionality!');
+    }
   };
 
   const handleAddPet = () => {
-    navigation.navigate('AddPetScreen'); // Navigate to the Add Pet screen
+    navigation.navigate('PetFormScreen');
   };
 
-  const handleMyAccountButton = () => {
-    navigation.navigate('MyAccountPage');
-  };
-
-  const handleHomeAddressText = () => {
-    const homeAddress : AddressMode = {
-      streetName: user.homeAddress.streetName,
-      buildingNumber: user.homeAddress.builduingNumber,
-      apartmentNumber: user.homeAddress.apartmentNumber,
-      city: user.homeAddress.city,
-      latitude: user.homeAddress.latitude,
-      longitude: user.homeAddress.longitude,
+  const handleLogOut = () => {
+    try {
+      auth.signOut().then(() => navigation.navigate('LoginPage'));
+      alert('Logging out!');
+    } catch {
+      alert('Error logging out');
     }
-    return homeAddress.streetName + ' ' + homeAddress.buildingNumber + ',' + homeAddress.city;
   };
 
   return (
@@ -58,12 +69,12 @@ export default function ProfileScreen({ route, navigation }) {
       {/* User Section */}
       <View style={styles.userSection}>
         <Image
-          source={{ uri: 'https://via.placeholder.com/80' }} // Placeholder for profile pic
+          source={{ uri: `data:image/jpeg;base64,${user.imageID}` }}
           style={styles.profilePic}
         />
         <View style={styles.userInfo}>
           <Text style={styles.userName}>{user.username}</Text>
-          <TouchableOpacity onPress={handleMyAccountButton}>
+          <TouchableOpacity onPress={() => navigation.navigate('MyAccountPage')}>
             <Text style={styles.myAccountText}>My account</Text>
           </TouchableOpacity>
         </View>
@@ -72,73 +83,82 @@ export default function ProfileScreen({ route, navigation }) {
       {/* Home Location Section */}
       <Text style={styles.sectionTitle}>My home location</Text>
       <View style={styles.homeLocationContainer}>
-        {user.homeLocation==null ? (
-          <Text style={styles.homeLocationText}>{handleHomeAddressText()}</Text>
-        ) : (
-          <Text style={styles.setHomeLocationText}>
-            Set your home location by going to My account
-          </Text>
-        )}
+        <Text style={styles.homeLocationText}>
+          {user.homeAddress
+            ? `${user.homeAddress.streetName} ${user.homeAddress.buildingNumber}, ${user.homeAddress.city}`
+            : 'Set your home location by going to My account'}
+        </Text>
       </View>
 
-      {/* Pet Section */}
-      <Text style={styles.sectionTitle}>Your pets</Text>
-      {loading ? (
-        <Text style={styles.loadingText}>Loading pets...</Text>
-      ) : pets.length > 0 ? (
-        <ScrollView>
-          {pets.map((pet) => (
-            <TouchableOpacity
-              key={pet.id}
-              style={styles.petCard}
-              onPress={() => {
-                alert(`Viewing ${pet.name}`);
-                setBase64Image(pet.image);
-                console.log(pet.image); }}
-              >
-              <Image
-                // source={pet.image ? { uri: pet.image } : require(`../assets/dog.png`)}
-                source={{ uri: `data:image/jpeg;base64,${pet.image}`}}
-                style={styles.petImage}
-              />
-              <View>
-                <Text style={styles.petName}>{pet.name}</Text>
-                <Text style={styles.petBreed}>{pet.breed || 'Unknown'}</Text>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color="#1E1E1E" />
-            </TouchableOpacity>
-
-          ))}
-        </ScrollView>
-      ) : (
-        <View style={styles.noPetsSection}>
-          <Text style={styles.noPetsText}>You have no pets yet.</Text>
-        </View>
-      )}
-      <TouchableOpacity style={styles.buttonAddPet} onPress={handleAddPet}>
+      {/* Pet Section (Visible Only for Pet Owners) */}
+      {user.role === 'PetOwner' && (
+        <>
+          <Text style={styles.sectionTitle}>Your pets</Text>
+          {loading ? (
+            <Text style={styles.loadingText}>Loading pets...</Text>
+          ) : pets.length > 0 ? (
+            <ScrollView>
+              {pets.map((pet) => (
+                <TouchableOpacity
+                  key={pet.id}
+                  style={styles.petCard}
+                  onPress={() => navigation.navigate('PetFormScreen', { petId: pet.id })}
+                >
+                  <Image
+                    source={{ uri: `data:image/jpeg;base64,${pet.profileImage}` }}
+                    style={styles.petImage}
+                  />
+                  <View>
+                    <Text style={styles.petName}>{pet.name}</Text>
+                    <Text style={styles.petBreed}>{pet.breed || 'Unknown'}</Text>
+                  </View>
+                  <Ionicons name="chevron-forward" size={20} color="#1E1E1E" />
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          ) : (
+            <View style={styles.noPetsSection}>
+              <Text style={styles.noPetsText}>You have no pets yet.</Text>
+            </View>
+          )}
+          <TouchableOpacity style={styles.buttonAddPet} onPress={handleAddPet}>
             <Text style={styles.buttonText}>Add a Pet</Text>
-      </TouchableOpacity>
-
-      <View style={{ flexDirection:"row", gap: 20}}>
-          {/* Go as Pet Sitter Button */}
-          <TouchableOpacity style={styles.buttonPrimary} onPress={handleGoAsPetSitter}>
-            <Text style={styles.buttonText}>Go as Pet Sitter</Text>
           </TouchableOpacity>
-          {/* Manage and Logout Buttons */}
-            <TouchableOpacity
-              style={styles.buttonSecondary}
-              onPress={() => navigation.navigate('LoginPage')}
-            >
-              <Text style={styles.buttonText}>Log Out</Text>
-            </TouchableOpacity>
+        </>
+      )}
+
+      {user.role === "PetSitter" && (
+        <>
+          <Text style={styles.sectionTitle}>Available Services</Text>
+          <TouchableOpacity
+            style={styles.petCard}
+            onPress={() => alert("Pressing Buton")}
+          >
+          <View>
+            <Text style={styles.petName}>Pet Walking</Text>
+            {/* <Text style={styles.petBreed}>{pet.breed || 'Unknown'}</Text> */}
+          </View>
+          <Ionicons name="chevron-forward" size={20} color="#1E1E1E" />
+          </TouchableOpacity>
+        </>
+      )}
+
+      
+      {/* Action Buttons */}
+      <View style={{flex: 1}}/>
+      <View style={styles.bottomButtons}>
+        <TouchableOpacity style={styles.buttonPrimary} onPress={handleGoAsRole}>
+          <Text style={styles.buttonText}>
+            {user.role === 'PetOwner' ? 'Go as Pet Sitter' : 'Go as Pet Owner'}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonSecondary} onPress={handleLogOut}>
+          <Text style={styles.buttonText}>Log Out</Text>
+        </TouchableOpacity>
       </View>
-
-
-
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -260,5 +280,13 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     marginVertical: 20,
+  },
+  bottomButtons: {
+    flexDirection: 'row',
+    gap: 20,
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 20,
   },
 });
