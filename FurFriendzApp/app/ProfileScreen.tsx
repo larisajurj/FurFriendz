@@ -81,6 +81,14 @@ export default function ProfileScreen({ route, navigation }) {
         )}
       </View>
 
+      <Text style={styles.sectionTitle}>See your requests</Text>
+        <View style={styles.homeLocationContainer}>
+            <Text style={styles.setHomeLocationText}>
+              Pending requests
+            </Text>
+          )}
+        </View>
+
       {/* Pet Section */}
       <Text style={styles.sectionTitle}>Your pets</Text>
       {loading ? (
@@ -119,11 +127,9 @@ export default function ProfileScreen({ route, navigation }) {
             <Text style={styles.buttonText}>Add a Pet</Text>
       </TouchableOpacity>
 
+
       <View style={{ flexDirection:"row", gap: 20}}>
-          {/* Go as Pet Sitter Button */}
-          <TouchableOpacity style={styles.buttonPrimary} onPress={handleGoAsPetSitter}>
-            <Text style={styles.buttonText}>Go as Pet Sitter</Text>
-          </TouchableOpacity>
+
           {/* Manage and Logout Buttons */}
             <TouchableOpacity
               style={styles.buttonSecondary}
