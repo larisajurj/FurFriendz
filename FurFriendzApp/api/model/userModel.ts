@@ -12,4 +12,6 @@ interface UserModel {
   roleEnum: UserRole;
   imageID?: Uint8Array;
   homeAddress: AddressModel;
+  description: string;
+  isVerified: boolean;
 }
