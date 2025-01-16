@@ -37,7 +37,7 @@ const RequestCard = ({ req, handleAccept, handleDeny }) => {
       <View style={styles.buttonContainer}>
           <Button
             title="Accept"
-            onPress={() => handleAccept(req.id, "Accepted")} // Pass request ID to the handler
+            onPress={() => handleAccept(req.id, "Active")} // Pass request ID to the handler
             color="#4CAF50" // Green for Accept
           />
           <Button
