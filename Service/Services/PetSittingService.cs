@@ -73,7 +73,8 @@ public class PetSittingService : IPetSittingService
 			StartDate = listing.StartDate,
 			EndDate = listing.EndDate,
 			Details = listing.Details,
-			ServiceId = listing.Service.Id
+			ServiceId = listing.Service.Id,
+			Status = listing.Status
 		}).ToList();
 		return listings;
 	}
@@ -89,7 +90,8 @@ public class PetSittingService : IPetSittingService
 			StartDate = listing.StartDate,
 			EndDate = listing.EndDate,
 			Details = listing.Details,
-			ServiceId = listing.Service.Id
+			ServiceId = listing.Service.Id,
+			Status = listing.Status
 		}).ToList();
 		return listingsDTO;
 	}
