@@ -7,6 +7,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Ionicons } from '@expo/vector-icons';
 import MultiSelect from 'react-native-multiple-select';
 import { useNavigation } from "@react-navigation/native";
+import { CreateListingModel } from '@/api/model/createListingModel';
 
 export default function CreateListingForm({route }) {
     const { user } = useUserContext();
@@ -61,6 +62,7 @@ export default function CreateListingForm({route }) {
                 serviceId: serviceId
               };
         setLoading(true);
+        console.log(newReq);
         try {
           const createdService = await ServiceClient.createRequestAsync(newReq);
           Alert.alert('Success', `Listing created successfully!`);
@@ -88,7 +90,6 @@ export default function CreateListingForm({route }) {
     <View style={styles.container}>
       <Text style={styles.title}>Create a Listing Request</Text>
 
-      {/* Start Date */}
       <View style={styles.inputGroup}>
         <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.dateTouchable}>
           <Text style={styles.input}>
@@ -97,7 +98,6 @@ export default function CreateListingForm({route }) {
         </TouchableOpacity>
       </View>
 
-      {/* Date Picker */}
       {showDatePicker && (
         <DateTimePicker
           value={new Date()}
@@ -107,7 +107,6 @@ export default function CreateListingForm({route }) {
         />
       )}
 
-      {/* Start Date */}
     <View style={styles.inputGroup}>
       <TouchableOpacity onPress={() => setShowDatePickerEnd(true)} style={styles.dateTouchable}>
         <Text style={styles.input}>
@@ -116,7 +115,6 @@ export default function CreateListingForm({route }) {
       </TouchableOpacity>
     </View>
 
-    {/* Date Picker */}
     {showDatePickerEnd && (
       <DateTimePicker
         value={new Date()}
@@ -125,7 +123,6 @@ export default function CreateListingForm({route }) {
         onChange={onDateChangeEnd}
       />
     )}
-      {/* Details */}
       <TextInput
         style={styles.textArea}
         placeholder="Details (optional)"
@@ -156,7 +153,9 @@ export default function CreateListingForm({route }) {
                           submitButtonText="Submit"
                       />
                       <View>
+                        <Text>
                           {multiSelectRef.current && multiSelectRef.current.getSelectedItemsExt(selectedItems)}
+                        </Text>
                       </View>
                   </View>
       {/* Submit Button */}

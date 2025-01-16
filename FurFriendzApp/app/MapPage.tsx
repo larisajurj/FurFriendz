@@ -35,6 +35,7 @@ export default function MapPage({route, navigation }) {
   const [petSitters, setPetSitters] = useState([]);
   const [allPetSitters, setAllPetSitters] = useState([]);
   const [requests, setRequests] = useState([]);
+  const [allRequests, setAllRequests] = useState([]);
   const [statusUpdated, setStatusUpdated] = useState(false); // New state for tracking status update
 
     // Animated interpolations
@@ -95,6 +96,7 @@ export default function MapPage({route, navigation }) {
                   return r; // Adjust this if you need a specific structure
               });
           setRequests(filtered);
+          setAllRequests(filtered);
         } catch (error) {
           console.error('Error fetching user requests:', error);
         } finally {
@@ -117,24 +119,41 @@ export default function MapPage({route, navigation }) {
         })();
       }
       else if(user.role === "PetSitter"){
+      console.log("fetching again");
             fetchUserRequests();
       }
     }, [statusUpdated]);
 
     const handlePress =  (service) => {
-        // If the same service is selected, deselect it
-        if (selectedService === service) {
-          setSelectedService(null);
-          setPetSitters(allPetSitters);
-        } else {
-          // Otherwise, select the pressed service
-          setSelectedService(service);
-          const filteredPetSitters = allPetSitters.filter(petSitter => {
-              return petSitter.services.some(s => {
-                  return PetSittingServicesEnum[service] == s.name;
+        if(user.role === "PetOwner"){
+            // If the same service is selected, deselect it
+            if (selectedService === service) {
+              setSelectedService(null);
+              setPetSitters(allPetSitters);
+            } else {
+              // Otherwise, select the pressed service
+              setSelectedService(service);
+              const filteredPetSitters = allPetSitters.filter(petSitter => {
+                  return petSitter.services.some(s => {
+                      return PetSittingServicesEnum[service] == s.name;
+                  });
               });
-          });
-          setPetSitters(filteredPetSitters);
+              setPetSitters(filteredPetSitters);
+            }
+        }else if(user.role == "PetSitter"){
+            if (selectedService === service) {
+              setSelectedService(null);
+              setRequests(allRequests);
+            } else {
+              // Otherwise, select the pressed service
+              setSelectedService(service);
+              const filtered = allRequests.filter(
+                  req => {
+                    return req.service.name == PetSittingServicesEnum[service];
+                  }
+              );
+              setRequests(filtered);
+            }
         }
       };
     const getPetSitters = async () => {
@@ -149,7 +168,7 @@ export default function MapPage({route, navigation }) {
     const changeStatus = async (id, status: RequestStatus) => {
            try {
                return await ServiceClient.changeRequestStatusAsync(id, status);
-               setStatusUpdated(prevStatus => !prevStatus);
+               setStatusUpdated(statusUpdated => !statusUpdated);
                Alert.alert("Successfully updated status");
            } catch (error) {
                console.error('Error updating status data:', error);
