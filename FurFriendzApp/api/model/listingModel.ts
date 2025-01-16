@@ -1,9 +1,11 @@
+import {RequestStatus} from './requestStatus'
 export interface ListingModel {
   id: number;
-  requestingUserId: string; // Guid
+  requestingUserId: string;
   pets: petModel[];
-  startDate: string; // DateOnly -> ISO string
+  startDate: string;
   endDate: string;
-  details?: string; // Optional field
+  details?: string;
   serviceId: number;
+  status: string;
 }

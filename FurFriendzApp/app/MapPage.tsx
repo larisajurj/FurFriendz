@@ -8,17 +8,20 @@ import {Dimensions, Animated } from "react-native";
 import { PetSittingServicesEnum } from "@/api/model/petSittingServicesEnum"
 import SlidingUpPanel from "rn-sliding-up-panel";
 import { UserClient } from '@/api/clients/userClient';
+import { ServiceClient } from '@/api/clients/serviceClient';
 import '@/api/model/userModel';
 import {DoublePressMarker} from "./components/DoublePressMarker"
 const { height } = Dimensions.get("window");
 import PetSitterCard from "./components/PetSitterCard"
+import { RequestStatus } from '@/api/model/requestStatus';
+import RequestCard from "./components/RequestCard"
 
 
 export default function MapPage({route, navigation }) {
   const { user } = useUserContext();
   const [location, setLocation] = useState({
-      latitude: user.homeAddress.latitude || 0,
-      longitude: user.homeAddress.longitude || 0,
+      latitude: user.homeAddress.latitude,
+      longitude: user.homeAddress.longitude,
       latitudeDelta: 0.0043,
       longitudeDelta: 0.0034,
     });
@@ -31,7 +34,8 @@ export default function MapPage({route, navigation }) {
   const { top, bottom } = draggableRange;
   const [petSitters, setPetSitters] = useState([]);
   const [allPetSitters, setAllPetSitters] = useState([]);
-
+  const [requests, setRequests] = useState([]);
+  const [statusUpdated, setStatusUpdated] = useState(false); // New state for tracking status update
 
     // Animated interpolations
     const backgoundOpacity = draggedValue.interpolate({
@@ -69,6 +73,35 @@ export default function MapPage({route, navigation }) {
           extrapolate: "clamp",
         });
 
+      const fetchUserRequests = async () => {
+        try {
+        console.log(user.id);
+          const response = await ServiceClient.getRequestsForPetSitterAsync(user.id);
+          const requestsWithServices = await Promise.all(
+                response.map(async (req) => {
+                  try {
+                    const service = await ServiceClient.getServiceByIdAsync(req.serviceId);
+                    return { ...req, service }; // Merge request and service details
+                  } catch (error) {
+                    console.error(`Error fetching service for serviceId ${req.serviceId}:`, error);
+                    return { ...req, service: null }; // Fallback if service fetch fails
+                  }
+                })
+          );
+
+          var filtered = requestsWithServices.filter(r => r.status == "Pending")
+              .map(r => {
+                  // Perform any transformation if needed
+                  return r; // Adjust this if you need a specific structure
+              });
+          setRequests(filtered);
+        } catch (error) {
+          console.error('Error fetching user requests:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
     useEffect(() => {
       if (user.role === "PetOwner") {
         (async () => {
@@ -82,8 +115,11 @@ export default function MapPage({route, navigation }) {
             longitudeDelta: 0.01,
           });
         })();
-      }    
-    }, []);
+      }
+      else if(user.role === "PetSitter"){
+            fetchUserRequests();
+      }
+    }, [statusUpdated]);
 
     const handlePress =  (service) => {
         // If the same service is selected, deselect it
@@ -109,14 +145,24 @@ export default function MapPage({route, navigation }) {
            throw error; // Propagate the error
        }
     };
+
+    const changeStatus = async (id, status: RequestStatus) => {
+           try {
+               return await ServiceClient.changeRequestStatusAsync(id, status);
+               setStatusUpdated(prevStatus => !prevStatus);
+               Alert.alert("Successfully updated status");
+           } catch (error) {
+               console.error('Error updating status data:', error);
+               throw error; // Propagate the error
+           }
+        };
   return (
     <View style={styles.container}>
           {/* Map View */}
-          {location ? (
+          {user ? (
             <MapView
               style={styles.map}
               region={location}
-              showsUserLocation={false}
             >
             <Marker coordinate={{
                latitude: user.homeAddress.latitude, //currentLocation.coords.latitude,
@@ -214,13 +260,26 @@ export default function MapPage({route, navigation }) {
               </View>
               <View style={styles.pullUpContainer}>
                 <ScrollView style={styles.scrollView}>
-                    {petSitters.map((petSitter, index) => (
-                         <PetSitterCard
-                            key={petSitter.id}
-                            user={petSitter}
-                            navigation={navigation}/>
-                         ))}
+                  {user.role === "PetOwner" ? (
+                    petSitters.map((petSitter, index) => (
+                      <PetSitterCard
+                        key={petSitter.id}
+                        user={petSitter}
+                        navigation={navigation}
+                      />
+                    ))
+                  ) : (
+                    requests.map((req, index) => (
+                      <RequestCard
+                        key={index}
+                        req={req}
+                        handleAccept={changeStatus}
+                        handleDeny={changeStatus}
+                      />
+                    ))
+                  )}
                 </ScrollView>
+
               </View>
             </View>
         </SlidingUpPanel>
