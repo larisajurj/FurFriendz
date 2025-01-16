@@ -1,4 +1,6 @@
-﻿namespace Service.Models;
+﻿using DataAccess.Types;
+
+namespace Service.Models;
 
 public class ListingDTO
 {
@@ -9,4 +11,6 @@ public class ListingDTO
 	public DateOnly EndDate { get; set; }
 	public String? Details { get; set; }
 	public int ServiceId { get; set; }
+	public RequestStatus Status { get; set; }
+
 }

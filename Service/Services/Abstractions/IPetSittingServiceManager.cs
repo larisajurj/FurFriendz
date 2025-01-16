@@ -6,10 +6,10 @@ namespace Service.Services.Abstractions;
 
 public interface IPetSittingServiceManager
 {
-	Task<PetSitterServices> GetServiceByIdAsync(int id);
+	Task<ServiceDTO> GetServiceByIdAsync(int id);
 	Task AddServiceAsync(CreateServiceDTO service);
-	Task UpdateServiceAsync(PetSitterServices service);
+	Task UpdateServiceAsync(UpdateServiceDTO service, int serviceId);
 	Task DeleteServiceAsync(int id);
-	Task<IEnumerable<PetSitterServices>> GetServicesByUserIdAsync(Guid userId);
+	Task<IEnumerable<ServiceDTO>> GetServicesByUserIdAsync(Guid userId);
 
 }

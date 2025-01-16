@@ -4,6 +4,7 @@ using DataAccess.Repository.Abstractions;
 using DataAccess.Types;
 using Service.Models;
 using Service.Services.Abstractions;
+using System.Diagnostics;
 
 namespace Service.Services;
 
@@ -18,9 +19,19 @@ public class PetSitterServiceManager : IPetSittingServiceManager
 		_mapper = mapper;
 	}
 
-	public async Task<PetSitterServices> GetServiceByIdAsync(int id)
+	public async Task<ServiceDTO> GetServiceByIdAsync(int id)
 	{
-		return await _repository.GetByIdAsync(id);
+		var service = await _repository.GetByIdAsync(id);
+		return new ServiceDTO()
+		{
+			Id = service.Id,
+			UserId = service.UserId,
+			Name = service.Name,
+			Price = service.Price,
+			MaxNumberOfPets = service.MaxNumberOfPets,
+			PersonalDescription = service.PersonalDescription,
+			TypeOfPet = service.TypeOfPet
+		};
 	}
 
 	public async Task AddServiceAsync(CreateServiceDTO service)
@@ -30,9 +41,26 @@ public class PetSitterServiceManager : IPetSittingServiceManager
 		await _repository.AddAsync(petSitterService);
 	}
 
-	public async Task UpdateServiceAsync(PetSitterServices service)
+	public async Task UpdateServiceAsync(UpdateServiceDTO service, int serviceId)
 	{
-		await _repository.UpdateAsync(service);
+		var s = await _repository.GetByIdAsync(serviceId);
+		if (service.TypeOfPet != null) { 
+			s.TypeOfPet = service.TypeOfPet ?? AnimalSpecie.Any;
+		}
+		if (service.Price != null)
+		{
+			s.Price = service.Price ?? 0;
+		}
+		if (service.MaxNumberOfPets != null)
+		{
+			s.MaxNumberOfPets = service.MaxNumberOfPets ?? 0;
+		}
+		if (service.PersonalDescription != null)
+		{
+			s.PersonalDescription = service.PersonalDescription ?? "";
+		}
+
+		await _repository.UpdateAsync(s);
 	}
 
 	public async Task DeleteServiceAsync(int id)
@@ -40,9 +68,19 @@ public class PetSitterServiceManager : IPetSittingServiceManager
 		await _repository.DeleteAsync(id);
 	}
 
-	public async Task<IEnumerable<PetSitterServices>> GetServicesByUserIdAsync(Guid userId)
+	public async Task<IEnumerable<ServiceDTO>> GetServicesByUserIdAsync(Guid userId)
 	{
-		return await _repository.GetByUserIdAsync(userId);
+		var services = await _repository.GetByUserIdAsync(userId);
+		return services.Select(service => new ServiceDTO()
+		{
+			Id = service.Id,
+			UserId = service.UserId,
+			Name = service.Name,
+			Price = service.Price,
+			MaxNumberOfPets = service.MaxNumberOfPets,
+			PersonalDescription = service.PersonalDescription,
+			TypeOfPet = service.TypeOfPet
+		}).ToList();
 	}
 
 }

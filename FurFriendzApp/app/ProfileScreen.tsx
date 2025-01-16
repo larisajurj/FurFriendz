@@ -6,6 +6,7 @@ import { auth } from '@/config/firebaseConfig';
 import { PetClient } from '@/api/clients/petClient';
 import { Ionicons } from '@expo/vector-icons';
 import { AddressMode } from '@/api/model/addressModel';
+import { RequestStatus } from '@/api/model/requestStatus';
 import { useFocusEffect } from '@react-navigation/native';
 import { UserClient } from '@/api/clients/userClient';
 import { ServiceClient } from '@/api/clients/serviceClient';
@@ -39,7 +40,9 @@ export default function ProfileScreen({ navigation }) {
 
   const fetchServices = useCallback(async () => {
     try {
-      const fetchedServices = await ServiceClient.getRequestsFromUserAsync(user.id);
+      console.log("trying to get services");
+      const fetchedServices = await ServiceClient.getServicesByUserIdAsync(user.id);
+      //console.log("trying to get services");
       setServices(fetchedServices);
     } catch (error) {
       console.error('Error fetching services of sitter:', error);
@@ -108,7 +111,24 @@ export default function ProfileScreen({ navigation }) {
             : 'Set your home location by going to My account'}
         </Text>
       </View>
-
+      {user.role === "PetOwner" && (
+          <>
+            <Text style={styles.sectionTitle}>See your requests</Text>
+                  <View style={styles.homeLocationContainer}>
+                    <View style={styles.buttonRow}>
+                    <TouchableOpacity style={[styles.serviceButton, { backgroundColor: '#3d8a63' }]} title="Active" onPress={() => navigation.navigate('RequestsPage', { status: RequestStatus.Active })} >
+                        <Text style={styles.buttonText}>Active</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.serviceButton, { backgroundColor: '#b3ae39' }]} title="Pending" onPress={() => navigation.navigate('RequestsPage', { status: RequestStatus.Pending })} >
+                        <Text style={styles.buttonText}>Pending</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.serviceButton, { backgroundColor: '#008bad' }]} title="Completed" onPress={() => navigation.navigate('RequestsPage', { status: RequestStatus.Finished })} >
+                        <Text style={styles.buttonText}>Completed</Text>
+                    </TouchableOpacity>
+                  </View>
+             </View>
+          </>
+      )}
       {/* Pet Section (Visible Only for Pet Owners) */}
       {user.role === 'PetOwner' && (
         <>
@@ -124,13 +144,16 @@ export default function ProfileScreen({ navigation }) {
                   onPress={() => navigation.navigate('PetFormScreen', { petId: pet.id })}
                 >
                   <Image
-                    source={{ uri: `data:image/jpeg;base64,${pet.profileImage}` }}
+                    source={ pet.profileImage ?
+                        { uri: `data:image/jpeg;base64,${pet.profileImage}` }
+                      : require('../assets/dog.png')}
                     style={styles.petImage}
                   />
                   <View>
                     <Text style={styles.petName}>{pet.name}</Text>
-                    <Text style={styles.petBreed}>{pet.breed || 'Unknown'}</Text>
+                    <Text style={styles.petBreed}>{pet.specieId || 'Unknown'}</Text>
                   </View>
+                  <View style={{flex:1}}/>
                   <Ionicons name="chevron-forward" size={20} color="#1E1E1E" />
                 </TouchableOpacity>
               ))}
@@ -156,14 +179,14 @@ export default function ProfileScreen({ navigation }) {
             <Ionicons name="chevron-forward" size={20} color="#1E1E1E"/>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.petCard} onPress={() => navigation.navigate('CreateServiceForm', {serviceType: "CustomerHouseSitting"})}>
+          <TouchableOpacity style={styles.petCard} onPress={() => navigation.navigate('CreateServiceForm', {serviceId: services.id})}>
             <Ionicons name="home" size={24} color="#1E1E1E" style={{paddingRight: 10}}/>
             <Text style={styles.petName}>House Sitting</Text>
             <View style={{flex:1}}/>
             <Ionicons name="chevron-forward" size={20} color="#1E1E1E"/>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.petCard} onPress={() => navigation.navigate('CreateServiceForm', {serviceType: "PersonalHouseSitting"})}>
+          <TouchableOpacity style={styles.petCard} onPress={() =>{ console.log(services); navigation.navigate('CreateServiceForm', {serviceId: PetSittingServicesEnum.PersonalHouseSitting})}}>
             <Ionicons name="home-outline" size={24} color="#1E1E1E" style={{paddingRight: 10}}/>
             <Text style={styles.petName}>House Visiting</Text>
             <View style={{flex:1}}/>
@@ -176,11 +199,6 @@ export default function ProfileScreen({ navigation }) {
       {/* Action Buttons */}
       <View style={{flex: 1}}/>
       <View style={styles.bottomButtons}>
-        <TouchableOpacity style={styles.buttonPrimary} onPress={handleGoAsRole}>
-          <Text style={styles.buttonText}>
-            {user.role === 'PetOwner' ? 'Go as Pet Sitter' : 'Go as Pet Owner'}
-          </Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.buttonSecondary} onPress={handleLogOut}>
           <Text style={styles.buttonText}>Log Out</Text>
         </TouchableOpacity>
@@ -320,5 +338,18 @@ const styles = StyleSheet.create({
   },
   iconSitter: {
     paddingRight:10,
-  }
+  },
+   buttonRow: {
+        flexDirection: "row", // Arrange buttons horizontally
+        justifyContent: "space-evenly", // Space buttons evenly
+        alignItems: "center",
+        width: "100%", // Ensure the row spans the full width
+      },
+   serviceButton: {
+      flex: 1,
+      backgroundColor: '#00aaff',
+      padding: 8,
+      borderRadius: 10,
+      margin: 3
+   },
 });

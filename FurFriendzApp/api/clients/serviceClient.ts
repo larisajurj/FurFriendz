@@ -1,16 +1,17 @@
 import { BaseClient } from "../base/baseClient";
-import { CreateListingModel } from '../model/createListingModel';
-import { ListingModel } from '../model/listingModel';
-import { ServiceModel } from '../model/serviceModel';
-import { RequestStatus } from '../model/requestStatus';
-import { CreateServiceModel } from '../model/createServiceModel';
+import { CreateListingModel } from '../model/CreateListingModel';
+import { ListingModel } from '../model/ListingModel';
+import { ServiceModel } from '../model/ServiceModel';
+import { RequestStatus } from '../model/RequestStatus';
+import { CreateServiceModel } from '../model/CreateServiceModel';
+import { ServiceDTO } from '../model/serviceDTO';
 
 export const ServiceClient = {
   urlPath: "PetSittingService",
 
   // Get service by serviceId
-  async getServiceByIdAsync(id: number): Promise<ServiceModel> {
-    return BaseClient.get<ServiceModel>(`${this.urlPath}/${id}`).then(response => response.data);
+  async getServiceByIdAsync(id: number): Promise<ServiceDTO> {
+    return BaseClient.get<ServiceDTO>(`${this.urlPath}/${id}`).then(response => response.data);
   },
 
   // Add a new service
@@ -34,8 +35,8 @@ export const ServiceClient = {
   },
 
   // Create a new pet sitting request
-  async createRequestAsync(listing: CreateListingModel): Promise<ListingModel> {
-    return BaseClient.post<CreateListingModel, ListingModel>(`${this.urlPath}/request`, listing).then(response => response.data);
+  async createRequestAsync(listing: CreateListingModel): Promise<number> {
+    return await BaseClient.post<number>(`${this.urlPath}/request`, listing).then(response => {});
   },
 
   // Change status of a request
