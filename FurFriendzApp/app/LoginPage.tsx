@@ -26,13 +26,13 @@ export default function AuthScreen() {
     };
 
     const handleRegister = async () => {
-      signInWithEmailAndPassword(auth_google, email, password)
+      // signInWithEmailAndPassword(auth_google, email, password)
 
       //Uncomment for testing environment
        //signInWithEmailAndPassword(auth_google, "lari@gmail.com", "123456789")
       // signInWithEmailAndPassword(auth_google, "ericflaviu.florea@gmail.com", "24iunie")
-      // signInWithEmailAndPassword(auth_google, "flaviu.florea@gmail.com", "24iunie")
-      // signInWithEmailAndPassword(auth_google, "marcela@email.com", "123456789")
+      //signInWithEmailAndPassword(auth_google, "flaviu.florea@gmail.com", "24iunie")
+      signInWithEmailAndPassword(auth_google, "marcela@email.com", "123456789")
       .then(async (userCredential) => {
           //Alert.alert('Success', `User logged in: ${user.email}`);
           Alert.alert('Success', `User logged in`);

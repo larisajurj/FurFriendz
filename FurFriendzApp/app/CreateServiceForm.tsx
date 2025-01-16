@@ -13,7 +13,8 @@ export default function CreateServiceForm() {
   const { user } = useUserContext();
   const route = useRoute();
   const navigation = useNavigation();
-  const { serviceId, serviceType } = route.params;
+  const { serviceId } = route.params || {};
+  const [serviceType, setServiceType] = useState('');
   const [price, setPrice] = useState<string>("");
   const [maxNumberOfPets, setMaxNumberOfPets] = useState<string>("");
   const [personalDescription, setPersonalDescription] = useState<string>("");
@@ -26,6 +27,7 @@ export default function CreateServiceForm() {
         try {
           const service = await ServiceClient.getServiceByIdAsync(serviceId);
           setPrice(service.price.toString());
+          setServiceType(service.name);
           setMaxNumberOfPets(service.maxNumberOfPets?.toString() || "");
           setPersonalDescription(service.personalDescription || "");
           setTypeOfPet(service.typeOfPet);
@@ -38,8 +40,7 @@ export default function CreateServiceForm() {
   }, [serviceId]);
 
   const handleSubmit = async () => {
-    if (!(serviceType==0 || serviceType==1 || serviceType==2) || !price || !typeOfPet) {
-      console.log(serviceType, price, typeOfPet)
+    if (!serviceType || !price || !typeOfPet) {
       Alert.alert("Error", "Please fill all required fields.");
       return;
     }
@@ -65,7 +66,6 @@ export default function CreateServiceForm() {
       }
       navigation.navigate("ProfileScreen");
     } catch (error) {
-      console.log(serviceData);
       console.error("Error saving service:", error);
       Alert.alert("Error", "Failed to save service. Please try again.");
     }
@@ -74,7 +74,7 @@ export default function CreateServiceForm() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        {serviceId ? "Edit" : "Create"}{" "} {PetSittingServicesEnum[serviceType as keyof typeof PetSittingServicesEnum]} Service
+        {serviceId ? "Edit" : "Create"} {serviceType} Service
       </Text>
 
       <View style={styles.inputGroup}>
