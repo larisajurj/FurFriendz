@@ -362,3 +362,4 @@ MigrationBackup/
 FodyWeavers.xsd
 FurFriendzApp/config/firebaseConfig.ts
 FurFriendzApp/config/googleMapApiKey.ts
+FurFriendzApp/eas.json

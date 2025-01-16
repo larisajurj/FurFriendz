@@ -42,7 +42,7 @@ export default function ProfileScreen({ navigation }) {
     try {
       console.log("trying to get services");
       const fetchedServices = await ServiceClient.getServicesByUserIdAsync(user.id);
-      //console.log("trying to get services");
+      console.log("trying to get services");
       setServices(fetchedServices);
     } catch (error) {
       console.error('Error fetching services of sitter:', error);
@@ -62,15 +62,6 @@ export default function ProfileScreen({ navigation }) {
       }
     }, [fetchUserInfo, fetchServices, user.role])
   );
-  
-
-  const handleGoAsRole = () => {
-    if (user.role === 'PetOwner') {
-      alert('Navigating to Pet Owner functionality!');
-    } else {
-      alert('Navigating to Pet Sitter functionality!');
-    }
-  };
 
   const handleAddPet = () => {
     navigation.navigate('PetFormScreen');
@@ -107,7 +98,7 @@ export default function ProfileScreen({ navigation }) {
       <View style={styles.homeLocationContainer}>
         <Text style={styles.homeLocationText}>
           {user.homeAddress
-            ? `${user.homeAddress.streetName} ${user.homeAddress.buildingNumber}, ${user.homeAddress.city}`
+            ? `Strada ${user.homeAddress.streetName} ${user.homeAddress.buildingNumber}, ${user.homeAddress.city}`
             : 'Set your home location by going to My account'}
         </Text>
       </View>
@@ -169,31 +160,86 @@ export default function ProfileScreen({ navigation }) {
         </>
       )}
 
-      {user.role === "PetSitter" && (
-        <>
-          <Text style={styles.sectionTitle}>Your Services</Text>
-          <TouchableOpacity style={styles.petCard} onPress={() => navigation.navigate('CreateServiceForm', {serviceId: services.id})}>
-            <Ionicons name="walk-outline" size={24} color="#1E1E1E" style={{paddingRight: 10}}/>
-            <Text style={styles.petName}>Dog Walking</Text>
-            <View style={{flex:1}}/>
-            <Ionicons name="chevron-forward" size={20} color="#1E1E1E"/>
-          </TouchableOpacity>
+{user.role === "PetSitter" && (
+  <>
+    <Text style={styles.sectionTitle}>Your Services</Text>
 
-          <TouchableOpacity style={styles.petCard} onPress={() => navigation.navigate('CreateServiceForm', {serviceId: services.id})}>
-            <Ionicons name="home" size={24} color="#1E1E1E" style={{paddingRight: 10}}/>
-            <Text style={styles.petName}>House Sitting</Text>
-            <View style={{flex:1}}/>
-            <Ionicons name="chevron-forward" size={20} color="#1E1E1E"/>
-          </TouchableOpacity>
+    {/* Dog Walking Service */}
+    <TouchableOpacity 
+      style={[
+        styles.petCard, 
+        services.find(service => service.name === 'DogWalking') && styles.serviceExistsCard
+      ]}
+      onPress={() => navigation.navigate('CreateServiceForm', { 
+        serviceId: services.find(service => service.name === 'DogWalking')?.id, 
+        serviceType: 2 
+      })}
+    >
+      <Ionicons name="walk-outline" size={24} color="#1E1E1E" style={{ paddingRight: 10 }} />
+      <View>
+        <Text style={styles.petName}>Dog Walking</Text>
+        <Text style={styles.serviceDetails}>
+          {services.find(service => service.name === 'DogWalking') 
+            ? 'Status: Created'
+            : 'You didn\'t create this service'}
+        </Text>
+      </View>
+      <View style={{ flex: 1 }} />
+      <Ionicons name="chevron-forward" size={20} color="#1E1E1E" />
+    </TouchableOpacity>
 
-          <TouchableOpacity style={styles.petCard} onPress={() =>{ console.log(services); navigation.navigate('CreateServiceForm', {serviceId: PetSittingServicesEnum.PersonalHouseSitting})}}>
-            <Ionicons name="home-outline" size={24} color="#1E1E1E" style={{paddingRight: 10}}/>
-            <Text style={styles.petName}>House Visiting</Text>
-            <View style={{flex:1}}/>
-            <Ionicons name="chevron-forward" size={20} color="#1E1E1E"/>
-          </TouchableOpacity>
-        </>
-      )}
+    {/* House Sitting Service */}
+    <TouchableOpacity 
+      style={[
+        styles.petCard, 
+        services.find(service => service.name === 'PersonalHouseSitting') && styles.serviceExistsCard
+      ]}
+      onPress={() => navigation.navigate('CreateServiceForm', { 
+        serviceId: services.find(service => service.name === 'PersonalHouseSitting')?.id, 
+        serviceType: 1 
+      })}
+    >
+      <Ionicons name="home" size={24} color="#1E1E1E" style={{ paddingRight: 10 }} />
+      <View>
+        <Text style={styles.petName}>House Sitting</Text>
+        <Text style={styles.serviceDetails}>
+          {services.find(service => service.name === 'PersonalHouseSitting') 
+            ? 'Status: Created'
+            : 'You didn\'t create this service'}
+        </Text>
+      </View>
+      <View style={{ flex: 1 }} />
+      <Ionicons name="chevron-forward" size={20} color="#1E1E1E" />
+    </TouchableOpacity>
+
+    {/* House Visiting Service */}
+    <TouchableOpacity 
+      style={[
+        styles.petCard, 
+        services.find(service => service.name === 'CustomerHouseSitting') && styles.serviceExistsCard
+      ]}
+      onPress={() => navigation.navigate('CreateServiceForm', { 
+        serviceId: services.find(service => service.name === 'CustomerHouseSitting')?.id, 
+        serviceType: 0 
+      })}
+    >
+      <Ionicons name="home-outline" size={24} color="#1E1E1E" style={{ paddingRight: 10 }} />
+      <View>
+        <Text style={styles.petName}>House Visiting</Text>
+        <Text style={styles.serviceDetails}>
+          {services.find(service => service.name === 'CustomerHouseSitting') 
+            ? 'Status: Created'
+            : 'You didn\'t create this service'}
+        </Text>
+      </View>
+      <View style={{ flex: 1 }} />
+      <Ionicons name="chevron-forward" size={20} color="#1E1E1E" />
+    </TouchableOpacity>
+
+  </>
+)}
+
+
 
       
       {/* Action Buttons */}
@@ -352,4 +398,12 @@ const styles = StyleSheet.create({
       borderRadius: 10,
       margin: 3
    },
+   serviceDetails: {
+    fontSize: 14,
+    color: '#1E1E1E',
+    marginTop: 5,
+  },
+  serviceExistsCard: {
+    backgroundColor: '#61ba27', // Pastel green
+  },
 });
