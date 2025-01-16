@@ -1,5 +1,5 @@
 import { BaseClient } from "../base/baseClient";
-import { CreateListingModel } from '../model/CreateListingModel';
+import { CreateListingModel } from '../model/createListingModel';
 import { ListingModel } from '../model/ListingModel';
 import { ServiceModel } from '../model/ServiceModel';
 import { RequestStatus } from '../model/RequestStatus';
@@ -36,6 +36,7 @@ export const ServiceClient = {
 
   // Create a new pet sitting request
   async createRequestAsync(listing: CreateListingModel): Promise<number> {
+    console.log(CreateListingModel);
     return await BaseClient.post<number>(`${this.urlPath}/request`, listing).then(response => {});
   },
 
