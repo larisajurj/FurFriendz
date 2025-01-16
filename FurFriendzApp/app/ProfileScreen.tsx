@@ -116,7 +116,7 @@ export default function ProfileScreen({ navigation }) {
             <Text style={styles.sectionTitle}>See your requests</Text>
                   <View style={styles.homeLocationContainer}>
                     <View style={styles.buttonRow}>
-                    <TouchableOpacity style={[styles.serviceButton, { backgroundColor: '#3d8a63' }]} title="Active" onPress={() => navigation.navigate('RequestsPage', { status: RequestStatus.Active })} >
+                    <TouchableOpacity style={[styles.serviceButton, { backgroundColor: '#3d8a63' }]} title="Active" onPress={() => navigation.navigate('RequestsPage', { status: RequestStatus.Accepted })} >
                         <Text style={styles.buttonText}>Active</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.serviceButton, { backgroundColor: '#b3ae39' }]} title="Pending" onPress={() => navigation.navigate('RequestsPage', { status: RequestStatus.Pending })} >

@@ -45,8 +45,21 @@ public class PetSittingListingRepository : IPetSittingListingRepository
 		{
 			listing.Service = existingService; // Use the already tracked instance
 		}
-		foreach (var pet in listing.ListingPets)
-			_context.Attach(pet);
+		var newPetList = new List<Pet>();
+		foreach (var pet in listing.ListingPets){
+			var existingPet = _context.ChangeTracker.Entries<Pet>().FirstOrDefault(e => e.Entity.Id == pet.Id)?.Entity;
+
+			if (existingPet == null)
+			{
+				_context.Attach(pet);
+				newPetList.Add(pet);
+			}
+			else
+			{
+				newPetList.Add(existingPet); // Use the already tracked instance
+			}
+		}
+		listing.ListingPets = newPetList;
 		await _context.Set<PetSittingListings>().AddAsync(listing);
 		await _context.SaveChangesAsync();
 		return listing.Id ?? 0; // Assuming Id is the primary key and auto-generated

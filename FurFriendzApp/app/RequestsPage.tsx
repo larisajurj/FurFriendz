@@ -19,7 +19,7 @@ export default function RequestsPage({ route }) {
 
   const fetchUserRequests = async () => {
     try {
-      const response = await ServiceClient.getRequestsForPetSitterAsync(user.id);
+      const response = await ServiceClient.getRequestsFromUserAsync(user.id);
       const requestsWithServices = await Promise.all(
             response.map(async (req) => {
               try {
@@ -31,7 +31,6 @@ export default function RequestsPage({ route }) {
               }
             })
       );
-
       var filtered = requestsWithServices.filter(r => r.status == status)
           .map(r => {
               // Perform any transformation if needed
