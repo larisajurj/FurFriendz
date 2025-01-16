@@ -19,7 +19,7 @@ export default function RequestsPage({ route }) {
 
   const fetchUserRequests = async () => {
     try {
-      const response = await ServiceClient.getRequestsFromUserAsync(user.id);
+      const response = await ServiceClient.getRequestsForPetSitterAsync(user.id);
       const requestsWithServices = await Promise.all(
             response.map(async (req) => {
               try {
