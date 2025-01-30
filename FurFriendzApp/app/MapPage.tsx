@@ -15,16 +15,12 @@ const { height } = Dimensions.get("window");
 import PetSitterCard from "./components/PetSitterCard"
 import { RequestStatus } from '@/api/model/requestStatus';
 import RequestCard from "./components/RequestCard"
+import Toast from 'react-native-toast-message';
 
 
 export default function MapPage({route, navigation }) {
   const { user } = useUserContext();
-  const [location, setLocation] = useState({
-      latitude: user.homeAddress.latitude,
-      longitude: user.homeAddress.longitude,
-      latitudeDelta: 0.0043,
-      longitudeDelta: 0.0034,
-    });
+  const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const panelRef = useRef(null); // Reference for SlidingUpPanel
   const [isPanelExpanded, setPanelExpanded] = useState(false);
@@ -37,6 +33,19 @@ export default function MapPage({route, navigation }) {
   const [requests, setRequests] = useState([]);
   const [allRequests, setAllRequests] = useState([]);
   const [statusUpdated, setStatusUpdated] = useState(false); // New state for tracking status update
+
+  useEffect(() => {
+        if (user?.homeAddress?.latitude && user?.homeAddress?.longitude) {
+          setLocation({
+            latitude: user.homeAddress.latitude,
+            longitude: user.homeAddress.longitude,
+            latitudeDelta: 0.0043,
+            longitudeDelta: 0.0034,
+          });
+        } else {
+          setErrorMsg("Unable to fetch location");
+        }
+      }, [user]);
 
     // Animated interpolations
     const backgoundOpacity = draggedValue.interpolate({
@@ -169,7 +178,17 @@ export default function MapPage({route, navigation }) {
            try {
                return await ServiceClient.changeRequestStatusAsync(id, status);
                setStatusUpdated(statusUpdated => !statusUpdated);
-               Alert.alert("Successfully updated status");
+               if(status == 'Accepted'){
+                   Toast.show({
+                       type: 'success',
+                       text1: 'You have accepted the request'
+                   });
+               }else{
+                   Toast.show({
+                      type: 'error',
+                      text1: 'You have rejected the request'
+                  });
+               }
            } catch (error) {
                console.error('Error updating status data:', error);
                throw error; // Propagate the error
@@ -178,7 +197,7 @@ export default function MapPage({route, navigation }) {
   return (
     <View style={styles.container}>
           {/* Map View */}
-          {user ? (
+          {location ? (
             <MapView
               style={styles.map}
               region={location}

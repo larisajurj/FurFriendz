@@ -10,6 +10,7 @@ import { RequestStatus } from '@/api/model/requestStatus';
 import { useFocusEffect } from '@react-navigation/native';
 import { UserClient } from '@/api/clients/userClient';
 import { ServiceClient } from '@/api/clients/serviceClient';
+import Toast from 'react-native-toast-message';
 
 export default function ProfileScreen({ navigation }) {
   const { user, setUser } = useUserContext();
@@ -72,8 +73,15 @@ export default function ProfileScreen({ navigation }) {
     try {
       auth.signOut().then(() => navigation.navigate('LoginPage'));
       alert('Logging out!');
+      Toast.show({
+          type: 'success',
+          text1: 'Successfully logged out'
+     });
     } catch {
-      alert('Error logging out');
+        Toast.show({
+            type: 'error',
+            text1: 'Error logging out'
+        });
     }
   };
 

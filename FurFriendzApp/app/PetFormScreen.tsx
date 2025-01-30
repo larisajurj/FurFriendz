@@ -7,6 +7,7 @@ import { PetClient } from '@/api/clients/petClient';
 import { useUserContext } from '../config/UserContext';
 import { useImagePicker } from './components/useImagePicker';
 import { BreedClient } from '@/api/clients/breedClient';
+import Toast from 'react-native-toast-message';
 
 export default function PetFormScreen({ route, navigation }) {
   const { petId } = route.params || {}; // Check if editing an existing pet
@@ -47,7 +48,10 @@ export default function PetFormScreen({ route, navigation }) {
       setPetBirthdate(new Date(petData.birthday));
     } catch (error) {
       console.error('Error fetching pet details:', error);
-      Alert.alert('Error', 'Failed to load pet details.');
+      Toast.show({
+          type: 'error',
+          text1: 'Failed to load pet details.',
+      });
     } finally {
         setIsLoading(false);
     }
@@ -61,7 +65,11 @@ export default function PetFormScreen({ route, navigation }) {
         setBreedList(response); // Update the breed list
         } catch (error) {
         console.error('Failed to fetch breeds:', error);
-        Alert.alert('Error', 'Failed to fetch breeds. Please try again.');
+        Toast.show({
+                  type: 'error',
+                  text1: 'Failed to fetch breeds.',
+                  text2: 'Please try again.'
+             });
         }
     };
 
@@ -92,11 +100,18 @@ export default function PetFormScreen({ route, navigation }) {
           onPress: async () => {
             try {
               await PetClient.deleteAsync(petId);
-              Alert.alert('Success', 'Pet deleted successfully!');
+              Toast.show({
+                    type: 'success',
+                    text1: 'Pet deleted successfully!'
+               });
               navigation.goBack();
             } catch (error) {
               console.error('Error deleting pet:', error);
-              Alert.alert('Error', 'Failed to delete pet. Please try again.');
+              Toast.show({
+                    type: 'error',
+                    text1: 'Failed to delete pet.',
+                    text2: 'Please try again.'
+               });
             }
           },
         },
@@ -115,7 +130,11 @@ export default function PetFormScreen({ route, navigation }) {
 
   const handleSubmit = async () => {
     if (!petName || !petBreed || !petSpecies || !petGender || !petWeight || !petBirthdate || !petProfileImage) {
-      Alert.alert('Missing Information', 'Please fill in all fields and upload a picture.');
+      Toast.show({
+          type: 'error',
+          text1: 'Missing Information',
+          text2: 'Please fill in all fields and upload a picture.'
+     });
       return;
     }
 
@@ -133,15 +152,25 @@ export default function PetFormScreen({ route, navigation }) {
     try {
       if (isEditing) {
         await PetClient.updateAsync(petId, petData);
-        Alert.alert('Success', 'Pet information updated successfully!');
+        Toast.show({
+                  type: 'success',
+                  text1: 'Pet information updated successfully!'
+        });
       } else {
         await PetClient.createAsync(petData);
-        Alert.alert('Success', 'Pet added successfully!');
+        Toast.show({
+                  type: 'success',
+                  text1: 'Pet added successfully!'
+        });
       }
       navigation.goBack();
     } catch (error) {
       console.error('Error saving pet:', error);
-      Alert.alert('Error', 'Failed to save pet information. Please try again.');
+      Toast.show({
+            type: 'error',
+            text1: 'Failed to save pet information.',
+            text2: 'Please fill in all fields and upload a picture.'
+      });
     }
   };
 

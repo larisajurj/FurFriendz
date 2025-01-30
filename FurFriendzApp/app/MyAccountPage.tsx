@@ -7,6 +7,7 @@ import { UserModel } from '@/api/model/userModel';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useImagePicker } from '@/app/components/useImagePicker';
 import GOOGLE_API_KEY from '@/config/googleMapApiKey';
+import Toast from 'react-native-toast-message';
 
 
 export default function MyAccountPage({ navigation }) {
@@ -57,7 +58,11 @@ export default function MyAccountPage({ navigation }) {
       }
     } catch (error) {
       console.error('Error fetching coordinates:', error);
-      Alert.alert('Error', 'Unable to determine coordinates. Please try again.');
+      Toast.show({
+         type: 'error',
+         text1: 'Wrong address',
+         text2: 'Please try again'
+      });
       return null;
     }
   };
@@ -89,10 +94,17 @@ export default function MyAccountPage({ navigation }) {
       console.log('Updated user payload:', updatedUser);
   
       await UserClient.updateAsync(user.id, updatedUser);
-      Alert.alert('Success', 'Information updated successfully!');
+      Toast.show({
+             type: 'success',
+             text1: 'Information updated successfully!'
+      });
       setIsEditing(false);
     } catch (error) {
-      Alert.alert('Error', 'Failed to update user information. Please try again.');
+      Toast.show({
+         type: 'error',
+         text1: 'Failed to update user information.',
+         text2: 'Please try again'
+      });
       console.error('Error updating user:', error);
     }
   };

@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons"; // Import Vector Icons
 import UserModel from "../api/models/userModel";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
-
+import Toast from 'react-native-toast-message';
 
 const ServiceCard = ({petSitter, id, title, personalDescription, price, maxPets, typeOfPet, handlePress}) => {
   const petIcon =
@@ -102,7 +102,10 @@ export default function PetSitterServiceScreen({route }) {
          // by some browser in the mobile
          await Linking.openURL(`sms:${petSitter.telephone}?body=hello%20there`);
        } else {
-         Alert.alert(`Don't know how to open this URL: ${url}`);
+        Toast.show({
+            type: 'error',
+            text1: 'Can not open phone app'
+       });
        }
     });
     const handleCall =  useCallback(async () => {

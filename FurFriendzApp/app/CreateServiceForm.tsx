@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { PetSittingServicesEnum } from "@/api/model/petSittingServicesEnum";
@@ -8,6 +8,7 @@ import { useUserContext } from "@/config/UserContext";
 import { ServiceClient } from "@/api/clients/serviceClient";
 import { ServiceModel } from "@/api/model/serviceModel";
 import { CreateServiceModel } from "@/api/model/createServiceModel";
+import Toast from 'react-native-toast-message';
 
 export default function CreateServiceForm() {
   const { user } = useUserContext();
@@ -31,7 +32,10 @@ export default function CreateServiceForm() {
           setTypeOfPet(service.typeOfPet);
         } catch (error) {
           console.error("Error fetching service details:", error);
-          Alert.alert("Error", "Failed to load service details.");
+          Toast.show({
+                      type: 'error',
+                      text1: 'Failed to load service details.',
+          });
         }
       })();
     }
@@ -40,7 +44,11 @@ export default function CreateServiceForm() {
   const handleSubmit = async () => {
     if (!(serviceType==0 || serviceType==1 || serviceType==2) || !price || !typeOfPet) {
       console.log(serviceType, price, typeOfPet)
-      Alert.alert("Error", "Please fill all required fields.");
+      Toast.show({
+          type: 'error',
+          text1: 'Validation Error',
+          text2: 'Please fill in all required fields.'
+        });
       return;
     }
 
@@ -57,17 +65,27 @@ export default function CreateServiceForm() {
       if (serviceId) {
         // Update existing service
         await ServiceClient.updateServiceAsync(serviceId, serviceData);
-        Alert.alert("Success", "Service updated successfully!");
+        Toast.show({
+            type: 'success',
+            text1: 'Service updated successfully!'
+        });
       } else {
         // Create new service
         await ServiceClient.addServiceAsync(serviceData);
-        Alert.alert("Success", "Service created successfully!");
+        Toast.show({
+            type: 'success',
+            text1: 'Service created successfully!'
+        });
       }
       navigation.navigate("ProfileScreen");
     } catch (error) {
       console.log(serviceData);
       console.error("Error saving service:", error);
-      Alert.alert("Error", "Failed to save service. Please try again.");
+      Toast.show({
+          type: 'error',
+          text1: 'Failed to save service.',
+          text2: 'Please try again.'
+        });
     }
   };
 

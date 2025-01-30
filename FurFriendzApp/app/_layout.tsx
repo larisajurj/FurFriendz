@@ -16,6 +16,7 @@ import PetFormScreen from './PetFormScreen';
 import CreateListingForm from './CreateListingForm';
 import CreateServiceForm from './CreateServiceForm';
 import RequestsPage from './RequestsPage';
+import Toast from 'react-native-toast-message';
 const Stack = createStackNavigator();
 
 export default function RootLayout() {
@@ -109,6 +110,7 @@ export default function RootLayout() {
               options={{ headerShown: false }}
             />
           </Stack.Navigator>
+          <Toast />
         </NavigationIndependentTree>
       </UserContext.Provider>
   );

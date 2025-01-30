@@ -1,6 +1,6 @@
 // app/auth.tsx
 import React, {useState } from 'react';
-import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import '../config/firebaseConfig';
 import { auth } from '../config/firebaseConfig';
@@ -8,6 +8,7 @@ import { useNavigation } from 'expo-router';
 import { UserClient } from '@/api/clients/userClient';
 import '@/api/model/userModel';
 import { UserContext, useUserContext } from '../config/UserContext';
+import Toast from 'react-native-toast-message';
 
 export default function AuthScreen() {
     const navigation = useNavigation();
@@ -26,16 +27,18 @@ export default function AuthScreen() {
     };
 
     const handleRegister = async () => {
-      signInWithEmailAndPassword(auth_google, email, password)
+     // signInWithEmailAndPassword(auth_google, email, password)
 
       //Uncomment for testing environment
-       //signInWithEmailAndPassword(auth_google, "lari@gmail.com", "123456789")
+       signInWithEmailAndPassword(auth_google, "lari@gmail.com", "123456789")
       // signInWithEmailAndPassword(auth_google, "ericflaviu.florea@gmail.com", "24iunie")
       // signInWithEmailAndPassword(auth_google, "flaviu.florea@gmail.com", "24iunie")
-      // signInWithEmailAndPassword(auth_google, "marcela@email.com", "123456789")
+       //signInWithEmailAndPassword(auth_google, "marcela@email.com", "123456789")
       .then(async (userCredential) => {
-          //Alert.alert('Success', `User logged in: ${user.email}`);
-          Alert.alert('Success', `User logged in`);
+          Toast.show({
+              type: 'success',
+              text1: 'Good to see you back 😽👋',
+            });
           const userData = await getUserData(userCredential.user.email);
           setUser(userData);
           console.log("Current user is " + userData.email);
@@ -43,7 +46,11 @@ export default function AuthScreen() {
         })
         .catch((error) => {
           const errorMessage = error.message;
-          Alert.alert('Error', errorMessage);
+           Toast.show({
+                type: 'error',
+                text1: 'Could not log you in',
+                text2: error.message
+           });
         });
     };
 

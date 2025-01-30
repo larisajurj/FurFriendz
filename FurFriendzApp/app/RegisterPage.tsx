@@ -12,6 +12,7 @@ import { useUserContext } from '../config/UserContext';
 import { useImagePicker } from './components/useImagePicker';
 import { ScrollView } from 'react-native-gesture-handler';
 import GOOGLE_API_KEY from '@/config/googleMapApiKey';
+import Toast from 'react-native-toast-message';
 
 
 export default function AuthScreen({route, navigation }) {
@@ -82,7 +83,11 @@ export default function AuthScreen({route, navigation }) {
         }
       } catch (error) {
         console.error('Error fetching coordinates:', error);
-        Alert.alert('Error', 'Unable to determine coordinates. Please try again.');
+        Toast.show({
+            type: 'error',
+            text1: 'Unable to determine coordinates.',
+            text2: 'Please try again.'
+        });
         return null;
       }
     };
@@ -120,7 +125,10 @@ export default function AuthScreen({route, navigation }) {
             else
                 await UserClient.createPetSitterAsync(model);
             console.log("created " + userType);
-            Alert.alert('Success', `User registered: ${email}`);
+            Toast.show({
+                type: 'success',
+                text1: `Registered user : ${email}`
+            });
             navigation.navigate('LoginPage');
         } catch (error: any) {
             if (error.response) {
@@ -146,12 +154,18 @@ export default function AuthScreen({route, navigation }) {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth_google, email, password);
             await registerUserInDatabase(userCredential.user.uid); //with uid
-            Alert.alert('Successful', `Registered user : ${email}`);
+            Toast.show({
+                type: 'success',
+                text1: `Registered user : ${email}`
+            });
             navigation.navigate("LoginPage");
         }catch (error: any) {
             console.log(error);
             userCredential.delete();
-            Alert.alert('Error', `Could not register user : ${email}`);
+            Toast.show({
+                type: 'error',
+                text1: `Could not register user`
+            });
         }
     };
 

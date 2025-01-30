@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useUserContext } from '../config/UserContext';
 import { ServiceClient } from '@/api/clients/serviceClient';
 import { PetClient } from '@/api/clients/petClient';
@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import MultiSelect from 'react-native-multiple-select';
 import { useNavigation } from "@react-navigation/native";
 import { CreateListingModel } from '@/api/model/createListingModel';
+import Toast from 'react-native-toast-message';
 
 export default function CreateListingForm({route }) {
     const { user } = useUserContext();
@@ -50,7 +51,11 @@ export default function CreateListingForm({route }) {
 
     const handleSubmit = async () => {
         if (!startDate || !endDate || pets.length == 0) {
-          Alert.alert('Validation Error', 'Please fill in all required fields.');
+          Toast.show({
+            type: 'error',
+            text1: 'Validation Error',
+            text2: 'Please fill in all required fields.'
+          });
           return;
         }
         const newReq: CreateListingModel = {
@@ -65,12 +70,19 @@ export default function CreateListingForm({route }) {
         console.log(newReq);
         try {
           const createdService = await ServiceClient.createRequestAsync(newReq);
-          Alert.alert('Success', `Listing created successfully!`);
+          Toast.show({
+                type: 'success',
+                text1: 'Listing created successfully!'
+          });
           navigation.navigate('MapPage');
         } catch (error) {
                   console.error("Error occurred:", error);
                       throw error;
-          Alert.alert('Error', 'Failed to create listing. Please try again.');
+          Toast.show({
+              type: 'error',
+              text1: 'Failed to create listing',
+              text2: 'Please try again.'
+            });
         } finally {
           setLoading(false);
         }
