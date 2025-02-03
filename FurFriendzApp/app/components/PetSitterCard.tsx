@@ -15,7 +15,7 @@ const PetSitterCard = ({ user, navigation }) => {
         source={
             user.imageID
               ? { uri: `data:image/jpeg;base64,${user.imageID}` }
-              : require('../../assets/dog.png')
+              : require('../../assets/images/cat-n-dog-icon.png')
       }/>
       <View style={styles.userDetails}>
         <Text style={styles.userName}>{user.firstName} {user.lastName}</Text>

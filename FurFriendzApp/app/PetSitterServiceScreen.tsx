@@ -118,7 +118,7 @@ return (
             source={
               petSitter.imageID
                 ? { uri: `data:image/jpeg;base64,${petSitter.imageID}` }
-                : require('../assets/dog.png')
+                : require('../assets/images/cat-n-dog-icon.png')
             }/>
           <View style={styles.userDetails}>
             <Text style={styles.userName}>{petSitter.firstName} {petSitter.lastName}</Text>
