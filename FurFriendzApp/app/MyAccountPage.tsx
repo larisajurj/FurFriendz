@@ -91,7 +91,7 @@ export default function MyAccountPage({ navigation }) {
         profileImage: profileImage,
       };
   
-      console.log('Updated user payload:', updatedUser);
+//       console.log('Updated user payload:', updatedUser);
   
       await UserClient.updateAsync(user.id, updatedUser);
       Toast.show({

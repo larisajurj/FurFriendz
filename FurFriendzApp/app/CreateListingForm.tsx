@@ -49,42 +49,73 @@ export default function CreateListingForm({route }) {
         fetchUserPets();
       }, [user.id]);
 
-    const handleSubmit = async () => {
-        if (!startDate || !endDate || pets.length == 0) {
-          Toast.show({
-            type: 'error',
-            text1: 'Validation Error',
-            text2: 'Please fill in all required fields.'
-          });
-          return;
+      const handleSubmit = async () => {
+        if (!startDate || !endDate || pets.length === 0) {
+            Toast.show({
+                type: 'error',
+                text1: 'Validation Error',
+                text2: 'Please fill in all required fields.'
+            });
+            return;
         }
-        const newReq: CreateListingModel = {
-                requestingUserId: user.id,
-                pets: selectedItems,
-                startDate: startDate.toISOString().split('T')[0],
-                endDate: endDate.toISOString().split('T')[0],
-                details: description,
-                serviceId: serviceId
-              };
+    
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Normalize to start of the day for comparison
+    
+        // Date validations
+        if (startDate < today) {
+            Toast.show({
+                type: 'error',
+                text1: 'Invalid Start Date',
+                text2: 'Start date cannot be in the past.'
+            });
+            return;
+        }
+    
+        if (endDate < today) {
+            Toast.show({
+                type: 'error',
+                text1: 'Invalid End Date',
+                text2: 'End date cannot be in the past.'
+            });
+            return;
+        }
+    
+        if (startDate > endDate) {
+            Toast.show({
+                type: 'error',
+                text1: 'Date Error',
+                text2: 'Start date cannot be after end date.'
+            });
+            return;
+        }
+    
+        const newReq = {
+            requestingUserId: user.id,
+            pets: selectedItems,
+            startDate: startDate.toISOString().split('T')[0],
+            endDate: endDate.toISOString().split('T')[0],
+            details: description,
+            serviceId: serviceId
+        };
+    
         setLoading(true);
-        console.log(newReq);
         try {
-          const createdService = await ServiceClient.createRequestAsync(newReq);
-          Toast.show({
+            await ServiceClient.createRequestAsync(newReq);
+            Toast.show({
                 type: 'success',
                 text1: 'Listing created successfully!'
-          });
-          navigation.navigate('MapPage');
+            });
+            navigation.navigate('MapPage');
         } catch (error) {
-                  console.error("Error occurred:", error);
-                      throw error;
-          Toast.show({
-              type: 'error',
-              text1: 'Failed to create listing',
-              text2: 'Please try again.'
+            console.error("Error occurred:", error);
+            Toast.show({
+                type: 'error',
+                text1: 'Failed to create listing',
+                text2: 'Please try again.'
             });
         } finally {
-          setLoading(false);
+            setLoading(false);
         }
     };
     const onDateChange = (event, selectedDate: Date) => {
@@ -112,10 +143,11 @@ export default function CreateListingForm({route }) {
 
       {showDatePicker && (
         <DateTimePicker
-          value={new Date()}
+          value={startDate || new Date()}
           mode="date"
           display="default"
           onChange={onDateChange}
+          minimumDate={new Date()} // Disables past dates
         />
       )}
 
@@ -129,10 +161,11 @@ export default function CreateListingForm({route }) {
 
     {showDatePickerEnd && (
       <DateTimePicker
-        value={new Date()}
+        value={endDate || new Date()}
         mode="date"
         display="default"
         onChange={onDateChangeEnd}
+        minimumDate={startDate || new Date()} // Ensures end date isn't before start date
       />
     )}
       <TextInput

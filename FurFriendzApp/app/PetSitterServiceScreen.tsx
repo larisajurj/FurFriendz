@@ -2,8 +2,7 @@ import React, {useCallback, useState} from "react";
 import { View, useWindowDimensions, Text, Image, StyleSheet, TouchableOpacity, Alert, Linking, SafeAreaView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons"; // Import Vector Icons
-import UserModel from "../api/models/userModel";
-import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { TabView, TabBar } from 'react-native-tab-view';
 import Toast from 'react-native-toast-message';
 
 const ServiceCard = ({petSitter, id, title, personalDescription, price, maxPets, typeOfPet, handlePress}) => {

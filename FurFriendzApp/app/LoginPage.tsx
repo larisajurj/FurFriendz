@@ -7,7 +7,7 @@ import { auth } from '../config/firebaseConfig';
 import { useNavigation } from 'expo-router';
 import { UserClient } from '@/api/clients/userClient';
 import '@/api/model/userModel';
-import { UserContext, useUserContext } from '../config/UserContext';
+import { useUserContext } from '../config/UserContext';
 import Toast from 'react-native-toast-message';
 
 export default function AuthScreen() {
@@ -30,10 +30,10 @@ export default function AuthScreen() {
      // signInWithEmailAndPassword(auth_google, email, password)
 
       //Uncomment for testing environment
-       signInWithEmailAndPassword(auth_google, "lari@gmail.com", "123456789")
-      // signInWithEmailAndPassword(auth_google, "ericflaviu.florea@gmail.com", "24iunie")
+//        signInWithEmailAndPassword(auth_google, "lari@gmail.com", "123456789")
+      signInWithEmailAndPassword(auth_google, "ericflaviu.florea@gmail.com", "24iunie")
       // signInWithEmailAndPassword(auth_google, "flaviu.florea@gmail.com", "24iunie")
-       //signInWithEmailAndPassword(auth_google, "marcela@email.com", "123456789")
+      //  signInWithEmailAndPassword(auth_google, "marcela@email.com", "123456789")
       .then(async (userCredential) => {
           Toast.show({
               type: 'success',
@@ -41,7 +41,7 @@ export default function AuthScreen() {
             });
           const userData = await getUserData(userCredential.user.email);
           setUser(userData);
-          console.log("Current user is " + userData.email);
+//           console.log("Current user is " + userData.email);
           navigation.navigate('MapPage');
         })
         .catch((error) => {

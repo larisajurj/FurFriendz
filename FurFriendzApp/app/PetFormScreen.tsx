@@ -191,7 +191,7 @@ export default function PetFormScreen({ route, navigation }) {
                 source={
                   petProfileImage
                     ? { uri: `data:image/jpeg;base64,${petProfileImage}` }
-                    : require('../assets/dog.png')
+                    : require('../assets/images/cat-n-dog-icon.png')
                 }
                 style={styles.petImage}
               />

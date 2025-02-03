@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, StyleSheet, Button, TouchableOpacity,TouchableHighlight, Text, ScrollView} from 'react-native';
 import MapView, { Circle, Marker } from 'react-native-maps';
-import * as Location from 'expo-location';
 import { Ionicons } from '@expo/vector-icons';
 import { useUserContext } from '../config/UserContext';
 import {Dimensions, Animated } from "react-native";
@@ -85,7 +84,7 @@ export default function MapPage({route, navigation }) {
 
       const fetchUserRequests = async () => {
         try {
-        console.log(user.id);
+//         console.log(user.id);
           const response = await ServiceClient.getRequestsForPetSitterAsync(user.id);
           const requestsWithServices = await Promise.all(
                 response.map(async (req) => {
@@ -128,7 +127,7 @@ export default function MapPage({route, navigation }) {
         })();
       }
       else if(user.role === "PetSitter"){
-      console.log("fetching again");
+//       console.log("fetching again");
             fetchUserRequests();
       }
     }, [statusUpdated]);
@@ -176,9 +175,10 @@ export default function MapPage({route, navigation }) {
 
     const changeStatus = async (id, status: RequestStatus) => {
            try {
-               return await ServiceClient.changeRequestStatusAsync(id, status);
+               await ServiceClient.changeRequestStatusAsync(id, status);
                setStatusUpdated(statusUpdated => !statusUpdated);
                if(status == 'Accepted'){
+                   console
                    Toast.show({
                        type: 'success',
                        text1: 'You have accepted the request'

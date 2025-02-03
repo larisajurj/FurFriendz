@@ -1,7 +1,5 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity, Alert, Button} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import Icon from "react-native-vector-icons/Ionicons"; // Import Vector Icons
+import { View, Text, StyleSheet, Button} from "react-native";
 
 const RequestCard = ({ req, handleAccept, handleDeny }) => {
     const speciesCount = req.pets.reduce(

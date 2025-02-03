@@ -6,7 +6,6 @@ import { PetSittingServicesEnum } from "@/api/model/petSittingServicesEnum";
 import { AnimalSpecie } from "@/api/model/animalSpecie";
 import { useUserContext } from "@/config/UserContext";
 import { ServiceClient } from "@/api/clients/serviceClient";
-import { ServiceModel } from "@/api/model/serviceModel";
 import { CreateServiceModel } from "@/api/model/createServiceModel";
 import Toast from 'react-native-toast-message';
 
@@ -19,6 +18,8 @@ export default function CreateServiceForm() {
   const [maxNumberOfPets, setMaxNumberOfPets] = useState<string>("");
   const [personalDescription, setPersonalDescription] = useState<string>("");
   const [typeOfPet, setTypeOfPet] = useState<AnimalSpecie | null>(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   useEffect(() => {
     // Fetch service details if serviceId is provided
@@ -42,13 +43,32 @@ export default function CreateServiceForm() {
   }, [serviceId]);
 
   const handleSubmit = async () => {
+    const today = new Date();
     if (!(serviceType==0 || serviceType==1 || serviceType==2) || !price || !typeOfPet) {
-      console.log(serviceType, price, typeOfPet)
+//       console.log(serviceType, price, typeOfPet)
       Toast.show({
           type: 'error',
           text1: 'Validation Error',
           text2: 'Please fill in all required fields.'
         });
+      return;
+    }
+
+    if (startDate > endDate) {
+      Toast.show({
+        type: 'error',
+        text1: 'Date Error',
+        text2: 'Start date cannot be after end date.'
+      });
+      return;
+    }
+
+    if (startDate < today || endDate < today) {
+      Toast.show({
+        type: 'error',
+        text1: 'Date Error',
+        text2: 'Dates cannot be before today.'
+      });
       return;
     }
 
@@ -79,7 +99,7 @@ export default function CreateServiceForm() {
       }
       navigation.navigate("ProfileScreen");
     } catch (error) {
-      console.log(serviceData);
+//       console.log(serviceData);
       console.error("Error saving service:", error);
       Toast.show({
           type: 'error',

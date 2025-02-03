@@ -76,7 +76,7 @@ export default function AuthScreen({route, navigation }) {
   
         if (data.status === 'OK' && data.results.length > 0) {
           const { lat, lng } = data.results[0].geometry.location;
-          console.log(lat + " " + lng);
+//           console.log(lat + " " + lng);
           return { latitude: lat, longitude: lng };
         } else {
           throw new Error('Geocoding failed');
@@ -99,7 +99,7 @@ export default function AuthScreen({route, navigation }) {
       if (!coordinates) return;
 
       const { latitude, longitude } = coordinates;
-      console.log("trying to register user in db");
+//       console.log("trying to register user in db");
         try{
             const model: createUserModel = {
               lastName: lastName,
@@ -124,7 +124,7 @@ export default function AuthScreen({route, navigation }) {
                 await UserClient.createPetOwnerAsync(model);
             else
                 await UserClient.createPetSitterAsync(model);
-            console.log("created " + userType);
+//             console.log("created " + userType);
             Toast.show({
                 type: 'success',
                 text1: `Registered user : ${email}`
@@ -150,7 +150,7 @@ export default function AuthScreen({route, navigation }) {
     }
 
     const handleRegister = async () => {
-    console.log(userType);
+//     console.log(userType);
         try {
             const userCredential = await createUserWithEmailAndPassword(auth_google, email, password);
             await registerUserInDatabase(userCredential.user.uid); //with uid
@@ -160,7 +160,7 @@ export default function AuthScreen({route, navigation }) {
             });
             navigation.navigate("LoginPage");
         }catch (error: any) {
-            console.log(error);
+//             console.log(error);
             userCredential.delete();
             Toast.show({
                 type: 'error',

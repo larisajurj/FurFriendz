@@ -1,11 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { useUserContext } from '../config/UserContext';
-import { signOut } from 'firebase/auth';
 import { auth } from '@/config/firebaseConfig';
 import { PetClient } from '@/api/clients/petClient';
 import { Ionicons } from '@expo/vector-icons';
-import { AddressMode } from '@/api/model/addressModel';
 import { RequestStatus } from '@/api/model/requestStatus';
 import { useFocusEffect } from '@react-navigation/native';
 import { UserClient } from '@/api/clients/userClient';
@@ -33,7 +31,7 @@ export default function ProfileScreen({ navigation }) {
     try {
       const updatedUser = await UserClient.getByEmailAsync(user.email);
       setUser(updatedUser);
-      console.log("I am here");
+//       console.log("I am here");
     } catch (error) {
       console.error('Error fetching user info:', error);
     }
@@ -41,9 +39,9 @@ export default function ProfileScreen({ navigation }) {
 
   const fetchServices = useCallback(async () => {
     try {
-      console.log("trying to get services");
+//       console.log("trying to get services");
       const fetchedServices = await ServiceClient.getServicesByUserIdAsync(user.id);
-      console.log("trying to get services");
+//       console.log("trying to get services");
       setServices(fetchedServices);
     } catch (error) {
       console.error('Error fetching services of sitter:', error);
@@ -72,7 +70,7 @@ export default function ProfileScreen({ navigation }) {
   const handleLogOut = () => {
     try {
       auth.signOut().then(() => navigation.navigate('LoginPage'));
-      alert('Logging out!');
+//       alert('Logging out!');
       Toast.show({
           type: 'success',
           text1: 'Successfully logged out'
@@ -110,8 +108,6 @@ export default function ProfileScreen({ navigation }) {
             : 'Set your home location by going to My account'}
         </Text>
       </View>
-      {user.role === "PetOwner" && (
-          <>
             <Text style={styles.sectionTitle}>See your requests</Text>
                   <View style={styles.homeLocationContainer}>
                     <View style={styles.buttonRow}>
@@ -126,8 +122,6 @@ export default function ProfileScreen({ navigation }) {
                     </TouchableOpacity>
                   </View>
              </View>
-          </>
-      )}
       {/* Pet Section (Visible Only for Pet Owners) */}
       {user.role === 'PetOwner' && (
         <>
@@ -145,7 +139,7 @@ export default function ProfileScreen({ navigation }) {
                   <Image
                     source={ pet.profileImage ?
                         { uri: `data:image/jpeg;base64,${pet.profileImage}` }
-                      : require('../assets/dog.png')}
+                      : require('../assets/images/cat-n-dog-icon.png')}
                     style={styles.petImage}
                   />
                   <View>

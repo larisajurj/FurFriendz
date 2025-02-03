@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import MapView, { Circle, Marker } from 'react-native-maps';
+import React, { useRef } from 'react';
+import MapView, { Marker } from 'react-native-maps';
 
 export const DoublePressMarker = ({ coordinate, onSinglePress, onDoublePress, title, description, image }) => {
   const lastPress = useRef(null);
@@ -7,9 +7,9 @@ export const DoublePressMarker = ({ coordinate, onSinglePress, onDoublePress, ti
 
   const handlePress = () => {
     const now = Date.now();
-    console.log(lastPress);
-    console.log(now);
-    console.log(now - lastPress.current);
+//     console.log(lastPress);
+//     console.log(now);
+//     console.log(now - lastPress.current);
     if (lastPress.current != null && (now - lastPress.current < doublePressDelay)) {
       // Double press detected
       if (onDoublePress) onDoublePress();
