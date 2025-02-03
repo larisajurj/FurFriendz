@@ -74,7 +74,8 @@ public class PetSittingService : IPetSittingService
 			EndDate = listing.EndDate,
 			Details = listing.Details,
 			ServiceId = listing.Service.Id,
-			Status = listing.Status
+			Status = listing.Status,
+			HomeLocation = null
 		}).ToList();
 		return listings;
 	}
@@ -86,6 +87,7 @@ public class PetSittingService : IPetSittingService
 		{
 			Id = listing.Id ?? 0,
 			RequestingUserId = listing.RequestingUser.Id,
+			HomeLocation = listing.RequestingUser.HomeAddress,
 			Pets = _mapper.Map<List<PetDTO>>(listing.ListingPets),
 			StartDate = listing.StartDate,
 			EndDate = listing.EndDate,

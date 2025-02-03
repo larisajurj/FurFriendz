@@ -12,5 +12,6 @@ public class ListingDTO
 	public String? Details { get; set; }
 	public int ServiceId { get; set; }
 	public RequestStatus Status { get; set; }
+	public Address? HomeLocation { get; set; }
 
 }
