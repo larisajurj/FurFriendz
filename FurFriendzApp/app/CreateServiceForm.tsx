@@ -54,24 +54,6 @@ export default function CreateServiceForm() {
       return;
     }
 
-    if (startDate > endDate) {
-      Toast.show({
-        type: 'error',
-        text1: 'Date Error',
-        text2: 'Start date cannot be after end date.'
-      });
-      return;
-    }
-
-    if (startDate < today || endDate < today) {
-      Toast.show({
-        type: 'error',
-        text1: 'Date Error',
-        text2: 'Dates cannot be before today.'
-      });
-      return;
-    }
-
     const serviceData: CreateServiceModel = {
       userId: user.id,
       name: PetSittingServicesEnum[serviceType as keyof typeof PetSittingServicesEnum],

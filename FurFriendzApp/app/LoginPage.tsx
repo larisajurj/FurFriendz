@@ -26,32 +26,32 @@ export default function AuthScreen() {
        }
     };
 
-    const handleRegister = async () => {
-     // signInWithEmailAndPassword(auth_google, email, password)
-
-      //Uncomment for testing environment
-//        signInWithEmailAndPassword(auth_google, "lari@gmail.com", "123456789")
-      signInWithEmailAndPassword(auth_google, "ericflaviu.florea@gmail.com", "24iunie")
-      // signInWithEmailAndPassword(auth_google, "flaviu.florea@gmail.com", "24iunie")
-      //  signInWithEmailAndPassword(auth_google, "marcela@email.com", "123456789")
-      .then(async (userCredential) => {
+    const handleRegister = async (demoEmail = email, demoPassword = password) => {
+      signInWithEmailAndPassword(auth_google, demoEmail, demoPassword)
+        .then(async (userCredential) => {
           Toast.show({
-              type: 'success',
-              text1: 'Good to see you back 😽👋',
-            });
+            type: 'success',
+            text1: 'Good to see you back 😽👋',
+          });
           const userData = await getUserData(userCredential.user.email);
           setUser(userData);
-//           console.log("Current user is " + userData.email);
           navigation.navigate('MapPage');
         })
         .catch((error) => {
-          const errorMessage = error.message;
-           Toast.show({
-                type: 'error',
-                text1: 'Could not log you in',
-                text2: error.message
-           });
+          Toast.show({
+            type: 'error',
+            text1: 'Could not log you in',
+            text2: error.message,
+          });
         });
+    };
+
+    const handlePetOwnerDemo = () => {
+      handleRegister("ericflaviu.florea@gmail.com", "24iunie");
+    };
+
+    const handlePetSitterDemo = () => {
+      handleRegister("ericflorea.flaviu@gmail.com", "24iunie");
     };
 
     return (
@@ -75,8 +75,16 @@ export default function AuthScreen() {
           value={password}
           onChangeText={setPassword}
         />
-        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <TouchableOpacity style={styles.button} onPress={() => handleRegister()}>
           <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+        {/* Demo Login Buttons */}
+        <TouchableOpacity style={styles.button} onPress={handlePetOwnerDemo}>
+          <Text style={styles.buttonText}>Login as Pet Owner Demo</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.button} onPress={handlePetSitterDemo}>
+          <Text style={styles.buttonText}>Login as Pet Sitter Demo</Text>
         </TouchableOpacity>
       </View>
     );
